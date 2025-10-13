@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 @Entity
 public class Vendor extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vendor_id")
     private Long id;
 
     private String businessRegistrationNo; // 사업자 등록 번호
