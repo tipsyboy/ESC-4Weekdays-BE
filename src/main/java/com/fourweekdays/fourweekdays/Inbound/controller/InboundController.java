@@ -47,7 +47,7 @@ public class InboundController {
     }
 
     // 입고 삭제
-    @GetMapping("/")
+    @GetMapping("/delete")
     public ResponseEntity<BaseResponse<String>> deleteInbound(@RequestParam Integer id) {
         inboundService.hardDelete(id);
 //        inboundService.softDelete(dto);
