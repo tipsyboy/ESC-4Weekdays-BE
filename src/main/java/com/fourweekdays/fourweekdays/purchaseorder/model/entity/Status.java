@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.purchaseorder;
+package com.fourweekdays.fourweekdays.purchaseorder.model.entity;
 
 public enum Status {
     REQUESTED, // 발주 요청 

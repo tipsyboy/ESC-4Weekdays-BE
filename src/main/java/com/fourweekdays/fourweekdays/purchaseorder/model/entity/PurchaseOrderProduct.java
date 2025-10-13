@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.purchaseorder;
+package com.fourweekdays.fourweekdays.purchaseorder.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import jakarta.persistence.*;
