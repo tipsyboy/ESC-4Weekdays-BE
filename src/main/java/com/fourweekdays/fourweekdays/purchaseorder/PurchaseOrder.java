@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.purchaseorder;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.franchise.FranchiseStore;
-import com.fourweekdays.fourweekdays.product.Product;
+import com.fourweekdays.fourweekdays.product.model.Product;
 import jakarta.persistence.*;
 
 @Entity

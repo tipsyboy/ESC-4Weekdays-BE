@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.inventory;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.product.Product;
+import com.fourweekdays.fourweekdays.product.model.Product;
 import jakarta.persistence.*;
 
 @Entity
