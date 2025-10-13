@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.product.model;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +19,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Product extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 상품 ID
 
     private String productCode; // SKU/바코드
@@ -45,21 +45,4 @@ public class Product extends BaseEntity {
 //    @ManyToOne
 //    @JoinColumn(name = "partner_id")
 //    private Vendor vendor;   // 공급업체 (Vendor)
-
-    // DTO로 변환(도메인이 DTO를 갖고있는 역참조라 제외할 것)
-    public ProductReadDto toDto() {
-        return ProductReadDto.builder()
-                .id(this.id)
-                .productCode(this.productCode)
-                .productName(this.productName)
-                .costPrice(this.costPrice)
-                .listPrice(this.listPrice)
-                .wholesalePrice(this.wholesalePrice)
-                .marginRate(this.marginRate)
-                .currency(this.currency)
-                .specification(this.specification)
-                .expirationAt(this.expirationAt)
-                .originCountry(this.originCountry)
-                .build();
-    }
 }

@@ -25,14 +25,14 @@ public class ProductService {
     // 상품 전체 조회
     public List<ProductReadDto> getProductList() {
         return productRepository.findAll().stream()
-                .map(Product::toDto)
+                .map(ProductReadDto::from)
                 .collect(Collectors.toList());
     }
 
     // 상품 상세 조회
     public ProductReadDto getProductDetails(Long id) {
         return productRepository.findById(id)
-                .map(Product::toDto)
+                .map(ProductReadDto::from)
                 .orElse(null); // 요청에 따라 예외 처리 대신 null 반환
     }
 }
