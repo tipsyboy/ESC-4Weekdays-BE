@@ -30,7 +30,7 @@ public class InboundService {
     }
 
     public InboundReadDto detail(Long id) {
-        Inbound entity = inboundRepository.findById(id).orElseThrow();
+        Inbound entity = inboundRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("inbound를 찾을 수 없습니다."));
         return InboundReadDto.from(entity);
     }
 
@@ -48,5 +48,4 @@ public class InboundService {
     public void softDelete(InboundDeleteDto dto) {
         inboundRepository.save(dto.toEntity());
     }
-    // 깃 푸시 테스트
 }
