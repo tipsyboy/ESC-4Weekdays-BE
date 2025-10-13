@@ -19,8 +19,9 @@ import java.util.List;
 public class InboundService {
     private final InboundRepository inboundRepository;
 
-    public void create(InboundCreateDto dto) {
-        inboundRepository.save(dto.toEntity());
+    public Long create(InboundCreateDto dto) {
+        Inbound result = inboundRepository.save(dto.toEntity());
+        return result.getId();
     }
 
     public List<InboundListDto> list(Integer page, Integer size) {
@@ -28,12 +29,13 @@ public class InboundService {
         return result.stream().map(InboundListDto::from).toList();
     }
 
-    public InboundReadDto detail(Integer id) {
-        return InboundReadDto.from(inboundRepository.findById(Long.valueOf(id)).orElse(null));
+    public InboundReadDto detail(Long id) {
+        return InboundReadDto.from(inboundRepository.findById(id).orElse(null));
     }
 
-    public void update(InboundUpdateDto dto) {
+    public Long update(InboundUpdateDto dto) {
         inboundRepository.save(dto.toEntity());
+        return dto.getId();
     }
 
     // 하드 딜리트
