@@ -48,4 +48,5 @@ public class InboundService {
     public void softDelete(InboundDeleteDto dto) {
         inboundRepository.save(dto.toEntity());
     }
+    // 깃 푸시 테스트
 }
