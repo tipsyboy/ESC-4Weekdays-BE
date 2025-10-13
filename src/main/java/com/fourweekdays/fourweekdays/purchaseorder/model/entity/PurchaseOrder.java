@@ -3,15 +3,13 @@ package com.fourweekdays.fourweekdays.purchaseorder.model.entity;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.vendor.Vendor;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,6 +33,6 @@ public class PurchaseOrder extends BaseEntity {
     private LocalDate expectedDate; // 입고 예정일
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private PurchaseOrderStatus status;
 
 }
