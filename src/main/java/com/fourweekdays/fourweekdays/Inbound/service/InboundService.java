@@ -30,7 +30,8 @@ public class InboundService {
     }
 
     public InboundReadDto detail(Long id) {
-        return InboundReadDto.from(inboundRepository.findById(id).orElse(null));
+        Inbound entity = inboundRepository.findById(id).orElseThrow();
+        return InboundReadDto.from(entity);
     }
 
     public Long update(InboundUpdateDto dto) {
@@ -39,8 +40,8 @@ public class InboundService {
     }
 
     // 하드 딜리트
-    public void hardDelete(Integer id) {
-        inboundRepository.deleteById(Long.valueOf(id));
+    public void hardDelete(Long id) {
+        inboundRepository.deleteById(id);
     }
 
     // 소프트 딜리트
