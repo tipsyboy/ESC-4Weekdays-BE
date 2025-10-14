@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/product")
 public class ProductController {
+
     private final ProductService productservice;
 
     // 상품 등록
