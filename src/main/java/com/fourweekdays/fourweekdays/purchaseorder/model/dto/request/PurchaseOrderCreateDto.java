@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.purchaseorder.model.dto;
+package com.fourweekdays.fourweekdays.purchaseorder.model.dto.request;
 
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
