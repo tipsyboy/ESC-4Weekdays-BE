@@ -1,10 +1,15 @@
-package com.fourweekdays.fourweekdays.member;
+package com.fourweekdays.fourweekdays.member.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Member extends BaseEntity {
 
