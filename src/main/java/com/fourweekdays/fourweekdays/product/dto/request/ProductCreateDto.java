@@ -43,7 +43,7 @@ public class ProductCreateDto {
                 .marginRate(this.marginRate)
                 .currency(this.currency)
                 .specification(this.specification)
-                .expirationAt(this.expirationAt != null ? this.expirationAt.atStartOfDay() : null)
+                .expirationAt(this.expirationAt != null ? LocalDate.from(this.expirationAt.atStartOfDay()) : null)
                 .originCountry(this.originCountry)
                 .category(category) // 연관관계 주입
                 .build();
