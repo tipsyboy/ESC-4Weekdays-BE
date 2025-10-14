@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class UserAuth implements UserDetails {
 
-    private Long idx;
+    private Long id;
     private String email;
     private String password;
     private String name;

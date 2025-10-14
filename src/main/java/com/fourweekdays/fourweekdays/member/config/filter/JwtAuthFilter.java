@@ -13,7 +13,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     String role = JwtUtil.getValue(claims, JwtUtil.ROLE_NAME);
 
                     UserAuth authUser = UserAuth.builder()
-                            .idx(id)
+                            .id(id)
                             .email(email)
                             .build();
 

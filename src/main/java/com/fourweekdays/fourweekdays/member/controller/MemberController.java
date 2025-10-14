@@ -1,11 +1,9 @@
 package com.fourweekdays.fourweekdays.member.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberLoginDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.service.MemberService;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원 등록
-    @PostMapping("/singup")
+    @PostMapping("/signup")
     public ResponseEntity<BaseResponse<String>> register(@RequestBody MemberSignUpDto dto) {
         memberService.register(dto);
         return ResponseEntity.ok(BaseResponse.success("등록 완료"));
