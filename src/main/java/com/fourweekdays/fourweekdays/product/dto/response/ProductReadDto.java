@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.product.model.Product;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -19,7 +19,7 @@ public class ProductReadDto {
     private int marginRate;
     private String currency;
     private String specification;
-    private LocalDateTime expirationAt;
+    private LocalDate expirationAt;
     private String originCountry;
 
     public static ProductReadDto from(Product product) {
@@ -34,7 +34,7 @@ public class ProductReadDto {
                 .marginRate(product.getMarginRate())
                 .currency(product.getCurrency())
                 .specification(product.getSpecification())
-                .expirationAt(product.getExpirationAt())
+                .expirationAt(LocalDate.from(product.getExpirationAt()))
                 .originCountry(product.getOriginCountry())
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.category.model;
 
+import com.fourweekdays.fourweekdays.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,28 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+@AllArgsConstructor
+@Builder
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
-    private String name;            // 카테고리명 (예: 식품, 음료, 냉동식품 등)
-    private String code;            // 카테고리 코드 (예: F001, F001-1)
-    private String description;     // 카테고리 설명
-    private boolean isActive;       // 활성화 여부
 
-    // 상위 카테고리
+    private String name;         // 카테고리명
+    private String code;         // 카테고리 코드
+    private String description;  // 설명
+    private boolean active;      // 활성화 여부
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    // 하위 카테고리 목록
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Category> children = new ArrayList<>();
-
 }

@@ -13,7 +13,7 @@ public class CategoryCreateDto {
     private String code;        // 카테고리 코드
     private String description; // 설명
     private Long parentId;      // 상위 카테고리 ID
-    private boolean isActive;   // 활성화 여부
+    private boolean active;   // 활성화 여부
 
     // Entity 변환
     public Category toEntity(Category parent) {
@@ -22,7 +22,7 @@ public class CategoryCreateDto {
                 .code(this.code)
                 .description(this.description)
                 .parent(parent)
-                .isActive(this.isActive)
+                .active(this.active)
                 .build();
     }
 }
