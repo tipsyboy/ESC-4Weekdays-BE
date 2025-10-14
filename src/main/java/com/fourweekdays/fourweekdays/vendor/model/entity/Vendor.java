@@ -1,10 +1,18 @@
-package com.fourweekdays.fourweekdays.vendor;
+package com.fourweekdays.fourweekdays.vendor.model.entity;
 
 import com.fourweekdays.fourweekdays.common.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Vendor extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
