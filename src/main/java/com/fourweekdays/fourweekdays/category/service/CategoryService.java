@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.category.model.Category;
 import com.fourweekdays.fourweekdays.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     // 카테고리 등록
+    @Transactional
     public Long register(CategoryCreateDto dto) {
         Category parent = null;
 
@@ -33,6 +35,7 @@ public class CategoryService {
     }
 
     // 카테고리 전체 조회
+    @Transactional(readOnly = true)
     public List<CategoryReadDto> getCategoryList() {
         return categoryRepository.findAll().stream()
                 .map(CategoryReadDto::from)

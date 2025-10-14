@@ -5,7 +5,9 @@ import com.fourweekdays.fourweekdays.category.repository.CategoryRepository;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductStatusUpdateDto;
 import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
-import com.fourweekdays.fourweekdays.product.model.*;
+import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.product.model.ProductStatusHistory;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.product.repository.ProductStatusHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,11 +60,10 @@ public class ProductService {
         return saved.getId();
     }
 
-
     // 상태 변경(변경시 ProductStatusHistory에 기록)
     // 상태 전이 규칙 검증
     @Transactional
-    public void updateProductStatus(Long productId, ProductStatusUpdateDto dto) {
+    public ProductStatusHistory updateProductStatus(Long productId, ProductStatusUpdateDto dto) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
@@ -79,16 +80,39 @@ public class ProductService {
                 .changedBy(dto.getChangedBy())
                 .build();
 
-        historyRepository.save(history);
+        return historyRepository.save(history);
+    }
+
+    // 상품 전체 조회
+    public List<ProductReadDto> getProductList() {
+        return productRepository.findAll().stream()
+                .map(ProductReadDto::from)
+                .collect(Collectors.toList());
+    }
+
+    // 상품 상세 조회
+    public ProductReadDto getProductDetails(Long id) {
+        return productRepository.findById(id)
+                .map(ProductReadDto::from)
+                .orElse(null);
     }
 
     // 상태 전이 검증 로직
     private void validateStatusTransition(ProductStatus oldStatus, ProductStatus newStatus) {
-        if (oldStatus == ProductStatus.APPROVED && newStatus == ProductStatus.INSPECTING) {
-            throw new IllegalStateException("승인된 상품은 다시 검수중으로 변경할 수 없습니다.");
+        if (oldStatus == ProductStatus.APPROVED) {
+            throw new IllegalStateException("승인된 상품은 더 이상 상태를 변경할 수 없습니다.");
         }
-        if (oldStatus == ProductStatus.DISCONTINUED && newStatus != ProductStatus.DISCONTINUED) {
-            throw new IllegalStateException("단종된 상품은 상태를 변경할 수 없습니다.");
+        if (oldStatus == ProductStatus.RECEIVED && newStatus != ProductStatus.INSPECTING) {
+            throw new IllegalStateException("입고 상태에서는 검수중으로만 이동할 수 있습니다.");
+        }
+        if (oldStatus == ProductStatus.INSPECTING && newStatus != ProductStatus.INSPECTED) {
+            throw new IllegalStateException("검수중 상태에서는 검수 완료로만 이동할 수 있습니다.");
+        }
+        if (oldStatus == ProductStatus.INSPECTED && newStatus != ProductStatus.STORING) {
+            throw new IllegalStateException("검수 완료 상태에서는 적치중으로만 이동할 수 있습니다.");
+        }
+        if (oldStatus == ProductStatus.STORING && newStatus != ProductStatus.APPROVED) {
+            throw new IllegalStateException("적치중 상태에서는 승인으로만 이동할 수 있습니다.");
         }
     }
 
@@ -112,17 +136,4 @@ public class ProductService {
         return smallCategory;
     }
 
-    // 상품 전체 조회
-    public List<ProductReadDto> getProductList() {
-        return productRepository.findAll().stream()
-                .map(ProductReadDto::from)
-                .collect(Collectors.toList());
-    }
-
-    // 상품 상세 조회
-    public ProductReadDto getProductDetails(Long id) {
-        return productRepository.findById(id)
-                .map(ProductReadDto::from)
-                .orElse(null);
-    }
 }

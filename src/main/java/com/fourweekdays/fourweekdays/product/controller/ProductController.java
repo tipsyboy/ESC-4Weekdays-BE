@@ -2,8 +2,11 @@ package com.fourweekdays.fourweekdays.product.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.dto.request.ProductStatusUpdateDto;
+import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.product.dto.response.ProductStatusResponseDto;
+import com.fourweekdays.fourweekdays.product.model.ProductStatusHistory;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +24,9 @@ public class ProductController {
 
     // 상품 등록
     @PostMapping
-    public ResponseEntity<BaseResponse<String>> register(@RequestBody ProductCreateDto dto) {
-        productservice.register(dto);
-        return ResponseEntity.ok(BaseResponse.success("등록 완료"));
+    public ResponseEntity<BaseResponse<Long>> register(@RequestBody ProductCreateDto dto) {
+        Long saveId = productservice.register(dto);
+        return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
     // 상품 전체 조회
@@ -42,5 +45,16 @@ public class ProductController {
                     .body(BaseResponse.error(BaseResponseStatus.PRODUCT_NOT_FOUND));
         }
         return ResponseEntity.ok(BaseResponse.success(productDto));
+    }
+
+    // 상품 상태 변경
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<ProductStatusResponseDto>> updateStatus(
+            @PathVariable Long id,
+            @RequestBody ProductStatusUpdateDto dto
+    ) {
+        ProductStatusHistory history = productservice.updateProductStatus(id, dto);
+        ProductStatusResponseDto response = ProductStatusResponseDto.from(history);
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 }

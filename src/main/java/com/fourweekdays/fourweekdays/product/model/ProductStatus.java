@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.product.model;
 
+// 시스템에 필요한 워크플로우 상수로 별도 테이블X
 public enum ProductStatus {
     RECEIVED("입고"),
     INSPECTING("검수중"),
@@ -9,7 +10,7 @@ public enum ProductStatus {
 
     private final String label;
 
-    ProductStatus(String label){
+    ProductStatus(String label) {
         this.label = label;
     }
 

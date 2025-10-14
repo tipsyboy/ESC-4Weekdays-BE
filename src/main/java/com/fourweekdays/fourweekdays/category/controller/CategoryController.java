@@ -20,10 +20,9 @@ public class CategoryController {
 
     // 카테고리 등록
     @PostMapping
-    public ResponseEntity<BaseResponse<String>> register(@RequestBody CategoryCreateDto dto) {
-        categoryService.register(dto);
-        return ResponseEntity.ok(BaseResponse.success("등록 완료"));
-
+    public ResponseEntity<BaseResponse<Long>> register(@RequestBody CategoryCreateDto dto) {
+        Long saveId = categoryService.register(dto);
+        return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
     // 카테고리 전체 조회

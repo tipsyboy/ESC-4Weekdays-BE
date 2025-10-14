@@ -1,7 +1,10 @@
 package com.fourweekdays.fourweekdays.category.dto.request;
 
 import com.fourweekdays.fourweekdays.category.model.Category;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
