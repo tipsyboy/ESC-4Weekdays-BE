@@ -23,6 +23,7 @@ public enum BaseResponseStatus {
      */
     NOT_FOUND(false, 40000, "찾을 수 없는 리소스입니다."),
     PRODUCT_NOT_FOUND(false, 40001, "해당 상품을 찾을 수 없습니다."),
+    INVALID_TOKEN(false, 40002, "유효하지 않은 토큰입니다."),
 
 
     /**

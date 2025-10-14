@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.notification;
 import com.fourweekdays.fourweekdays.Inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.inventory.Inventory;
-import com.fourweekdays.fourweekdays.member.Member;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.outbound.Outbound;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
