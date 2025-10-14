@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.tasks;
 
-import com.fourweekdays.fourweekdays.Inbound.Inbound;
+import com.fourweekdays.fourweekdays.Inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.inventory.Inventory;
 import com.fourweekdays.fourweekdays.member.Member;
