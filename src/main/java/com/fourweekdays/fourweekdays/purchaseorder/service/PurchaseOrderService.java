@@ -4,8 +4,8 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrd
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
-import com.fourweekdays.fourweekdays.vendor.Vendor;
-import com.fourweekdays.fourweekdays.vendor.VendorRepository;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

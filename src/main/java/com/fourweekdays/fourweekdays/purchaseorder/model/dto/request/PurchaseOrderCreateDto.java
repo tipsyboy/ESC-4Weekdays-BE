@@ -2,12 +2,15 @@ package com.fourweekdays.fourweekdays.purchaseorder.model.dto.request;
 
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
-import com.fourweekdays.fourweekdays.vendor.Vendor;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -17,21 +20,25 @@ public class PurchaseOrderCreateDto {
     private Long vendorId; // 공급업체 ID
 
     @NotNull(message = "발주일을 입력해주세요")
-    private LocalDate issueDate; // 발주일
+    private LocalDateTime orderDate; // 발주일
 
     @NotNull(message = "입고 예정일을 입력해주세요")
-    private LocalDate expectedDate; // 입고 예정일
+    private LocalDateTime expectedDate; // 입고 예정일
 
-//    @NotEmpty(message = "품목을 최소 1개 이상 추가해주세요")
-//    private List<PurchaseOrderItemDto> items;  // 품목 목록
+    @NotEmpty(message = "발주 상품을 선택해주세요.")
+    private List<PurchaseOrderItemDto> items;
+
+    @Size(max = 1000, message = "비고는 1000자 이내로 입력해주세요")
+    private String description;
 
     // TODO: 다른 엔티티가 정의되면 리팩토링
     public PurchaseOrder toEntity(Vendor vendor) {
         return PurchaseOrder.builder()
                 .vendor(vendor)
                 .status(PurchaseOrderStatus.REQUESTED)
-                .issueDate(this.issueDate)
+                .orderDate(this.orderDate)
                 .expectedDate(this.expectedDate)
+                .description(this.description)
                 .build();
     }
 }
