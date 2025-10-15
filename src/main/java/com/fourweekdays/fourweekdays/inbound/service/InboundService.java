@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class InboundService {
+
     private final InboundRepository inboundRepository;
 
     public Long create(InboundCreateDto dto) {

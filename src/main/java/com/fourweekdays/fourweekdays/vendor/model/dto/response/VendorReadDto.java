@@ -1,27 +1,46 @@
 package com.fourweekdays.fourweekdays.vendor.model.dto.response;
 
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
-import lombok.Builder;
-import lombok.Getter;
+import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class VendorReadDto {
+
     private Long id;
-    private String businessRegistrationNo; // 사업자 등록 번호
+    private String vendorCode;
     private String name;
     private String phoneNumber;
     private String email;
-    private String address;
+    private String description;
+    private VendorStatus status;
 
-    public static VendorReadDto from(Vendor entity) {
-        return  VendorReadDto.builder()
-                .id(entity.getId())
-                .businessRegistrationNo(entity.getBusinessRegistrationNo())
-                .name(entity.getName())
-                .phoneNumber(entity.getPhoneNumber())
-                .email(entity.getEmail())
-//                .address(entity.getAddress())
+    private Address address;
+    private Integer productCount; // 공급 상품 수
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public static VendorReadDto from(Vendor vendor) {
+        return VendorReadDto.builder()
+                .id(vendor.getId())
+                .vendorCode(vendor.getVendorCode())
+                .name(vendor.getName())
+                .phoneNumber(vendor.getPhoneNumber())
+                .email(vendor.getEmail())
+                .description(vendor.getDescription())
+                .status(vendor.getStatus())
+                .address(vendor.getAddress())
+                .productCount(vendor.getProductList() != null ? vendor.getProductList().size() : 0)
+                .createdAt(vendor.getCreatedAt())
+                .updatedAt(vendor.getUpdatedAt())
                 .build();
     }
 }

@@ -49,6 +49,16 @@ public class Vendor extends BaseEntity {
 //    private String employee; // 담당자
 
     // ===== 비즈니스 로직 ===== //
+    public void update(String name, String phoneNumber, String email,
+                       String description, VendorStatus status, Address address) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.description = description;
+        this.status = status;
+        this.address = address;
+    }
+
     public boolean canOrder() {
         return this.status == VendorStatus.ACTIVE;
     }

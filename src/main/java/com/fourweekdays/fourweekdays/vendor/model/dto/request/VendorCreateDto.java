@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.model.dto.request;
 
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,19 +8,21 @@ import lombok.Getter;
 @Getter
 @Builder
 public class VendorCreateDto {
-    private String businessRegistrationNo;
+
     private String name;
     private String phoneNumber;
     private String email;
-    private String address;
+    private String description;
+    private Address address;
+
 
     public Vendor toEntity() {
         return Vendor.builder()
-                .businessRegistrationNo(this.businessRegistrationNo)
                 .name(this.name)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
-//                .address()
+                .description(this.description)
+                .address(this.address)
                 .build();
     }
 }
