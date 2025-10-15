@@ -1,8 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.model.dto.response;
 
-import com.fourweekdays.fourweekdays.common.Address;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
-import jakarta.persistence.Embedded;
 import lombok.Builder;
 import lombok.Getter;
 

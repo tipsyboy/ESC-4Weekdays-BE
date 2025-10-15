@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.common;
+package com.fourweekdays.fourweekdays.common.vo;
 
 import jakarta.persistence.Embeddable;
 

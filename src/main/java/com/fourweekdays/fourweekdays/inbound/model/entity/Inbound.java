@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.Inbound.model.entity;
+package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.member.Member;

@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.franchise;
 
-import com.fourweekdays.fourweekdays.common.Address;
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import jakarta.persistence.*;
 

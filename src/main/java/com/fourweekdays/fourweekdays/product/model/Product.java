@@ -1,52 +1,46 @@
 package com.fourweekdays.fourweekdays.product.model;
 
-import com.fourweekdays.fourweekdays.category.model.Category;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
 
 @Entity
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 상품 ID
-    private String productCode; // SKU/바코드
-    private String productName; // 상품명
-    private int costPrice;      // 매입가 (원가)
-    private int listPrice;      // 소비자가 (리스트가)
-    private int wholesalePrice; // 도매가 (가맹점 공급가)
-    private int marginRate;     // 마진율 (%)
-    private String currency; // 금액 단위 (KRW, USD, JPY 등)
-    private String specification; // 규격 (예: 500ml, Box 20개입)
-    private LocalDate expirationAt; // 유통기한
-    private String originCountry; // 원산지
+    @Column(name = "product_id")
+    private Long id;
+
+    @Column(nullable = false, length = 200)
+    private String name;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String productCode;
+
+    @Column(length = 50)
+    private String unit; // 단위 (예: EA, Box ...)
+
+    private Long unitPrice; // 단가
+
+    @Column(length = 1000)
+    private String description;
 
     @Enumerated(EnumType.STRING)
-    private ProductStatus status;   // 현재 상품 상태
-
-    public void updateStatus(ProductStatus newStatus) {
-        this.status = newStatus;
-    }
+    private ProductStatus status; //ACTIVE, INACTIVE, DISCONTINUED
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor; // 공급업체
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductStatusHistory> histories = new ArrayList<>();
-//    @ManyToOne
-//    @JoinColumn(name = "partner_id")
-//    private Vendor vendor;   // 공급업체 (Vendor)
+//    @Column(nullable = false, unique = true, length = 50)
+//    private String barcode; // 바코드 추후 구현
+
+    // ===== 연관 관계 ===== //
+    // ===== 로직 ===== //
 }
