@@ -1,10 +1,10 @@
-package com.fourweekdays.fourweekdays.Inbound.controller;
+package com.fourweekdays.fourweekdays.inbound.controller;
 
-import com.fourweekdays.fourweekdays.Inbound.model.dto.request.InboundCreateDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.request.InboundUpdateDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.response.InboundListDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.Inbound.service.InboundService;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundListDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

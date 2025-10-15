@@ -1,6 +1,6 @@
-package com.fourweekdays.fourweekdays.Inbound.model.dto.response;
+package com.fourweekdays.fourweekdays.inbound.model.dto.response;
 
-import com.fourweekdays.fourweekdays.Inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import lombok.Builder;
 import lombok.Getter;
 

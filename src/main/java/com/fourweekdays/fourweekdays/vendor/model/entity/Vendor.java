@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.model.entity;
 
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.product.model.Product;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public class Vendor extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private VendorStatus status; // ACTIVE, INACTIVE, SUSPEND
+
+    @Embedded
+    private Address address;
 
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY) // TODO: think CASCADE
     private List<Product> productList = new ArrayList<>();

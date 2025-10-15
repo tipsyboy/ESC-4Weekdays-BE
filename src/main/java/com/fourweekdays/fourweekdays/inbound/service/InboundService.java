@@ -1,12 +1,12 @@
-package com.fourweekdays.fourweekdays.Inbound.service;
+package com.fourweekdays.fourweekdays.inbound.service;
 
-import com.fourweekdays.fourweekdays.Inbound.model.dto.request.InboundCreateDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.request.InboundDeleteDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.request.InboundUpdateDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.Inbound.model.dto.response.InboundListDto;
-import com.fourweekdays.fourweekdays.Inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.Inbound.repository.InboundRepository;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundDeleteDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundListDto;
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
