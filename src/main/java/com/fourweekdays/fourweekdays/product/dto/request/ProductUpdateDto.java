@@ -31,7 +31,7 @@ public class ProductUpdateDto {
     @NotNull(message = "상품 상태는 필수입니다")
     private ProductStatus status;
 
-//    @NotNull(message = "공급업체는 필수입니다")
-//    private Long vendorId; // 공급업체 변경 가능
+    @NotNull(message = "공급업체는 필수입니다")
+    private Long vendorId; // 공급업체 변경 가능
 }
 
