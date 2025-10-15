@@ -3,10 +3,8 @@ package com.fourweekdays.fourweekdays.product.controller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductStatusUpdateDto;
+import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductStatusResponseDto;
-import com.fourweekdays.fourweekdays.product.model.ProductStatusHistory;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,41 +18,46 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
 
-    private final ProductService productservice;
+    private final ProductService productService;
 
     // 상품 등록
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> register(@RequestBody ProductCreateDto dto) {
-        Long saveId = productservice.register(dto);
+        Long saveId = productService.createProduct(dto);
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
     // 상품 전체 조회
     @GetMapping
     public ResponseEntity<BaseResponse<List<ProductReadDto>>> getProductList() {
-        List<ProductReadDto> productList = productservice.getProductList();
+        List<ProductReadDto> productList = productService.getProductList();
         return ResponseEntity.ok(BaseResponse.success(productList));
     }
 
     // 상품 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<ProductReadDto>> getProductDetails(@PathVariable Long id) {
-        ProductReadDto productDto = productservice.getProductDetails(id);
+        ProductReadDto productDto = productService.getProductDetails(id);
         if (productDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(BaseResponse.error(BaseResponseStatus.PRODUCT_NOT_FOUND));
         }
         return ResponseEntity.ok(BaseResponse.success(productDto));
     }
-
-    // 상품 상태 변경
+    
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<ProductStatusResponseDto>> updateStatus(
-            @PathVariable Long id,
-            @RequestBody ProductStatusUpdateDto dto
-    ) {
-        ProductStatusHistory history = productservice.updateProductStatus(id, dto);
-        ProductStatusResponseDto response = ProductStatusResponseDto.from(history);
-        return ResponseEntity.ok(BaseResponse.success(response));
+    public ResponseEntity<BaseResponse<Long>> updateProduct(@PathVariable Long id,
+                                                            @RequestBody ProductUpdateDto requestDto) {
+        return ResponseEntity.ok(BaseResponse.success(productService.update(id, requestDto)));
     }
+
+
+//    // 상품 상태 변경
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<BaseResponse<ProductStatusResponseDto>> updateStatus(@PathVariable Long id, 
+//                                                                               @RequestBody ProductStatusUpdateDto dto) {
+//        ProductStatusHistory history = productservice.updateProductStatus(id, dto);
+//        ProductStatusResponseDto response = ProductStatusResponseDto.from(history);
+//        return ResponseEntity.ok(BaseResponse.success(response));
+//    }
 }

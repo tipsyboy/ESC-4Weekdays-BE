@@ -1,20 +1,12 @@
 package com.fourweekdays.fourweekdays.product.service;
 
-import com.fourweekdays.fourweekdays.category.model.Category;
-import com.fourweekdays.fourweekdays.category.repository.CategoryRepository;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductStatusUpdateDto;
 import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
 import com.fourweekdays.fourweekdays.product.model.Product;
-import com.fourweekdays.fourweekdays.product.model.ProductStatus;
-import com.fourweekdays.fourweekdays.product.model.ProductStatusHistory;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
-import com.fourweekdays.fourweekdays.product.repository.ProductStatusHistoryRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +55,7 @@ public class ProductService {
     }
 
     // 상품 수정
-    public void update(Long id, ProductUpdateDto requestDto) {
+    public Long update(Long id, ProductUpdateDto requestDto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 
@@ -74,6 +66,8 @@ public class ProductService {
                 requestDto.getUnitPrice(), requestDto.getDescription(),
                 requestDto.getStatus(), product.getVendor()
         );
+
+        return id;
     }
 
 
