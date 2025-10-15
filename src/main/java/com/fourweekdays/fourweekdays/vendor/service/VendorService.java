@@ -17,6 +17,7 @@ import java.util.List;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class VendorService {
     private final VendorRepository vendorRepository;
