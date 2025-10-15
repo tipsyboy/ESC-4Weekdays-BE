@@ -1,13 +1,16 @@
 package com.fourweekdays.fourweekdays.product.dto.request;
 
-import com.fourweekdays.fourweekdays.category.model.Category;
 import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -15,37 +18,33 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ProductCreateDto {
 
-    private String productCode;     // SKU/바코드
-    private String productName;     // 상품명
-    private int costPrice;          // 매입가 (원가)
-    private int listPrice;          // 소비자가 (리스트가)
-    private int wholesalePrice;     // 도매가 (가맹점 공급가)
-    private int marginRate;         // 마진율 (%)
-    private String currency;        // 금액 단위 (KRW, USD, JPY 등)
-    private String specification;   // 규격 (예: 500ml, Box 20개입)
-    private LocalDate expirationAt; // 유통기한
-    private String originCountry;   // 원산지
+    @NotBlank(message = "상품명은 필수입니다")
+    @Size(max = 200, message = "상품명은 200자 이하로 입력해주세요")
+    private String name;
 
-    // 카테고리 연관 필드 추가
-    private Long categoryId;        // 기존 카테고리 ID
-    private String categoryLarge;   // 대분류명
-    private String categoryMedium;  // 중분류명
-    private String categorySmall;   // 소분류명
+    @Size(max = 50, message = "단위는 50자 이하로 입력해주세요")
+    private String unit; // EA, Box, Kg 등
+
+    @NotNull(message = "단가는 필수입니다")
+    @Min(value = 0, message = "단가는 0원 이상이어야 합니다")
+    private Long unitPrice;
+
+    @Size(max = 1000, message = "설명은 1000자 이하로 입력해주세요")
+    private String description;
+
+    @NotNull(message = "상품 상태는 필수입니다")
+    private ProductStatus status;
+    private Long vendorId;
 
     // Entity 변환
-    public Product toEntity(Category category) {
+    public Product toEntity(Vendor vendor) {
         return Product.builder()
-                .productCode(this.productCode)
-                .productName(this.productName)
-                .costPrice(this.costPrice)
-                .listPrice(this.listPrice)
-                .wholesalePrice(this.wholesalePrice)
-                .marginRate(this.marginRate)
-                .currency(this.currency)
-                .specification(this.specification)
-                .expirationAt(this.expirationAt != null ? LocalDate.from(this.expirationAt.atStartOfDay()) : null)
-                .originCountry(this.originCountry)
-                .category(category) // 연관관계 주입
+                .name(this.name)
+                .unit(this.unit)
+                .unitPrice(this.unitPrice)
+                .description(this.description)
+                .status(this.status)
+                .vendor(vendor)
                 .build();
     }
 }
