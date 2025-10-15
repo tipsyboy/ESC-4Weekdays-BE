@@ -37,14 +37,13 @@ public class ProductCreateDto {
     private Long vendorId;
 
     // Entity 변환
-    public Product toEntity(Vendor vendor) {
+    public Product toEntity() {
         return Product.builder()
                 .name(this.name)
                 .unit(this.unit)
                 .unitPrice(this.unitPrice)
                 .description(this.description)
                 .status(this.status)
-                .vendor(vendor)
                 .build();
     }
 }
