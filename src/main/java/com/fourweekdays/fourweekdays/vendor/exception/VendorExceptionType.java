@@ -1,11 +1,15 @@
 package com.fourweekdays.fourweekdays.vendor.exception;
 
 import com.fourweekdays.fourweekdays.global.exception.ExceptionType;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@Getter
 public enum VendorExceptionType implements ExceptionType {
-    // 구조만 따라함 아직 사용 x
-    ;
+
+    VENDOR_NOT_FOUND(NOT_FOUND, "업체를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
@@ -17,11 +21,11 @@ public enum VendorExceptionType implements ExceptionType {
 
     @Override
     public HttpStatus statusCode() {
-        return null;
+        return this.httpStatus;
     }
 
     @Override
     public String message() {
-        return "";
+        return this.message;
     }
 }
