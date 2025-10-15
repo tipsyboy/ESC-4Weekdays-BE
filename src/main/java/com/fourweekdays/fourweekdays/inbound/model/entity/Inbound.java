@@ -1,34 +1,50 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.member.Member;
-import com.fourweekdays.fourweekdays.purchaseorder.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Inbound extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long quantity; // 입고 수량
+    
+    @Column(nullable = false)
+    private String inboundNumber;
 
     @Enumerated(EnumType.STRING)
     private InboundStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    // TODO: Member와 연관관계
+    private String managerName; // 입고 담당자
+    private String workerName; // 작업 담당자
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchaseOrder_id")
+    private LocalDateTime receivedDate; // 입고 시간
+    private LocalDateTime completedDate; // 작업 완료시간
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
+
+    @OneToMany(mappedBy = "inbound")
+    private List<InboundProductItem> items = new ArrayList<>();
+
+    private String description; // 비고
+    
+//    private String invoiceNumber; // 송장 번호
+//    private String receivedBy; // 입고 담당자
+//    private String driverName; // 배달 기사
+//    private String driverPhoneNumber;
+
 }
