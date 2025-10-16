@@ -57,12 +57,14 @@ public class MemberService implements UserDetailsService {
 
     //직원 정보 수정
     @Transactional
-    public void update(Long id, MemberUpdateDto dto) {
+    public Long update(Long id, MemberUpdateDto dto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
         member.update(dto.getName(), dto.getPhoneNumber(), dto.getPassword(),
                 dto.getRole(), dto.getStatus());
+
+        return member.getId();
     }
 
     //회원 조회

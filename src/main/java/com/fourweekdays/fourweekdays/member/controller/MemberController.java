@@ -35,7 +35,7 @@ public class MemberController {
     //직원 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<MemberResponseDto>> getByMemberId(@PathVariable Long id) {
-        return ResponseEntity.ok(BaseResponse.success(memberService.getMemberById(id)));
+        return ResponseEntity.ok(BaseResponse.success(memberService.getMemberDetails(id)));
     }
 
     //직원 정보 수정
