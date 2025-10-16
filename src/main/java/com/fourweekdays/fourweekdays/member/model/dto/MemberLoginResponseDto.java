@@ -20,7 +20,7 @@ public class MemberLoginResponseDto {
 
     public static MemberLoginResponseDto from(UserAuth userAuth) {
         return MemberLoginResponseDto.builder()
-                .id(userAuth.getIdx())
+                .id(userAuth.getId())
                 .email(userAuth.getEmail())
                 .name(userAuth.getName())
                 .role(userAuth.getRole())
