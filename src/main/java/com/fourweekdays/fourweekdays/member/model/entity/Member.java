@@ -1,6 +1,8 @@
 package com.fourweekdays.fourweekdays.member.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +31,13 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthStatus status; // 계정 상태 (ACTIVE=활성, INACTIVE=비활성, LOCK=잠금)
 
+    // ===== 로직 ===== //
+    public void update(String name, String phoneNumber, String password,
+                       MemberRole role, AuthStatus status) {
+        this.name = name;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.status = status;
+    }
 }
