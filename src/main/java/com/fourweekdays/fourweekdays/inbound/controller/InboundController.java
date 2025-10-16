@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/inbound")
+@RequestMapping("/api/inbounds")
 @RequiredArgsConstructor
 public class InboundController {
     private final InboundService inboundService;
 
-    // 응답 방식 결정되면 그거 따라서 변경하기
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateDto dto) {
         Long result = inboundService.create(dto);
