@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -18,7 +18,7 @@ public class ProductStatusResponseDto {
     private String oldStatus;
     private String newStatus;
     private String changedBy;
-    private LocalDate changedAt;
+    private LocalDateTime changedAt;
 
     public static ProductStatusResponseDto from(ProductStatusHistory history) {
         return ProductStatusResponseDto.builder()
