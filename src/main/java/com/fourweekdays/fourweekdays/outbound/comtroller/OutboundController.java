@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/outboud")
+@RequestMapping("/api/outbounds")
 public class OutboundController {
 
     private final OutboundService outboundService;
