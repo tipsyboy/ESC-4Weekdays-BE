@@ -43,7 +43,11 @@ public class Inbound extends BaseEntity {
     private List<InboundProductItem> items = new ArrayList<>();
 
     private String description; // 비고
-    
+
+    public void updatePurchaseOrder(PurchaseOrder purchaseOrder) {
+        this.purchaseOrder = purchaseOrder;
+    }
+
 //    private String invoiceNumber; // 송장 번호
 //    private String receivedBy; // 입고 담당자
 //    private String driverName; // 배달 기사

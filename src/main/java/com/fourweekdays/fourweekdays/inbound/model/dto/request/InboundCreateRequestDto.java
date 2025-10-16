@@ -13,8 +13,8 @@ import java.util.List;
 public class InboundCreateRequestDto {
 
     private Long memberId;
-    private Long purchaseOrderId;  // Optional: 발주서 기반 입고
 
+    private Long purchaseOrderId;  // 발주서 기반 입고
     @Valid
     private List<InboundItemDto> items;  // Optional: 직접/추가 품목
 

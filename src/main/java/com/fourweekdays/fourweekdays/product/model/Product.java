@@ -23,10 +23,8 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false, length = 200)
     private String name;
-
     @Column(nullable = false, unique = true, length = 50)
     private String productCode;
-    private String productName;
 
     @Column(length = 50)
     private String unit; // 단위 (예: EA, Box ...)
