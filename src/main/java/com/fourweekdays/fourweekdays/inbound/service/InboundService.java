@@ -26,6 +26,7 @@ public class InboundService {
     }
 
     public List<InboundListDto> list(Integer page, Integer size) {
+        // TODO: dto 변경에 따른 로직 변경
         Page<Inbound> result = inboundRepository.findAll(PageRequest.of(page, size));
         return result.stream().map(InboundListDto::from).toList();
     }

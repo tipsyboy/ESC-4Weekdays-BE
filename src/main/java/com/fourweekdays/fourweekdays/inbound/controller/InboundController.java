@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,9 +27,10 @@ public class InboundController {
 
     // 입고 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<InboundListDto>>> listInbound(Integer page, Integer size) {
-        List<InboundListDto> result = inboundService.list(page, size);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    public ResponseEntity<BaseResponse<List<InboundReadDto>>> listInbound(Integer page, Integer size) {
+//        List<InboundReadDto> result = inboundService.list(page, size);
+        List<InboundReadDto> mockData = new ArrayList<>();
+        return ResponseEntity.ok(BaseResponse.success(mockData));
     }
 
     // 입고 상세 조회
