@@ -4,20 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class InventorySearchDto {
-    // 검색 조건
-
-    // 상품 상세 조건들
-    // 재고 번호
-    private String productId;
-    // 보관 위치
-    private String location;
-    // 수량
-    private int quantity;
-    // 작업자
-    private String memberName;
-    // 기간
-    private Integer createAt;
-
+    //    private Product product; // 상품 상세 조건들
+    private String productId; // 재고 번호
+    private String location; // 보관 위치
+    private int quantity; // 수량
+    private String memberName; // 작업자
+    private Integer createAt; // 기간
 
 //    입고/출고와 관계를 맺는다면
 //    private Integer inboundAt;
