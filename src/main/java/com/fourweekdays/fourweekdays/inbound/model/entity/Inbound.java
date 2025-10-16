@@ -30,9 +30,11 @@ public class Inbound extends BaseEntity {
     private String managerName; // 입고 담당자
     private String workerName; // 작업 담당자
 
-    private LocalDateTime receivedDate; // 입고 시간
-    private LocalDateTime completedDate; // 작업 완료시간
-
+    private LocalDateTime scheduledDate; // 입고 예정 일시
+//    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
+//    private LocalDateTime startedDate; // 작업 시작 일시
+//    private LocalDateTime completedDate; // 작업 완료 일시
+//
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;

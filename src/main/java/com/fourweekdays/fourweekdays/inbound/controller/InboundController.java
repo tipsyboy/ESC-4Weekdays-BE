@@ -1,8 +1,7 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundListDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
@@ -10,26 +9,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/inbound")
+@RequestMapping("/api/inbounds")
 @RequiredArgsConstructor
 public class InboundController {
     private final InboundService inboundService;
 
-    // 응답 방식 결정되면 그거 따라서 변경하기
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateRequestDto dto) {
         Long result = inboundService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     // 입고 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<InboundListDto>>> listInbound(Integer page, Integer size) {
-        List<InboundListDto> result = inboundService.list(page, size);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    public ResponseEntity<BaseResponse<List<InboundReadDto>>> listInbound(Integer page, Integer size) {
+//        List<InboundReadDto> result = inboundService.list(page, size);
+        List<InboundReadDto> mockData = new ArrayList<>();
+        return ResponseEntity.ok(BaseResponse.success(mockData));
     }
 
     // 입고 상세 조회
@@ -41,16 +41,15 @@ public class InboundController {
 
     // 입고 수정
     @PostMapping("/update")
-    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto) {
         Long result = inboundService.update(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     // 입고 삭제
-    @GetMapping("/delete")
-    public ResponseEntity<BaseResponse<String>> deleteInbound(@RequestParam Long id) {
-        inboundService.hardDelete(id);
-//        inboundService.softDelete(dto);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> deleteInbound(@PathVariable Long id) {
+        inboundService.softDelete(id);
         return ResponseEntity.ok(BaseResponse.success("success"));
     }
 }
