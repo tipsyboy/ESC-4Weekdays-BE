@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.tasks;
 
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.inventory.Inventory;
+import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.outbound.Outbound;
 import jakarta.persistence.*;
