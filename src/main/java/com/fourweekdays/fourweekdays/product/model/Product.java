@@ -42,5 +42,20 @@ public class Product extends BaseEntity {
 //    private String barcode; // 바코드 추후 구현
 
     // ===== 연관 관계 ===== //
+
+    public void mappingVendor(Vendor vendor) {
+        this.vendor = vendor;
+        vendor.getProductList().add(this);
+    }
+
     // ===== 로직 ===== //
+    public void update(String name, String unit, Long unitPrice,
+                       String description, ProductStatus status, Vendor vendor) {
+        this.name = name;
+        this.unit = unit;
+        this.unitPrice = unitPrice;
+        this.description = description;
+        this.status = status;
+        this.vendor = vendor;
+    }
 }

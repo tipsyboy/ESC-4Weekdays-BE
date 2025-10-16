@@ -1,42 +1,42 @@
 package com.fourweekdays.fourweekdays.product.dto.response;
 
 import com.fourweekdays.fourweekdays.product.model.Product;
-import lombok.Builder;
-import lombok.Getter;
+import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class ProductReadDto {
 
     private Long id;
     private String productCode;
-    private String productName;
-    private int costPrice;
-    private int listPrice;
-    private int wholesalePrice;
-    private int marginRate;
-    private String currency;
-    private String specification;
-    private LocalDate expirationAt;
-    private String originCountry;
+    private String name;
+    private String unit;
+    private Long unitPrice;
+    private String description;
+    private ProductStatus status;
+    private VendorReadDto vendor; // ← VendorResponse 전체 포함 (C안)
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static ProductReadDto from(Product product) {
         return ProductReadDto.builder()
                 .id(product.getId())
                 .productCode(product.getProductCode())
-                .productCode(product.getProductCode())
-                .productName(product.getProductName())
-                .costPrice(product.getCostPrice())
-                .listPrice(product.getListPrice())
-                .wholesalePrice(product.getWholesalePrice())
-                .marginRate(product.getMarginRate())
-                .currency(product.getCurrency())
-                .specification(product.getSpecification())
-                .expirationAt(LocalDate.from(product.getExpirationAt()))
-                .originCountry(product.getOriginCountry())
+                .name(product.getName())
+                .unit(product.getUnit())
+                .unitPrice(product.getUnitPrice())
+                .description(product.getDescription())
+                .status(product.getStatus())
+                .vendor(VendorReadDto.from(product.getVendor()))
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .build();
     }
-
 }
