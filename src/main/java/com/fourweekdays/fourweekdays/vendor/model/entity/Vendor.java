@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.model.entity;
 
 import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.product.model.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,6 +45,9 @@ public class Vendor extends BaseEntity {
 
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY) // TODO: think CASCADE
     private List<Product> productList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
+    private List<Outbound> outboundList = new ArrayList<>();
 
 //    @Column(length = 200)
 //    private String employee; // 담당자
