@@ -24,6 +24,10 @@ public enum BaseResponseStatus {
     NOT_FOUND(false, 40000, "찾을 수 없는 리소스입니다."),
     PRODUCT_NOT_FOUND(false, 40001, "해당 상품을 찾을 수 없습니다."),
     INVALID_TOKEN(false, 40002, "유효하지 않은 토큰입니다."),
+    OUTBOUND_NOT_FOUND(false, 40010,"해당 출고서를 찾을 수 없습니다."),
+    OUTBOUND_ALREADY_APPROVED(false,40011,"이미 승인된 출고서 입니다."),
+    OUTBOUND_ALREADY_REJECTED(false,40012,"이미 거절된 출고서 입니다."),
+    OUTBOUND_INVALID_STATUS(false, 40013,"출고서 상태가 유효하지 않습니다."),
 
 
     /**
