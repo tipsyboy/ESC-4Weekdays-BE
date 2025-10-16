@@ -3,7 +3,6 @@ package com.fourweekdays.fourweekdays.inbound.service;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundListDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProductItem;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
@@ -48,11 +47,11 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
-    public List<InboundListDto> list(Integer page, Integer size) {
-        // TODO: dto 변경에 따른 로직 변경
-        Page<Inbound> result = inboundRepository.findAll(PageRequest.of(page, size));
-        return result.stream().map(InboundListDto::from).toList();
-    }
+//    public List<InboundListDto> list(Integer page, Integer size) {
+//        // TODO: dto 변경에 따른 로직 변경
+//        Page<Inbound> result = inboundRepository.findAll(PageRequest.of(page, size));
+//        return result.stream().map(InboundListDto::from).toList();
+//    }
 
     public InboundReadDto detail(Long id) {
         Inbound entity = inboundRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("inbound를 찾을 수 없습니다."));

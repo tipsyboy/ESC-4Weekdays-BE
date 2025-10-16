@@ -17,6 +17,7 @@ public class ProductStatusHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String productName;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus oldStatus;
