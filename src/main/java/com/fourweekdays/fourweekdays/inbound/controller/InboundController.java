@@ -1,8 +1,7 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundListDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
@@ -20,7 +19,7 @@ public class InboundController {
     private final InboundService inboundService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateRequestDto dto) {
         Long result = inboundService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
@@ -42,16 +41,15 @@ public class InboundController {
 
     // 입고 수정
     @PostMapping("/update")
-    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto) {
         Long result = inboundService.update(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     // 입고 삭제
-    @GetMapping("/delete")
-    public ResponseEntity<BaseResponse<String>> deleteInbound(@RequestParam Long id) {
-        inboundService.hardDelete(id);
-//        inboundService.softDelete(dto);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> deleteInbound(@PathVariable Long id) {
+        inboundService.softDelete(id);
         return ResponseEntity.ok(BaseResponse.success("success"));
     }
 }

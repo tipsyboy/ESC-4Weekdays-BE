@@ -1,8 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.model.dto.request;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class InboundCreateDto {
+public class InboundCreateRequestDto {
 
     private Long memberId;
     private Long purchaseOrderId;  // Optional: 발주서 기반 입고
@@ -23,19 +21,10 @@ public class InboundCreateDto {
     private LocalDateTime scheduledDate; // 입고 예상 시간
     private String description;
 
-
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
-    public static class InboundItemDto {
-
-        @NotNull(message = "상품 ID는 필수입니다.")
-        private Long productId;
-
-        @NotNull(message = "수량이 없습니다.")
-        @Min(value = 1, message = "품목은 1개 미만일 수 없습니다.")
-        private Integer quantity; // 수량
+    public void validate() {
+        if (purchaseOrderId == null && (items == null || items.isEmpty())) {
+            throw new IllegalArgumentException(
+                    "발주서 ID 또는 품목 정보 중 최소 하나는 필수입니다.");
+        }
     }
 }

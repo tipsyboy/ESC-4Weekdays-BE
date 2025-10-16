@@ -7,8 +7,6 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderPro
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
 @Builder
@@ -40,8 +38,8 @@ public class InboundProductItem extends BaseEntity {
     private String lotNumber; // 로트번호
     private String locationCode; // 적재위치 (A-01-01) TODO: Location 엔티티 or VO 격상
 
-    @Column
-    private LocalDate expirationDate; // TODO: 이게 필요한가?
+//    @Column
+//    private LocalDate expirationDate; // TODO: 이게 필요한가?
 
     @Column(length = 1000)
     private String description; // 비고
