@@ -1,31 +1,74 @@
 package com.fourweekdays.fourweekdays.inbound.model.dto.response;
 
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import lombok.Builder;
-import lombok.Getter;
+import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class InboundReadDto {
-    private Long inboundId;
-    private Long memberId;
-    private Long purchaseOrderId;
-    private Long quantity;
-    private String inboundStatus;
-    private PurchaseOrderDetailDto purchaseOrderDetailDto;
-    private ProductDetailDto productDetailDto;
 
-    public static InboundReadDto from(Inbound entity) {
-        // 이거를 도메인이 하게 만들겠다는 거잖아
-        PurchaseOrderDetailDto purchaseOrderDto = PurchaseOrderDetailDto.from(entity.getPurchaseOrder());
-        ProductDetailDto productDto = ProductDetailDto.from(entity.getPurchaseOrder().getProduct());
+
+    private Long id;  // inboundId → id로 통일 권장
+    private String inboundNumber;  // 입고번호 추가 ✅
+
+    private InboundStatus status;
+
+    // 담당자 정보
+//    private Long memberId;
+    private String managerName;
+
+    private LocalDateTime scheduledDate;
+//    private LocalDateTime receivedDate;
+//    private LocalDateTime completedDate;
+
+    // 발주 정보 (있는 경우)
+    private PurchaseOrderSummary purchaseOrder; // 발주 상세정보
+    private List<InboundProductItemResponseDto> items;
+
+    private String description;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class PurchaseOrderSummary {
+        private Long id;
+        private String orderNumber;
+        private String vendorName;
+        private LocalDateTime orderDate;
+    }
+
+    // Entity to DTO 변환 메서드 추가 권장
+    public static InboundReadDto from(Inbound inbound) {
         return InboundReadDto.builder()
-                .inboundId(entity.getId())
-                .memberId(entity.getMember().getId())
-                .quantity(entity.getQuantity())
-                .inboundStatus(entity.getStatus())
-                .purchaseOrderDetailDto(purchaseOrderDto)
-                .productDetailDto(productDto)
+                .id(inbound.getId())
+                .inboundNumber(inbound.getInboundNumber())
+                .status(inbound.getStatus())
+                .managerName(inbound.getManagerName())
+                .scheduledDate(inbound.getScheduledDate())
+                .purchaseOrder(inbound.getPurchaseOrder() != null ?
+                        PurchaseOrderSummary.builder()
+                                .id(inbound.getPurchaseOrder().getId())
+                                .orderNumber(inbound.getPurchaseOrder().getOrderNumber())
+                                .vendorName(inbound.getPurchaseOrder().getVendor().getName())
+                                .orderDate(inbound.getPurchaseOrder().getOrderDate())
+                                .build()
+                        : null)
+                .items(inbound.getItems().stream()
+                        .map(InboundProductItemResponseDto::from)
+                        .toList())
+                .description(inbound.getDescription())
+                .createdAt(inbound.getCreatedAt())
+                .updatedAt(inbound.getUpdatedAt())
                 .build();
     }
+
 }

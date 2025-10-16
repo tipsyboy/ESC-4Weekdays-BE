@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundStatusResponse;
+import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class OutboundController {
     public ResponseEntity<BaseResponse<Long>> require(@RequestBody OutboundCreateDto dto) {
         Long saveId = outboundService.createOutbound(dto);
         return ResponseEntity.ok(BaseResponse.success(saveId));
-  [[]]  }
+    }
 
     // 출고 승인
     @PostMapping("/{id}/approve")
