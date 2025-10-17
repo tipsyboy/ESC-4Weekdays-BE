@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
@@ -56,16 +57,18 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
-//    public List<InboundListDto> list(Integer page, Integer size) {
-//        // TODO: dto 변경에 따른 로직 변경
-//        Page<Inbound> result = inboundRepository.findAll(PageRequest.of(page, size));
-//        return result.stream().map(InboundListDto::from).toList();
-//    }
 
-    public InboundReadDto detail(Long id) {
+    public InboundReadDto inboundDetail(Long id) {
         Inbound entity = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
         return InboundReadDto.from(entity);
+    }
+
+    public List<InboundReadDto> inboundList() {
+        // TODO: paging 처리
+        return inboundRepository.findAll().stream()
+                .map(InboundReadDto::from)
+                .toList();
     }
 
     public Long update(InboundUpdateRequestDto dto) {
