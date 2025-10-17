@@ -17,7 +17,7 @@ import java.util.List;
 public class VendorController {
     private final VendorService vendorService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<BaseResponse<Long>> createVendor(VendorCreateDto dto) {
         Long result = vendorService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));

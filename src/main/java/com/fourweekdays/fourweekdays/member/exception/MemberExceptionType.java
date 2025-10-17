@@ -1,18 +1,19 @@
-package com.fourweekdays.fourweekdays.inbound.exception;
+package com.fourweekdays.fourweekdays.member.exception;
 
 import com.fourweekdays.fourweekdays.global.exception.ExceptionType;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-public enum InboundExceptionType implements ExceptionType {
+public enum MemberExceptionType implements ExceptionType {
 
-    INBOUND_NOT_FOUND(NOT_FOUND, "해당 발주를 찾을 수 없습니다.");
+    MEMBER_NOT_FOUND(NOT_FOUND, "해당 직원을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
 
-    InboundExceptionType(HttpStatus httpStatus, String message) {
+    MemberExceptionType(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
     }

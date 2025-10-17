@@ -45,7 +45,10 @@ public class InboundProductItem extends BaseEntity {
     private String description; // 비고
 
     // ===== 연관관계 편의 메서드 ===== //
-    // ... Inbound 할당 메서드 ...
+    public void assignInbound(Inbound inbound) {
+        this.inbound = inbound;
+        inbound.getItems().add(this);
+    }
 
     // ===== 비즈니스 로직 ===== //
     // ... 입고 수량 검증 메서드 ...

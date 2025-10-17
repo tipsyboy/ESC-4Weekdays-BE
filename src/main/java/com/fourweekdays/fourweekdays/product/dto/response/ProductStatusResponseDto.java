@@ -23,7 +23,7 @@ public class ProductStatusResponseDto {
     public static ProductStatusResponseDto from(ProductStatusHistory history) {
         return ProductStatusResponseDto.builder()
                 .productId(history.getProduct().getId())
-                .productName(history.getProduct().getProductName())
+                .productName(history.getProduct().getName())
                 .oldStatus(history.getOldStatus() != null ? history.getOldStatus().name() : null)
                 .newStatus(history.getNewStatus().name())
                 .changedBy(history.getChangedBy())
