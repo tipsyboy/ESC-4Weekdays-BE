@@ -19,11 +19,11 @@ public enum InboundExceptionType implements ExceptionType {
 
     @Override
     public HttpStatus statusCode() {
-        return null;
+        return this.httpStatus;
     }
 
     @Override
     public String message() {
-        return "";
+        return this.message;
     }
 }
