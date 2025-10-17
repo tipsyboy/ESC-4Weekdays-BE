@@ -74,6 +74,7 @@ public class InboundService {
                 .toList();
     }
 
+    @Transactional
     public Long update(InboundUpdateRequestDto requestDto, Long id) {
         Member manager = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
@@ -171,12 +172,11 @@ public class InboundService {
 
             InboundProductItem inboundItem = InboundProductItem.builder()
                     .product(product)
+                    .inbound(inbound)
                     .purchaseOrderProductItem(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();
-
-            inboundItem.assignInbound(inbound);
         });
     }
 

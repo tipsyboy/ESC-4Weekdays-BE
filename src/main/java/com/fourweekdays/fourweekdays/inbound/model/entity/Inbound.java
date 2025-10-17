@@ -21,7 +21,7 @@ public class Inbound extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String inboundNumber;
 
@@ -33,7 +33,7 @@ public class Inbound extends BaseEntity {
     private String workerName; // 작업 담당자
 
     private LocalDateTime scheduledDate; // 입고 예정 일시
-//    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
+    //    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
 //    private LocalDateTime startedDate; // 작업 시작 일시
 //    private LocalDateTime completedDate; // 작업 완료 일시
 //
@@ -41,7 +41,8 @@ public class Inbound extends BaseEntity {
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
 
-    @OneToMany(mappedBy = "inbound")
+    @Builder.Default
+    @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InboundProductItem> items = new ArrayList<>();
 
     private String description; // 비고

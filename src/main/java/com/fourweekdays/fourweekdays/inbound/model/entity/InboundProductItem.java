@@ -26,7 +26,7 @@ public class InboundProductItem extends BaseEntity {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_order_product_item_id", nullable = false)
+    @JoinColumn(name = "purchase_order_product_item_id")
     private PurchaseOrderProductItem purchaseOrderProductItem;
 
     @Column(nullable = false)
