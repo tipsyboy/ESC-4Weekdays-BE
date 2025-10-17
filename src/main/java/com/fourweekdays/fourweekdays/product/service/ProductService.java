@@ -30,6 +30,7 @@ public class ProductService {
 //    private final ProductStatusHistoryRepository historyRepository;
 
     // 상품 등록
+    @Transactional
     public Long createProduct(ProductCreateDto requestDto) {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
@@ -55,6 +56,7 @@ public class ProductService {
     }
 
     // 상품 수정
+    @Transactional
     public Long update(Long id, ProductUpdateDto requestDto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));

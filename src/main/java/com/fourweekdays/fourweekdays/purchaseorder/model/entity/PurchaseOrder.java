@@ -27,6 +27,7 @@ public class PurchaseOrder extends BaseEntity {
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
+    @Builder.Default
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrderProductItem> items = new ArrayList<>();
 
