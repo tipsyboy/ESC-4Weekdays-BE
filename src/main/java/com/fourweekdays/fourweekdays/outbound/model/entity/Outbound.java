@@ -32,10 +32,6 @@ public class Outbound extends BaseEntity {
     private OutboundStatus status; // 출고상태
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_id")
-    private Vendor vendor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
