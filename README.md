@@ -21,6 +21,16 @@
   
   [🔗프로젝트 기획서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/ESC_프로젝트_기획서V3_4Weekdays.pdf)
 
+<table align="center">
+  <tr>
+  
+  [🔗WBS](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4Weekdays_WBS.pdf)
+
+<table align="center">
+  <tr>
+  
+  [🔗ERD](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4WeekDaysERD.png)  
+
 # 1. 개요
 
 현대 유통·물류 산업은 단순한 재고 관리만으로는 경쟁력을 유지하기 어려우며, 특히 가맹점 중심의 소매 업계에서는 **상품 재고 부족이나 과잉으로 인한 손실**이 빈번하게 발생하며, 이는 가맹점 운영 효율 저하와 고객 신뢰도 하락, 더 나아가 기업 수익성에 직접적인 영향을 줍니다.
