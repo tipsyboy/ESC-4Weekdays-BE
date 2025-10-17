@@ -95,6 +95,7 @@ public class InboundService {
     }
 
     // 소프트 딜리트
+    @Transactional
     public void softDelete(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
