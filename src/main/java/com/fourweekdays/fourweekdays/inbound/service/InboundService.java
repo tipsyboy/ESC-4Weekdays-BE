@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
@@ -12,6 +13,7 @@ import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
+import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
 import com.fourweekdays.fourweekdays.product.model.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
@@ -71,8 +73,23 @@ public class InboundService {
                 .toList();
     }
 
-    public Long update(InboundUpdateRequestDto dto) {
-        return null;
+    public Long update(InboundUpdateRequestDto requestDto, Long id) {
+        Member manager = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        Inbound inbound = inboundRepository.findById(id)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+
+        inbound.updateData(manager.getName(), requestDto.getScheduledDate(), requestDto.getDescription());
+
+        if (requestDto.getItems() != null && !requestDto.getItems().isEmpty()) {
+            List<InboundProductItem> items = requestDto.getItems().stream()
+                    .map(itemDto -> convertToEntity(itemDto, inbound))
+                    .toList();
+            inbound.updateItems(items);
+        }
+
+        return inbound.getId();
     }
 
     // 소프트 딜리트
@@ -157,5 +174,17 @@ public class InboundService {
 
             inboundItem.assignInbound(inbound);
         });
+    }
+
+    private InboundProductItem convertToEntity(InboundItemDto dto, Inbound inbound) {
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+
+        return InboundProductItem.builder()
+                .inbound(inbound)
+                .product(product)
+                .receivedQuantity(dto.getQuantity())
+                .description(dto.getDescription())
+                .build();
     }
 }

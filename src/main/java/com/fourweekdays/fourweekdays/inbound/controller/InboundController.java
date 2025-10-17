@@ -41,9 +41,10 @@ public class InboundController {
     }
 
     // 입고 수정
-    @PostMapping("/update")
-    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto) {
-        Long result = inboundService.update(dto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto,
+                                                            @PathVariable Long id) {
+        Long result = inboundService.update(dto, id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 

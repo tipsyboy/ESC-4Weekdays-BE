@@ -1,8 +1,10 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -48,6 +50,16 @@ public class Inbound extends BaseEntity {
         this.purchaseOrder = purchaseOrder;
     }
 
+    public void updateData(String managerName, LocalDateTime scheduledDate, String description) {
+        this.managerName = managerName;
+        this.scheduledDate = scheduledDate;
+        this.description = description;
+    }
+
+    public void updateItems(List<InboundProductItem> newItems) {
+        this.items.clear();
+        this.items.addAll(newItems);
+    }
 //    private String invoiceNumber; // 송장 번호
 //    private String receivedBy; // 입고 담당자
 //    private String driverName; // 배달 기사
