@@ -10,7 +10,7 @@ public class Inventory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String inventoryId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

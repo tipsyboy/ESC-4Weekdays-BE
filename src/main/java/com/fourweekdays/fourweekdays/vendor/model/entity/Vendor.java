@@ -43,9 +43,11 @@ public class Vendor extends BaseEntity {
     @Embedded
     private Address address;
 
+    @Builder.Default
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY) // TODO: think CASCADE
     private List<Product> productList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
     private List<Outbound> outboundList = new ArrayList<>();
 
