@@ -1,7 +1,9 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
@@ -12,6 +14,7 @@ import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
+import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
 import com.fourweekdays.fourweekdays.product.model.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
@@ -56,24 +60,45 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
-//    public List<InboundListDto> list(Integer page, Integer size) {
-//        // TODO: dto 변경에 따른 로직 변경
-//        Page<Inbound> result = inboundRepository.findAll(PageRequest.of(page, size));
-//        return result.stream().map(InboundListDto::from).toList();
-//    }
 
-    public InboundReadDto detail(Long id) {
+    public InboundReadDto inboundDetail(Long id) {
         Inbound entity = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
         return InboundReadDto.from(entity);
     }
 
-    public Long update(InboundUpdateRequestDto dto) {
-        return null;
+    public List<InboundReadDto> inboundList() {
+        // TODO: paging 처리
+        return inboundRepository.findAll().stream()
+                .map(InboundReadDto::from)
+                .toList();
+    }
+
+    @Transactional
+    public Long update(InboundUpdateRequestDto requestDto, Long id) {
+        Member manager = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        Inbound inbound = inboundRepository.findById(id)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+
+        inbound.updateData(manager.getName(), requestDto.getScheduledDate(), requestDto.getDescription());
+
+        if (requestDto.getItems() != null && !requestDto.getItems().isEmpty()) {
+            List<InboundProductItem> items = requestDto.getItems().stream()
+                    .map(itemDto -> convertToEntity(itemDto, inbound))
+                    .toList();
+            inbound.updateItems(items);
+        }
+
+        return inbound.getId();
     }
 
     // 소프트 딜리트
     public void softDelete(Long id) {
+        Inbound inbound = inboundRepository.findById(id)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+        inbound.cancelInbound();
     }
 
 //    // 하드 딜리트
@@ -147,12 +172,23 @@ public class InboundService {
 
             InboundProductItem inboundItem = InboundProductItem.builder()
                     .product(product)
+                    .inbound(inbound)
                     .purchaseOrderProductItem(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();
-
-            inboundItem.assignInbound(inbound);
         });
+    }
+
+    private InboundProductItem convertToEntity(InboundItemDto dto, Inbound inbound) {
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+
+        return InboundProductItem.builder()
+                .inbound(inbound)
+                .product(product)
+                .receivedQuantity(dto.getQuantity())
+                .description(dto.getDescription())
+                .build();
     }
 }

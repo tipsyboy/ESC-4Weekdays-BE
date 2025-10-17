@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/inbounds")
 @RequiredArgsConstructor
 public class InboundController {
+
     private final InboundService inboundService;
 
     @PostMapping
@@ -35,14 +36,15 @@ public class InboundController {
     // 입고 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<InboundReadDto>> detailInbound(@PathVariable Long id) {
-        InboundReadDto result = inboundService.detail(id);
+        InboundReadDto result = inboundService.inboundDetail(id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     // 입고 수정
-    @PostMapping("/update")
-    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto) {
-        Long result = inboundService.update(dto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto,
+                                                            @PathVariable Long id) {
+        Long result = inboundService.update(dto, id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 

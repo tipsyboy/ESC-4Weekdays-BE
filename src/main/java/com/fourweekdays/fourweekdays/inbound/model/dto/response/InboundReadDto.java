@@ -46,7 +46,6 @@ public class InboundReadDto {
         private LocalDateTime orderDate;
     }
 
-    // Entity to DTO 변환 메서드 추가 권장
     public static InboundReadDto from(Inbound inbound) {
         return InboundReadDto.builder()
                 .id(inbound.getId())

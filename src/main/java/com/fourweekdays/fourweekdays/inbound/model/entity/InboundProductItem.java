@@ -9,9 +9,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class InboundProductItem extends BaseEntity {
 
     @Id
@@ -28,7 +26,7 @@ public class InboundProductItem extends BaseEntity {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_order_product_item_id", nullable = false)
+    @JoinColumn(name = "purchase_order_product_item_id")
     private PurchaseOrderProductItem purchaseOrderProductItem;
 
     @Column(nullable = false)
@@ -43,6 +41,17 @@ public class InboundProductItem extends BaseEntity {
 
     @Column(length = 1000)
     private String description; // 비고
+
+    @Builder
+    public InboundProductItem(Long id, Inbound inbound, Product product, PurchaseOrderProductItem purchaseOrderProductItem, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
+        assignInbound(inbound);
+        this.product = product;
+        this.purchaseOrderProductItem = purchaseOrderProductItem;
+        this.receivedQuantity = receivedQuantity;
+        this.lotNumber = lotNumber;
+        this.locationCode = locationCode;
+        this.description = description;
+    }
 
     // ===== 연관관계 편의 메서드 ===== //
     public void assignInbound(Inbound inbound) {

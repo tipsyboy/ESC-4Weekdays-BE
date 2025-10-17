@@ -1,8 +1,10 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +21,7 @@ public class Inbound extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String inboundNumber;
 
@@ -31,7 +33,7 @@ public class Inbound extends BaseEntity {
     private String workerName; // 작업 담당자
 
     private LocalDateTime scheduledDate; // 입고 예정 일시
-//    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
+    //    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
 //    private LocalDateTime startedDate; // 작업 시작 일시
 //    private LocalDateTime completedDate; // 작업 완료 일시
 //
@@ -39,18 +41,36 @@ public class Inbound extends BaseEntity {
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
 
-    @OneToMany(mappedBy = "inbound")
+    @Builder.Default
+    @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InboundProductItem> items = new ArrayList<>();
 
     private String description; // 비고
+
+    //    private String invoiceNumber; // 송장 번호
+//    private String receivedBy; // 입고 담당자
+//    private String driverName; // 배달 기사
+//    private String driverPhoneNumber;
+
+
+    // ===== ===== //
 
     public void updatePurchaseOrder(PurchaseOrder purchaseOrder) {
         this.purchaseOrder = purchaseOrder;
     }
 
-//    private String invoiceNumber; // 송장 번호
-//    private String receivedBy; // 입고 담당자
-//    private String driverName; // 배달 기사
-//    private String driverPhoneNumber;
+    public void updateData(String managerName, LocalDateTime scheduledDate, String description) {
+        this.managerName = managerName;
+        this.scheduledDate = scheduledDate;
+        this.description = description;
+    }
 
+    public void updateItems(List<InboundProductItem> newItems) {
+        this.items.clear();
+        this.items.addAll(newItems);
+    }
+
+    public void cancelInbound() {
+        this.status = InboundStatus.CANCELLED;
+    }
 }
