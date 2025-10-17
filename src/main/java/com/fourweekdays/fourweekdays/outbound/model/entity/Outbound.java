@@ -23,13 +23,13 @@ public class Outbound extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "outbound_id")
-    private Long id;        // 출고 ID
+    private Long id; // 출고 ID
 
     @Enumerated(EnumType.STRING)
-    private OutboundType outboundType;  // 출고유형
+    private OutboundType outboundType; // 출고유형
 
     @Enumerated(EnumType.STRING)
-    private OutboundStatus status;      // 출고상태
+    private OutboundStatus status; // 출고상태
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id")
