@@ -3,9 +3,9 @@ package com.fourweekdays.fourweekdays.outbound.service;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundStatusResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

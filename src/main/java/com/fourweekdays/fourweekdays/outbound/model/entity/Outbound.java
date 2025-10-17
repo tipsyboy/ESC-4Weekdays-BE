@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.outbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.order.Order;
 import com.fourweekdays.fourweekdays.product.model.Product;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
@@ -37,9 +38,9 @@ public class Outbound extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
-//    @ManyToOne
-//    @JoinColumn(name = "order_id")
-//    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "franchise_store_id")
