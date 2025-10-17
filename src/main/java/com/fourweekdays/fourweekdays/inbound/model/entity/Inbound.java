@@ -46,6 +46,14 @@ public class Inbound extends BaseEntity {
 
     private String description; // 비고
 
+    //    private String invoiceNumber; // 송장 번호
+//    private String receivedBy; // 입고 담당자
+//    private String driverName; // 배달 기사
+//    private String driverPhoneNumber;
+
+
+    // ===== ===== //
+
     public void updatePurchaseOrder(PurchaseOrder purchaseOrder) {
         this.purchaseOrder = purchaseOrder;
     }
@@ -60,9 +68,8 @@ public class Inbound extends BaseEntity {
         this.items.clear();
         this.items.addAll(newItems);
     }
-//    private String invoiceNumber; // 송장 번호
-//    private String receivedBy; // 입고 담당자
-//    private String driverName; // 배달 기사
-//    private String driverPhoneNumber;
 
+    public void cancelInbound() {
+        this.status = InboundStatus.CANCELLED;
+    }
 }

@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
@@ -94,6 +95,9 @@ public class InboundService {
 
     // 소프트 딜리트
     public void softDelete(Long id) {
+        Inbound inbound = inboundRepository.findById(id)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+        inbound.cancelInbound();
     }
 
 //    // 하드 딜리트
