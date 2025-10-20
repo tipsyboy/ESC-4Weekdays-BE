@@ -2,7 +2,6 @@ package com.fourweekdays.fourweekdays.product.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
@@ -12,19 +11,20 @@ import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_DUPLICATION;
-import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.*;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
