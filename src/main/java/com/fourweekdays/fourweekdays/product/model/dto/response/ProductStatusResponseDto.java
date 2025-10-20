@@ -1,6 +1,6 @@
-package com.fourweekdays.fourweekdays.product.dto.response;
+package com.fourweekdays.fourweekdays.product.model.dto.response;
 
-import com.fourweekdays.fourweekdays.product.model.ProductStatusHistory;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatusHistory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

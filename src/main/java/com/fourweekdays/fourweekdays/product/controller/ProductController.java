@@ -2,10 +2,11 @@ package com.fourweekdays.fourweekdays.product.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
 
     // 상품 등록
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> register(@RequestBody ProductCreateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> register(@Valid @RequestBody ProductCreateDto dto) {
         Long saveId = productService.createProduct(dto);
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }

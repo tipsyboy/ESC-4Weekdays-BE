@@ -1,13 +1,9 @@
-package com.fourweekdays.fourweekdays.product.model;
+package com.fourweekdays.fourweekdays.product.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder

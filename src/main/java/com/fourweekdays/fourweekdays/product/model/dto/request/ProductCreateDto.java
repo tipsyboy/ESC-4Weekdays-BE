@@ -1,8 +1,7 @@
-package com.fourweekdays.fourweekdays.product.dto.request;
+package com.fourweekdays.fourweekdays.product.model.dto.request;
 
-import com.fourweekdays.fourweekdays.product.model.Product;
-import com.fourweekdays.fourweekdays.product.model.ProductStatus;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,18 +31,17 @@ public class ProductCreateDto {
     @Size(max = 1000, message = "설명은 1000자 이하로 입력해주세요")
     private String description;
 
-    @NotNull(message = "상품 상태는 필수입니다")
-    private ProductStatus status;
     private Long vendorId;
 
     // Entity 변환
-    public Product toEntity() {
+    public Product toEntity(String productCode) {
         return Product.builder()
                 .name(this.name)
+                .productCode(productCode)
                 .unit(this.unit)
                 .unitPrice(this.unitPrice)
                 .description(this.description)
-                .status(this.status)
+                .status(ProductStatus.ACTIVE)
                 .build();
     }
 }

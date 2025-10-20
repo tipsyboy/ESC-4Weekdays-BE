@@ -1,7 +1,7 @@
-package com.fourweekdays.fourweekdays.product.dto.request;
+package com.fourweekdays.fourweekdays.product.model.dto.request;
 
 
-import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

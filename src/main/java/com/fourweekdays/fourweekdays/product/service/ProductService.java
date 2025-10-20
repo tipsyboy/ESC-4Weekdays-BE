@@ -1,10 +1,12 @@
 package com.fourweekdays.fourweekdays.product.service;
 
-import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_DUPLICATION;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
@@ -24,8 +27,11 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @Transactional(readOnly = true)
 public class ProductService {
 
+    private static final String PRODUCT_CODE_PREFIX = "PO";
+
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
+    private final CodeGenerator codeGenerator;
 //    private final CategoryRepository categoryRepository;
 //    private final ProductStatusHistoryRepository historyRepository;
 
@@ -35,8 +41,11 @@ public class ProductService {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
-        // TODO: 같은 상품이 있는지 판단하는 로직
-        Product product = requestDto.toEntity();
+        if (productRepository.existsByVendorAndName(vendor, requestDto.getName())) {
+            throw new ProductException(PRODUCT_DUPLICATION);
+        }
+
+        Product product = requestDto.toEntity(codeGenerator.generate(PRODUCT_CODE_PREFIX));
         product.mappingVendor(vendor); // 연관 관계 매핑 
         return productRepository.save(product).getId();
     }
