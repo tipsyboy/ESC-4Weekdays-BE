@@ -19,7 +19,17 @@
 <table align="center">
   <tr>
   
-  [🔗프로젝트 기획서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/main/docs/ESC_요구사항_정의서_4Weekdays.pdf)
+  [🔗프로젝트 기획서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/ESC_프로젝트_기획서V3_4Weekdays.pdf)
+
+<table align="center">
+  <tr>
+  
+  [🔗WBS](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4Weekdays_WBS.pdf)
+
+<table align="center">
+  <tr>
+  
+  [🔗ERD](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4WeekDaysERD.png)  
 
 # 1. 개요
 
@@ -104,4 +114,5 @@
 
 ## API 명세서
  [🔗swagger 화면(PDF)](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/docs/4weekdays%20swagger.pdf)  
+
  [🔗swagger 링크](http://54.180.120.236:8080/swagger-ui/index.html)

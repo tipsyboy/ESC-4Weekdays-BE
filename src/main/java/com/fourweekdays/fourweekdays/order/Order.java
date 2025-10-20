@@ -2,31 +2,48 @@ package com.fourweekdays.fourweekdays.order;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.franchise.FranchiseStore;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId; // 주문 ID
 
-    private LocalDateTime dueDate;   // 납기일
-    private int quantity; // 주문 수량
-    private Long amount; // 주문 금액
-
     @ManyToOne
     @JoinColumn(name = "franchise_store_id")
     private FranchiseStore franchiseStore;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product; // 주문 상품
-
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문 상태
+
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderProductItem> items = new ArrayList<>();
+
+    @Column(nullable = false)
+    private LocalDateTime orderDate; // 주문일
+
+    @Column(nullable = false)
+    private LocalDateTime dueDate;   // 납기일
+
+    @Column(nullable = false)
+    private Long totalAmount; // 총 금액
+
+    @Column(length = 1000)
+    private String description; // 비고
+
 }

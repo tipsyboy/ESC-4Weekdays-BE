@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
+import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
@@ -22,10 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
@@ -37,10 +35,13 @@ import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrde
 @Transactional(readOnly = true)
 public class InboundService {
 
+    public static final String INBOUND_CODE_PREFIX = "IB";
+
     private final MemberRepository memberRepository;
     private final InboundRepository inboundRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final ProductRepository productRepository;
+    private final CodeGenerator codeGenerator;
 
     @Transactional
     public Long create(InboundCreateRequestDto requestDto) {
@@ -100,37 +101,14 @@ public class InboundService {
         inbound.cancelInbound();
     }
 
-//    // 하드 딜리트
-//    public void hardDelete(Long id) {
-//        inboundRepository.deleteById(id);
-//    }
-
-    /**
-     * TODO: Redis 분산 락을 사용한 순차 번호 생성으로 변경 필요
-     * 현재는 임시로 UUID 기반 난수 사용 (동시성 이슈 없으나 가독성 낮음)
-     *  1. Redis 분산 락 + 날짜 시퀀스
-     *  2. DB 시퀀스 테이블 + 비관적 락
-     *  3. MariaDB SEQUENCE 객체 활용
-     */
-    private String generateInboundNumber() {
-        String datePrefix = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-        String randomSuffix = UUID.randomUUID()
-                .toString()
-                .replace("-", "")
-                .substring(0, 6)
-                .toUpperCase();
-
-        return String.format("IB-%s-%s", datePrefix, randomSuffix); // 예: IB-20251016-A7F3B2
-    }
+    // TODO: 하드 딜리트 - 꼭 구현을 해야하나?
 
     private Inbound createBaseInbound(InboundCreateRequestDto requestDto) {
         Member manager = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         return Inbound.builder()
-                .inboundNumber(generateInboundNumber())
+                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
                 .status(InboundStatus.SCHEDULED)
                 .managerName(manager.getName())
                 .scheduledDate(requestDto.getScheduledDate())
