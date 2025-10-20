@@ -129,7 +129,7 @@ public class InboundService {
         purchaseOrder.getItems().forEach(poItem -> {
             InboundProductItem inboundItem = InboundProductItem.builder()
                     .product(poItem.getProduct())
-                    .purchaseOrderProductItem(poItem)
+                    .purchaseOrderProduct(poItem)
                     .receivedQuantity(0)
                     .description(poItem.getDescription())
                     .build();
@@ -150,7 +150,7 @@ public class InboundService {
             InboundProductItem inboundItem = InboundProductItem.builder()
                     .product(product)
                     .inbound(inbound)
-                    .purchaseOrderProductItem(null)
+                    .purchaseOrderProduct(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();

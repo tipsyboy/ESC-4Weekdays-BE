@@ -19,9 +19,6 @@ public class PurchaseOrderCreateDto {
     @NotNull(message = "공급업체를 선택해주세요")
     private Long vendorId; // 공급업체 ID
 
-    @NotNull(message = "발주일을 입력해주세요")
-    private LocalDateTime orderDate; // 발주일
-
     @NotNull(message = "입고 예정일을 입력해주세요")
     private LocalDateTime expectedDate; // 입고 예정일
 
@@ -30,15 +27,4 @@ public class PurchaseOrderCreateDto {
 
     @Size(max = 1000, message = "비고는 1000자 이내로 입력해주세요")
     private String description;
-
-    // TODO: 다른 엔티티가 정의되면 리팩토링
-    public PurchaseOrder toEntity(Vendor vendor) {
-        return PurchaseOrder.builder()
-                .vendor(vendor)
-                .status(PurchaseOrderStatus.REQUESTED)
-                .orderDate(this.orderDate)
-                .expectedDate(this.expectedDate)
-                .description(this.description)
-                .build();
-    }
 }

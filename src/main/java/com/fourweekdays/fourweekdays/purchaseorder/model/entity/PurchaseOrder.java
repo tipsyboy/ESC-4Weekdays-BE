@@ -40,9 +40,6 @@ public class PurchaseOrder extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PurchaseOrderStatus status;
 
-    @Column(nullable = false)
-    private Long totalAmount; // 총 금액
-
     @Column(length = 1000)
     private String description; // 비고
 
@@ -50,11 +47,18 @@ public class PurchaseOrder extends BaseEntity {
 //    private String orderedBy; // 발주 담당자
 
     // ===== 연관관계 편의 메서드 ===== //
-    // ... 상품 추가 메서드 ...
+    public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
+        this.items.add(purchaseOrderProduct);
+        purchaseOrderProduct.mappingPurchaseOrder(this);
+    }
     // ... 상품 제거 메서드 ...
 
     // ===== 비즈니스 로직 ===== //
-    // ... 총액 계산 메서드 ...
+    public Long calculateTotalAmount() {
+        return items.stream()
+                .mapToLong(PurchaseOrderProduct::calculateAmount)
+                .sum();
+    }
     // ... 발주 승인 메서드 ...
     // ... 발주 확정 메서드 ...
     // ... 입고 완료 처리 메서드 ...

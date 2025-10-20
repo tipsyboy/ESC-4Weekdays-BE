@@ -447,7 +447,6 @@ public class InitialDataSetup {
                     .orderDate(LocalDateTime.now().minusDays(15))
                     .expectedDate(LocalDateTime.now().plusDays(3))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(2740000L)
                     .description("설화수, 라네즈 정기 발주")
                     .items(new ArrayList<>())
                     .build();
@@ -493,7 +492,6 @@ public class InitialDataSetup {
                     .orderDate(LocalDateTime.now().minusDays(10))
                     .expectedDate(LocalDateTime.now().plusDays(7))
                     .status(PurchaseOrderStatus.REQUESTED)
-                    .totalAmount(2370000L)
                     .description("더페이스샵, 빌리프 신규 입고")
                     .items(new ArrayList<>())
                     .build();
@@ -531,7 +529,6 @@ public class InitialDataSetup {
                     .orderDate(LocalDateTime.now().minusDays(8))
                     .expectedDate(LocalDateTime.now().plusDays(10))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(1530000L)
                     .description("기능성 화장품 긴급 발주")
                     .items(new ArrayList<>())
                     .build();
@@ -561,7 +558,6 @@ public class InitialDataSetup {
                     .orderDate(LocalDateTime.now().minusDays(5))
                     .expectedDate(LocalDateTime.now().plusDays(5))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(1913000L)
                     .description("미샤 인기 제품 재입고")
                     .items(new ArrayList<>())
                     .build();
@@ -599,7 +595,6 @@ public class InitialDataSetup {
                     .orderDate(LocalDateTime.now().minusDays(3))
                     .expectedDate(LocalDateTime.now().plusDays(12))
                     .status(PurchaseOrderStatus.REQUESTED)
-                    .totalAmount(1647000L)
                     .description("색조 화장품 대량 발주")
                     .items(new ArrayList<>())
                     .build();
