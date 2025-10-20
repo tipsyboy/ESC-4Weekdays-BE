@@ -38,12 +38,7 @@ public class ProductController {
     // 상품 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<ProductReadDto>> getProductDetails(@PathVariable Long id) {
-        ProductReadDto productDto = productService.getProductDetails(id);
-        if (productDto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(BaseResponse.error(BaseResponseStatus.PRODUCT_NOT_FOUND));
-        }
-        return ResponseEntity.ok(BaseResponse.success(productDto));
+        return ResponseEntity.ok(BaseResponse.success(productService.getProductDetail(id)));
     }
     
     @PatchMapping("/{id}")

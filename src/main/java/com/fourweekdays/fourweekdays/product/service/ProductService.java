@@ -1,11 +1,11 @@
 package com.fourweekdays.fourweekdays.product.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
@@ -50,6 +50,14 @@ public class ProductService {
         return productRepository.save(product).getId();
     }
 
+    // 상품 상세 조회
+    public ProductReadDto getProductDetail(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+
+        return ProductReadDto.from(product);
+    }
+
     // 상품 전체 조회
     public List<ProductReadDto> getProductList() {
         return productRepository.findAll().stream()
@@ -57,12 +65,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    // 상품 상세 조회
-    public ProductReadDto getProductDetails(Long id) {
-        return productRepository.findById(id)
-                .map(ProductReadDto::from)
-                .orElse(null);
-    }
+
 
     // 상품 수정
     @Transactional
