@@ -36,7 +36,8 @@ public class VendorService {
     }
 
     public VendorReadDto read(Long id) {
-        Vendor entity = vendorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("vendor를 찾을 수 없습니다."));
+        Vendor entity = vendorRepository.findById(id)
+                .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
         return VendorReadDto.from(entity);
     }
 
