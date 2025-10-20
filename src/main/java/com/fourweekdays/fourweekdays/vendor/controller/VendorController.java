@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,11 @@ import java.util.List;
 @RequestMapping("/api/vendors")
 @RequiredArgsConstructor
 public class VendorController {
+
     private final VendorService vendorService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> createVendor(VendorCreateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> createVendor(@Valid @RequestBody VendorCreateDto dto) {
         Long result = vendorService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }

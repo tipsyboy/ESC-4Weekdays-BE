@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.service;
 
+import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
@@ -20,13 +21,15 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class VendorService {
+
+    public static final String VENDOR_CODE_PREFIX = "V";
+
     private final VendorRepository vendorRepository;
+    private final CodeGenerator codeGenerator;
 
     @Transactional
     public Long create(VendorCreateDto dto) {
-        Vendor result = vendorRepository.save(dto.toEntity());
-        // TODO: Vendor Code 자동 생성
-//        generateVendorCode();
+        Vendor result = vendorRepository.save(dto.toEntity(codeGenerator.generate(VENDOR_CODE_PREFIX)));
 
         return result.getId();
     }
@@ -54,7 +57,4 @@ public class VendorService {
         vendorRepository.deleteById(id);
     }
 
-    private String generateVendorCode() {
-        return null;
-    }
 }

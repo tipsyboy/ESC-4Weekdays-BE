@@ -12,7 +12,7 @@ public class OutboundCreateDto {
 
     public Outbound toEntity() {
         return Outbound.builder()
-                .quantity(quantity)
+//                .quantity(quantity)
                 .outboundType(outboundType)
                 .status(OutboundStatus.PENDING)
                 .build();

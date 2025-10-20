@@ -22,7 +22,7 @@ public class Vendor extends BaseEntity {
     @Column(name = "vendor_id")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(unique = true, length = 50, nullable = false)
     private String vendorCode; // 공급업체 코드 (V-001, V-002 등)
 
     @Column(nullable = false, length = 200)
@@ -47,9 +47,9 @@ public class Vendor extends BaseEntity {
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY) // TODO: think CASCADE
     private List<Product> productList = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
-    private List<Outbound> outboundList = new ArrayList<>();
+//    @Builder.Default
+//    @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
+//    private List<Outbound> outboundList = new ArrayList<>();
 
 //    @Column(length = 200)
 //    private String employee; // 담당자

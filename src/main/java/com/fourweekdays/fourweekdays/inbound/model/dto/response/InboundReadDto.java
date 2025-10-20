@@ -49,7 +49,7 @@ public class InboundReadDto {
     public static InboundReadDto from(Inbound inbound) {
         return InboundReadDto.builder()
                 .id(inbound.getId())
-                .inboundNumber(inbound.getInboundNumber())
+                .inboundNumber(inbound.getInboundCode())
                 .status(inbound.getStatus())
                 .managerName(inbound.getManagerName())
                 .scheduledDate(inbound.getScheduledDate())
