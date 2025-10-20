@@ -13,7 +13,7 @@ import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProductItem;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -452,28 +452,28 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po1Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product1)  // 설화수 크림
                     .orderedQuantity(5)
                     .description("VIP 고객용")
                     .build();
 
-            PurchaseOrderProductItem po1Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product2)  // 라네즈 세럼
                     .orderedQuantity(20)
                     .description("베스트셀러 재고 보충")
                     .build();
 
-            PurchaseOrderProductItem po1Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product3)  // 헤라 립스틱
                     .orderedQuantity(30)
                     .description("시즌 신제품")
                     .build();
 
-            PurchaseOrderProductItem po1Item4 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item4 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product4)  // 이니스프리 토너
                     .orderedQuantity(50)
@@ -498,21 +498,21 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po2Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product5)  // 클렌징 폼
                     .orderedQuantity(100)
                     .description("기초 클렌징")
                     .build();
 
-            PurchaseOrderProductItem po2Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product6)  // 빌리프 아쿠아밤
                     .orderedQuantity(30)
                     .description("프리미엄 라인")
                     .build();
 
-            PurchaseOrderProductItem po2Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product7)  // 숨 에센스
                     .orderedQuantity(20)
@@ -536,14 +536,14 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po3Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po3Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po3)
                     .product(product9)  // 비타민C 세럼
                     .orderedQuantity(40)
                     .description("인기 기능성")
                     .build();
 
-            PurchaseOrderProductItem po3Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po3Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po3)
                     .product(product10)  // 레티놀 크림
                     .orderedQuantity(25)
@@ -566,21 +566,21 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po4Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product12)  // 쿠션
                     .orderedQuantity(80)
                     .description("베스트 쿠션")
                     .build();
 
-            PurchaseOrderProductItem po4Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product13)  // 비비크림
                     .orderedQuantity(60)
                     .description("스테디셀러")
                     .build();
 
-            PurchaseOrderProductItem po4Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product14)  // 에센스
                     .orderedQuantity(15)
@@ -604,21 +604,21 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po5Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product15)  // 블러셔
                     .orderedQuantity(50)
                     .description("봄 시즌 색조")
                     .build();
 
-            PurchaseOrderProductItem po5Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product16)  // 립틴트
                     .orderedQuantity(70)
                     .description("인기 틴트")
                     .build();
 
-            PurchaseOrderProductItem po5Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product17)  // 마스카라
                     .orderedQuantity(45)
@@ -648,7 +648,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item1 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product1)
-                    .purchaseOrderProductItem(po1Item1)
+                    .purchaseOrderProduct(po1Item1)
                     .receivedQuantity(5)
                     .lotNumber("LOT-2025-APF-001")
                     .locationCode("A-01-01")
@@ -658,7 +658,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item2 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product2)
-                    .purchaseOrderProductItem(po1Item2)
+                    .purchaseOrderProduct(po1Item2)
                     .receivedQuantity(20)
                     .lotNumber("LOT-2025-APF-002")
                     .locationCode("A-01-02")
@@ -668,7 +668,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item3 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product3)
-                    .purchaseOrderProductItem(po1Item3)
+                    .purchaseOrderProduct(po1Item3)
                     .receivedQuantity(30)
                     .lotNumber("LOT-2025-APF-003")
                     .locationCode("A-02-01")
@@ -678,7 +678,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item4 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product4)
-                    .purchaseOrderProductItem(po1Item4)
+                    .purchaseOrderProduct(po1Item4)
                     .receivedQuantity(50)
                     .lotNumber("LOT-2025-APF-004")
                     .locationCode("A-01-03")
@@ -706,7 +706,7 @@ public class InitialDataSetup {
             InboundProductItem inbound2Item1 = InboundProductItem.builder()
                     .inbound(inbound2)
                     .product(product9)
-                    .purchaseOrderProductItem(po3Item1)
+                    .purchaseOrderProduct(po3Item1)
                     .receivedQuantity(40)
                     .lotNumber("LOT-2025-CSM-001")
                     .locationCode("B-01-01")
@@ -716,7 +716,7 @@ public class InitialDataSetup {
             InboundProductItem inbound2Item2 = InboundProductItem.builder()
                     .inbound(inbound2)
                     .product(product10)
-                    .purchaseOrderProductItem(po3Item2)
+                    .purchaseOrderProduct(po3Item2)
                     .receivedQuantity(25)
                     .lotNumber("LOT-2025-CSM-002")
                     .locationCode("B-01-02")

@@ -29,7 +29,7 @@ public class PurchaseOrder extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseOrderProductItem> items = new ArrayList<>();
+    private List<PurchaseOrderProduct> items = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime orderDate; // 발주일

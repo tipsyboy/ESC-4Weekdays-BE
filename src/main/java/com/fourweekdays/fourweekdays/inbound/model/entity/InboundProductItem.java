@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProductItem;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +27,7 @@ public class InboundProductItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_product_item_id")
-    private PurchaseOrderProductItem purchaseOrderProductItem;
+    private PurchaseOrderProduct purchaseOrderProduct;
 
     @Column(nullable = false)
     private Integer receivedQuantity; // 입고 수량
@@ -43,10 +43,10 @@ public class InboundProductItem extends BaseEntity {
     private String description; // 비고
 
     @Builder
-    public InboundProductItem(Long id, Inbound inbound, Product product, PurchaseOrderProductItem purchaseOrderProductItem, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
+    public InboundProductItem(Long id, Inbound inbound, Product product, PurchaseOrderProduct purchaseOrderProduct, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
         assignInbound(inbound);
         this.product = product;
-        this.purchaseOrderProductItem = purchaseOrderProductItem;
+        this.purchaseOrderProduct = purchaseOrderProduct;
         this.receivedQuantity = receivedQuantity;
         this.lotNumber = lotNumber;
         this.locationCode = locationCode;

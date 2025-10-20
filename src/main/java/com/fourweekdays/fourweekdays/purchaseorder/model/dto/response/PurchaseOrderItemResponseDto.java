@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.model.dto.response;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProductItem;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import lombok.Builder;
 
 @Builder
@@ -10,7 +10,7 @@ public record PurchaseOrderItemResponseDto(
         Integer orderedQuantity,
         String description
 ) {
-    public static PurchaseOrderItemResponseDto toDto(PurchaseOrderProductItem item) {
+    public static PurchaseOrderItemResponseDto toDto(PurchaseOrderProduct item) {
         return PurchaseOrderItemResponseDto.builder()
                 .id(item.getId())
                 .productName(item.getProduct().getName())
