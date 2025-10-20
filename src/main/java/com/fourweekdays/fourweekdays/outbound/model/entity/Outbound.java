@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.outbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,17 +1,21 @@
 package com.fourweekdays.fourweekdays.product.service;
 
-import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.image.service.ImageService;
+import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,19 +31,43 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
+    private final ImageService imageService;
 //    private final CategoryRepository categoryRepository;
 //    private final ProductStatusHistoryRepository historyRepository;
 
     // 상품 등록
     @Transactional
-    public Long createProduct(ProductCreateDto requestDto) {
-        Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
-                .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
+    public Long createProduct(ProductCreateDto requestDto, List<MultipartFile> files) {
+        log.info("[productService] 상품 등록 요청 시작 - DTO: {}", requestDto);
+        try {
+            Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
+                    .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
+            log.info("[ProductService] Vendor 조회 완료: {}", vendor.getName());
 
-        // TODO: 같은 상품이 있는지 판단하는 로직
-        Product product = requestDto.toEntity();
-        product.mappingVendor(vendor); // 연관 관계 매핑 
-        return productRepository.save(product).getId();
+
+            // TODO: 같은 상품이 있는지 판단하는 로직
+            Product product = requestDto.toEntity();
+            product.mappingVendor(vendor); // 연관 관계 매핑
+
+            // 상품 DB 저장
+            Product savedProduct = productRepository.save(product);
+            log.info("[ProductService] 상품 저장 완료 - ID: {}", savedProduct.getId());
+
+            // 이미지 업로드 & DB 저장
+            if (files != null && !files.isEmpty()) {
+                log.info("[ProductService] 이미지 업로드 시작 - 파일 수: {}", files.size());
+                imageService.upload(savedProduct, files);
+                log.info("[ProductService] 이미지 업로드 완료");
+            } else {
+                log.info("[ProductService] 업로드할 이미지가 없습니다.");
+            }
+            log.info("[ProductService] 상품 등록 완료 - ID: {}", savedProduct.getId());
+            return productRepository.save(product).getId();
+        } catch (Exception e) {
+            log.error("[ProductService] 상품 등록 중 예외 발생", e);
+            throw new ProductException(ProductExceptionType.PRODUCT_REGISTER_FAILED, e);
+        }
+
     }
 
     // 상품 전체 조회

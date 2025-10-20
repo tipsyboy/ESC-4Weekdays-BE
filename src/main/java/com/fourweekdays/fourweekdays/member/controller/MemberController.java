@@ -5,7 +5,6 @@ import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
 import com.fourweekdays.fourweekdays.member.service.MemberService;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

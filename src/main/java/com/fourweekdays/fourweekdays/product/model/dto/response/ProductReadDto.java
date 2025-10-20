@@ -1,11 +1,10 @@
-package com.fourweekdays.fourweekdays.product.dto.response;
+package com.fourweekdays.fourweekdays.product.model.dto.response;
 
-import com.fourweekdays.fourweekdays.product.model.Product;
-import com.fourweekdays.fourweekdays.product.model.ProductStatus;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

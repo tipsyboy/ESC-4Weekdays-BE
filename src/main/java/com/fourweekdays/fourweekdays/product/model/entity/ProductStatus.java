@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.product.model;
+package com.fourweekdays.fourweekdays.product.model.entity;
 
 public enum ProductStatus {
     ACTIVE,

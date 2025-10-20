@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
-import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
@@ -14,8 +13,7 @@ import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
-import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;

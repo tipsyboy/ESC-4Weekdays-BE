@@ -10,3 +10,12 @@ spring:
     #    show-sql: true
     hibernate:
       ddl-auto: create
+  cloud:
+    aws:
+      credentials:
+        access-key: ${access_key}
+        secret-key: ${secret_key}
+      s3:
+        bucket: ${bucket}
+      region:
+        static: ap-northeast-2

@@ -48,8 +48,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         UserAuth authUser = (UserAuth) authResult.getPrincipal();
 
         String jwt = JwtUtil.generateToken(
+                authUser.getId(),
                 authUser.getEmail(),
-                authUser.getName()
+                authUser.getName(),
+                authUser.getRole().name()
         );
 
         if (jwt != null) {
