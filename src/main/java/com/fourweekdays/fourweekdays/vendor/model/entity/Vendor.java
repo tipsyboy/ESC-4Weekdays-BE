@@ -57,12 +57,12 @@ public class Vendor extends BaseEntity {
     // ===== 비즈니스 로직 ===== //
     public void update(String name, String phoneNumber, String email,
                        String description, VendorStatus status, Address address) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.description = description;
-        this.status = status;
-        this.address = address;
+        if (name != null) this.name = name;
+        if (phoneNumber != null) this.phoneNumber = phoneNumber;
+        if (email != null) this.email = email;
+        if (description != null) this.description = description;
+        if (status != null) this.status = status;
+        if (address != null) this.address = address;
     }
 
     public boolean canOrder() {

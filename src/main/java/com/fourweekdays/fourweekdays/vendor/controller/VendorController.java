@@ -38,7 +38,8 @@ public class VendorController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<Long>> updateVendor(@PathVariable Long id, VendorUpdateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> updateVendor(@PathVariable Long id,
+                                                           @Valid @RequestBody VendorUpdateDto dto) {
         vendorService.update(id, dto);
         return ResponseEntity.ok(BaseResponse.success(id));
     }
