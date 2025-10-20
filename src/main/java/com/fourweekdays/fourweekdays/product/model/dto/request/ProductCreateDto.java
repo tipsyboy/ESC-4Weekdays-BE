@@ -21,10 +21,6 @@ public class ProductCreateDto {
     @Size(max = 200, message = "상품명은 200자 이하로 입력해주세요")
     private String name;
 
-    @NotBlank(message = "상품코드는 필수입니다")
-    @Size(max = 50, message = "상품코드는 50자 이하로 입력해주세요")
-    private String productCode;
-
     @Size(max = 50, message = "단위는 50자 이하로 입력해주세요")
     private String unit; // EA, Box, Kg 등
 

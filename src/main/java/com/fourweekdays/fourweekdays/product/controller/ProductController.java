@@ -18,14 +18,12 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // 상품 등록
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> register(@Valid @RequestBody ProductCreateDto dto) {
         Long saveId = productService.createProduct(dto);
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
-    // 상품 전체 조회
     @GetMapping
     public ResponseEntity<BaseResponse<Page<ProductReadDto>>> getProductList(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size) {
@@ -33,7 +31,6 @@ public class ProductController {
         return ResponseEntity.ok(BaseResponse.success(productList));
     }
 
-    // 상품 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<ProductReadDto>> getProductDetails(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(productService.getProductDetail(id)));

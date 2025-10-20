@@ -17,11 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
-import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.*;
+import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_DUPLICATION;
+import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
 @Slf4j
@@ -47,6 +45,8 @@ public class ProductService {
             throw new ProductException(PRODUCT_DUPLICATION);
         }
 
+
+
         Product product = requestDto.toEntity(codeGenerator.generate(PRODUCT_CODE_PREFIX));
         product.mappingVendor(vendor); // 연관 관계 매핑 
         return productRepository.save(product).getId();
@@ -65,7 +65,6 @@ public class ProductService {
         return productList.map(ProductReadDto::from);
     }
 
-    // 상품 수정
     @Transactional
     public Long update(Long id, ProductUpdateDto requestDto) {
         Product product = productRepository.findById(id)
