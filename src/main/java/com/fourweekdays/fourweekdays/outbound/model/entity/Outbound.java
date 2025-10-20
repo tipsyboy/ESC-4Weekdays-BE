@@ -41,8 +41,8 @@ public class Outbound extends BaseEntity {
     // 출고에 맴버에 대한 연관 관계는 이렇게 생각함 이 문서를 생성한 인원이라고 생각하고 null 허용
     // 작업 부분에서 출고 상세 작업들에 대해 알아서 인원 배정할 것이고
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OutboundProductItem> items = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<OutboundProductItem> items = new ArrayList<>();
 //
 //    @ManyToOne
 //    @JoinColumn(name = "franchise_store_id")

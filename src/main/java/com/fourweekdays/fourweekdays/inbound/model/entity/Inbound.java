@@ -1,10 +1,8 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +21,7 @@ public class Inbound extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String inboundNumber;
+    private String inboundCode;
 
     @Enumerated(EnumType.STRING)
     private InboundStatus status;

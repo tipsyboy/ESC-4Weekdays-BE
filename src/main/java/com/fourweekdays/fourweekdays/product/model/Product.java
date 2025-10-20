@@ -41,8 +41,8 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     private Vendor vendor; // 공급업체
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private List<Outbound> outboundList = new ArrayList<>();
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private List<Outbound> outboundList = new ArrayList<>();
 
 //    @Column(nullable = false, unique = true, length = 50)
 //    private String barcode; // 바코드 추후 구현

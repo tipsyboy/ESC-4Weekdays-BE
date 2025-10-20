@@ -635,7 +635,7 @@ public class InitialDataSetup {
             // 5. 입고
             // 입고 1: 아모레퍼시픽 제품 완료된 입고
             Inbound inbound1 = Inbound.builder()
-                    .inboundNumber("IB-20250418-001")
+                    .inboundCode("IB-20250418-001")
                     .status(InboundStatus.COMPLETED)
                     .managerName(manager1.getName())
                     .workerName(worker1.getName())
@@ -693,7 +693,7 @@ public class InitialDataSetup {
 
             // 입고 2: 코스맥스 제품 입고중
             Inbound inbound2 = Inbound.builder()
-                    .inboundNumber("IB-20250419-001")
+                    .inboundCode("IB-20250419-001")
                     .status(InboundStatus.RECEIVING)
                     .managerName(manager2.getName())
                     .workerName(worker2.getName())
@@ -729,7 +729,7 @@ public class InitialDataSetup {
 
             // 입고 3: 미샤 제품 입고 예정
             Inbound inbound3 = Inbound.builder()
-                    .inboundNumber("IB-20250420-001")
+                    .inboundCode("IB-20250420-001")
                     .status(InboundStatus.SCHEDULED)
                     .managerName(manager1.getName())
                     .scheduledDate(LocalDateTime.now().plusDays(5))
@@ -741,7 +741,7 @@ public class InitialDataSetup {
 
             // 입고 4: LG생활건강 제품 입고 예정
             Inbound inbound4 = Inbound.builder()
-                    .inboundNumber("IB-20250421-001")
+                    .inboundCode("IB-20250421-001")
                     .status(InboundStatus.SCHEDULED)
                     .managerName(manager2.getName())
                     .scheduledDate(LocalDateTime.now().plusDays(7))
