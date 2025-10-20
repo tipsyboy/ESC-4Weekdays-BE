@@ -60,4 +60,8 @@ public class Product extends BaseEntity {
         if (status != null) this.status = status;
         if (vendor != null) this.vendor = vendor;
     }
+
+    public void delete() {
+        this.status = ProductStatus.DISCONTINUED;
+    }
 }

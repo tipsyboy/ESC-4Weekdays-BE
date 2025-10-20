@@ -43,6 +43,12 @@ public class ProductController {
         return ResponseEntity.ok(BaseResponse.success(productService.update(id, requestDto)));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> deleteProduct(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.ok(BaseResponse.success("품절 상태로 변경"));
+    }
+
 
 //    // 상품 상태 변경
 //    @PatchMapping("/{id}")

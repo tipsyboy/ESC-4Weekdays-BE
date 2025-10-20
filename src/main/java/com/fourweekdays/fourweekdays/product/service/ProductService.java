@@ -82,6 +82,13 @@ public class ProductService {
         return id;
     }
 
+    @Transactional
+    public void delete(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+        product.delete();
+    }
+
 
 //    @Transactional
 //    public Long register(ProductCreateDto dto) {
