@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inventory.model.dto.response;
 
-import com.fourweekdays.fourweekdays.product.model.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import lombok.*;
 
 @Getter

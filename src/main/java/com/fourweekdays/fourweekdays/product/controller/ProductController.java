@@ -1,15 +1,19 @@
 package com.fourweekdays.fourweekdays.product.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductCreateDto;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.product.exception.ProductException;
+import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,11 +24,22 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // 상품 등록
-    @PostMapping
-    public ResponseEntity<BaseResponse<Long>> register(@RequestBody ProductCreateDto dto) {
-        Long saveId = productService.createProduct(dto);
-        return ResponseEntity.ok(BaseResponse.success(saveId));
+    // 상품 등록 (파일 업로드 추가)
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<BaseResponse<Long>> register(
+            @RequestPart("dto") String dtoJson,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ProductCreateDto dto = mapper.readValue(dtoJson, ProductCreateDto.class);
+
+            Long saveId = productService.createProduct(dto, files);
+            return ResponseEntity.ok(BaseResponse.success(saveId));
+
+        } catch (Exception e) {
+            throw new ProductException(ProductExceptionType.PRODUCT_REGISTER_FAILED, e);
+        }
     }
 
     // 상품 전체 조회
@@ -44,7 +59,7 @@ public class ProductController {
         }
         return ResponseEntity.ok(BaseResponse.success(productDto));
     }
-    
+
     @PatchMapping("/{id}")
     public ResponseEntity<BaseResponse<Long>> updateProduct(@PathVariable Long id,
                                                             @RequestBody ProductUpdateDto requestDto) {

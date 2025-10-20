@@ -1,8 +1,7 @@
-package com.fourweekdays.fourweekdays.product.dto.request;
+package com.fourweekdays.fourweekdays.product.model.dto.request;
 
-import com.fourweekdays.fourweekdays.product.model.Product;
-import com.fourweekdays.fourweekdays.product.model.ProductStatus;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +21,10 @@ public class ProductCreateDto {
     @Size(max = 200, message = "상품명은 200자 이하로 입력해주세요")
     private String name;
 
+    @NotBlank(message = "상품코드는 필수입니다")
+    @Size(max = 50, message = "상품코드는 50자 이하로 입력해주세요")
+    private String productCode;
+
     @Size(max = 50, message = "단위는 50자 이하로 입력해주세요")
     private String unit; // EA, Box, Kg 등
 
@@ -40,6 +43,7 @@ public class ProductCreateDto {
     public Product toEntity() {
         return Product.builder()
                 .name(this.name)
+                .productCode(this.productCode)
                 .unit(this.unit)
                 .unitPrice(this.unitPrice)
                 .description(this.description)

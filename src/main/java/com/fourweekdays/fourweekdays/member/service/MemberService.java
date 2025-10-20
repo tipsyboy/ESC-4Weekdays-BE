@@ -6,13 +6,6 @@ import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
-import com.fourweekdays.fourweekdays.product.dto.request.ProductUpdateDto;
-import com.fourweekdays.fourweekdays.product.dto.response.ProductReadDto;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.Product;
-import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
