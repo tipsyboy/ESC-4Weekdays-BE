@@ -26,7 +26,7 @@ public class PurchaseOrderCreateDto {
     private LocalDateTime expectedDate; // 입고 예정일
 
     @NotEmpty(message = "발주 상품을 선택해주세요.")
-    private List<PurchaseOrderItemRequestDto> items;
+    private List<PurchaseOrderProductRequestDto> items;
 
     @Size(max = 1000, message = "비고는 1000자 이내로 입력해주세요")
     private String description;

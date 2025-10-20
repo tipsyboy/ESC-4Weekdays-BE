@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class PurchaseOrderItemRequestDto {
+public class PurchaseOrderProductRequestDto {
 
     @NotNull(message = "상품 ID를 입력하세요.")
     private Long productId;

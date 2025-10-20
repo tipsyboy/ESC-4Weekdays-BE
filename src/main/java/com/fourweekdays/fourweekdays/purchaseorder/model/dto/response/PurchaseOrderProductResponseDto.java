@@ -4,14 +4,14 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderPro
 import lombok.Builder;
 
 @Builder
-public record PurchaseOrderItemResponseDto(
+public record PurchaseOrderProductResponseDto(
         Long id,
         String productName,
         Integer orderedQuantity,
         String description
 ) {
-    public static PurchaseOrderItemResponseDto toDto(PurchaseOrderProduct item) {
-        return PurchaseOrderItemResponseDto.builder()
+    public static PurchaseOrderProductResponseDto toDto(PurchaseOrderProduct item) {
+        return PurchaseOrderProductResponseDto.builder()
                 .id(item.getId())
                 .productName(item.getProduct().getName())
                 .orderedQuantity(item.getOrderedQuantity())
