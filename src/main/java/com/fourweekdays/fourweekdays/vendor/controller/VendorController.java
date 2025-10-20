@@ -45,8 +45,8 @@ public class VendorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<String>> deleteVendor(@PathVariable Long id) {
-        vendorService.delete(id);
-        return ResponseEntity.ok(BaseResponse.success("Deleted"));
+    public ResponseEntity<BaseResponse<String>> suspendVendor(@PathVariable Long id) {
+        vendorService.suspend(id);
+        return ResponseEntity.ok(BaseResponse.success("거래 중단"));
     }
 }

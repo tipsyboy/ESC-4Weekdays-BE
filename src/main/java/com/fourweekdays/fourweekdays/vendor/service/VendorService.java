@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
+import com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
@@ -53,8 +54,11 @@ public class VendorService {
                 dto.getDescription(), dto.getStatus(), dto.getAddress());
     }
 
-    public void delete(Long id) {
-        vendorRepository.deleteById(id);
+    @Transactional
+    public void suspend(Long id) {
+        Vendor vendor = vendorRepository.findById(id)
+                .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
+        vendor.suspended();
     }
 
 }

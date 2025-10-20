@@ -65,6 +65,10 @@ public class Vendor extends BaseEntity {
         if (address != null) this.address = address;
     }
 
+    public void suspended() {
+        this.status = VendorStatus.SUSPENDED;
+    }
+
     public boolean canOrder() {
         return this.status == VendorStatus.ACTIVE;
     }
