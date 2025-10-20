@@ -7,6 +7,7 @@ import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,10 @@ public class VendorController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<VendorReadDto>>> readAllVendors(Integer page, Integer size) {
-        List<VendorReadDto> result = vendorService.readAll(page, size);
+    public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@RequestParam(defaultValue = "0") Integer page,
+                                                                            @RequestParam(defaultValue = "10") Integer size) {
+
+        Page<VendorReadDto> result = vendorService.readAll(page, size);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
