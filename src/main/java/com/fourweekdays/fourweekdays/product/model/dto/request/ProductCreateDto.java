@@ -21,10 +21,6 @@ public class ProductCreateDto {
     @Size(max = 200, message = "상품명은 200자 이하로 입력해주세요")
     private String name;
 
-    @NotBlank(message = "상품코드는 필수입니다")
-    @Size(max = 50, message = "상품코드는 50자 이하로 입력해주세요")
-    private String productCode;
-
     @Size(max = 50, message = "단위는 50자 이하로 입력해주세요")
     private String unit; // EA, Box, Kg 등
 
@@ -35,19 +31,17 @@ public class ProductCreateDto {
     @Size(max = 1000, message = "설명은 1000자 이하로 입력해주세요")
     private String description;
 
-    @NotNull(message = "상품 상태는 필수입니다")
-    private ProductStatus status;
     private Long vendorId;
 
     // Entity 변환
-    public Product toEntity() {
+    public Product toEntity(String productCode) {
         return Product.builder()
                 .name(this.name)
-                .productCode(this.productCode)
+                .productCode(productCode)
                 .unit(this.unit)
                 .unitPrice(this.unitPrice)
                 .description(this.description)
-                .status(this.status)
+                .status(ProductStatus.ACTIVE)
                 .build();
     }
 }

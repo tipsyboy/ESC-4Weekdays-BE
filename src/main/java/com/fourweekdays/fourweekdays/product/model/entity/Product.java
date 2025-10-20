@@ -53,11 +53,15 @@ public class Product extends BaseEntity {
     // ===== 로직 ===== //
     public void update(String name, String unit, Long unitPrice,
                        String description, ProductStatus status, Vendor vendor) {
-        this.name = name;
-        this.unit = unit;
-        this.unitPrice = unitPrice;
-        this.description = description;
-        this.status = status;
-        this.vendor = vendor;
+        if (name != null) this.name = name;
+        if (unit != null) this.unit = unit;
+        if (unitPrice != null) this.unitPrice = unitPrice;
+        if (description != null) this.description = description;
+        if (status != null) this.status = status;
+        if (vendor != null) this.vendor = vendor;
+    }
+
+    public void delete() {
+        this.status = ProductStatus.DISCONTINUED;
     }
 }
