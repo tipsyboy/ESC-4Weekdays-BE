@@ -56,7 +56,7 @@ public class InboundReadDto {
                 .purchaseOrder(inbound.getPurchaseOrder() != null ?
                         PurchaseOrderSummary.builder()
                                 .id(inbound.getPurchaseOrder().getId())
-                                .orderNumber(inbound.getPurchaseOrder().getOrderNumber())
+                                .orderNumber(inbound.getPurchaseOrder().getOrderCode())
                                 .vendorName(inbound.getPurchaseOrder().getVendor().getName())
                                 .orderDate(inbound.getPurchaseOrder().getOrderDate())
                                 .build()

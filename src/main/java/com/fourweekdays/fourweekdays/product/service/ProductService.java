@@ -28,7 +28,7 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @Transactional(readOnly = true)
 public class ProductService {
 
-    private static final String PRODUCT_CODE_PREFIX = "PO";
+    private static final String PRODUCT_CODE_PREFIX = "PRD";
 
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;

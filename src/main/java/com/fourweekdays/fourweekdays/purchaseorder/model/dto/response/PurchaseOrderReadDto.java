@@ -28,7 +28,7 @@ public class PurchaseOrderReadDto {
     public static PurchaseOrderReadDto toDto(PurchaseOrder entity) {
         return PurchaseOrderReadDto.builder()
                 .id(entity.getId())
-                .orderNumber(entity.getOrderNumber())
+                .orderNumber(entity.getOrderCode())
                 .vendorName(entity.getVendor().getName())
                 .orderDate(entity.getOrderDate())
                 .expectedDate(entity.getExpectedDate())

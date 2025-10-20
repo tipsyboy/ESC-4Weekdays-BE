@@ -21,7 +21,7 @@ public class PurchaseOrder extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String orderNumber; // 발주번호 (예: PO-20250415-001)
+    private String orderCode; // 발주번호 (예: PO-20250415-001)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)
