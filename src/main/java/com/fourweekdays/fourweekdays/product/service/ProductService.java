@@ -12,6 +12,9 @@ import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +38,6 @@ public class ProductService {
 //    private final CategoryRepository categoryRepository;
 //    private final ProductStatusHistoryRepository historyRepository;
 
-    // 상품 등록
     @Transactional
     public Long createProduct(ProductCreateDto requestDto) {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
@@ -50,7 +52,6 @@ public class ProductService {
         return productRepository.save(product).getId();
     }
 
-    // 상품 상세 조회
     public ProductReadDto getProductDetail(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
@@ -58,14 +59,11 @@ public class ProductService {
         return ProductReadDto.from(product);
     }
 
-    // 상품 전체 조회
-    public List<ProductReadDto> getProductList() {
-        return productRepository.findAll().stream()
-                .map(ProductReadDto::from)
-                .collect(Collectors.toList());
+    public Page<ProductReadDto> getProductList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productList = productRepository.findAllWithPaging(pageable);
+        return productList.map(ProductReadDto::from);
     }
-
-
 
     // 상품 수정
     @Transactional

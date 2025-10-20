@@ -34,7 +34,7 @@ public class VendorController {
 
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@RequestParam(defaultValue = "0") Integer page,
-                                                                            @RequestParam(defaultValue = "10") Integer size) {
+                                                                         @RequestParam(defaultValue = "10") Integer size) {
 
         Page<VendorReadDto> result = vendorService.readAll(page, size);
         return ResponseEntity.ok(BaseResponse.success(result));

@@ -1,6 +1,5 @@
 package com.fourweekdays.fourweekdays.vendor.repository;
 
-import com.fourweekdays.fourweekdays.vendor.model.entity.QVendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
