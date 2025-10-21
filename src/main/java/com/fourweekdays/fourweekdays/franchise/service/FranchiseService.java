@@ -55,4 +55,11 @@ public class FranchiseService {
 
         return franchiseStore.getId();
     }
+
+    @Transactional
+    public void suspend(Long id) {
+        FranchiseStore franchiseStore = franchiseRepository.findById(id)
+                .orElseThrow(() -> new FranchiseException(FRANCHISE_NOT_FOUND));
+        franchiseStore.suspended();
+    }
 }

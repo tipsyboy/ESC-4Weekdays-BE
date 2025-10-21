@@ -41,4 +41,10 @@ public class FranchiseController {
         Long result = franchiseService.update(dto, id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> franchiseDelete(@PathVariable Long id) {
+        franchiseService.suspend(id);
+        return ResponseEntity.ok(BaseResponse.success("거래 중단"));
+    }
 }
