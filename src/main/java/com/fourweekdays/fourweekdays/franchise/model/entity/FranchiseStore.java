@@ -36,4 +36,21 @@ public class FranchiseStore extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private FranchiseStatus status; // (ACTIVE / INACTIVE)
+
+    // ===== 비즈니스 로직 ===== //
+    public void update(String name, String phoneNumber, String email, String description, Address address, FranchiseStatus status) {
+        if (name != null) this.name = name;
+        if (phoneNumber != null) this.phoneNumber = phoneNumber;
+        if (email != null) this.email = email;
+        if (description != null) this.description = description;
+        if (status != null) this.status = status;
+        if (address != null) this.address = address;
+    }
+    public void suspended() {
+        this.status = FranchiseStatus.SUSPENDED;
+    }
+
+    public boolean canOrder() {
+        return this.status == FranchiseStatus.ACTIVE;
+    }
 }

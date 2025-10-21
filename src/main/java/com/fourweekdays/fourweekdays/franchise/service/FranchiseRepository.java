@@ -1,7 +1,10 @@
 package com.fourweekdays.fourweekdays.franchise.service;
 
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FranchiseRepository extends JpaRepository<FranchiseStore, Long> {
+    Page<FranchiseStore> findAllWithPaging(Pageable pageable);
 }

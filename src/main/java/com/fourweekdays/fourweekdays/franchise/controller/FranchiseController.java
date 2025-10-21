@@ -2,13 +2,12 @@ package com.fourweekdays.fourweekdays.franchise.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
+import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;
 import com.fourweekdays.fourweekdays.franchise.service.FranchiseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/franchises")
@@ -18,8 +17,21 @@ public class FranchiseController {
     private final FranchiseService franchiseService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> FranchiseCreate(@RequestBody FranchiseCreateDto dto) {
+    public ResponseEntity<BaseResponse<Long>> franchiseCreate(@RequestBody FranchiseCreateDto dto) {
         Long result = franchiseService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<FranchiseReadDto>> franchiseRead(@PathVariable Long id) {
+        FranchiseReadDto result = franchiseService.read(id);
+        return  ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<BaseResponse<Page<FranchiseReadDto>>> franchiseReads(@RequestParam(defaultValue = "0") Integer page,
+                                                                         @RequestParam(defaultValue = "10") Integer size)  {
+        Page<FranchiseReadDto> result = franchiseService.readAll(page, size);
+        return   ResponseEntity.ok(BaseResponse.success(result));
     }
 }
