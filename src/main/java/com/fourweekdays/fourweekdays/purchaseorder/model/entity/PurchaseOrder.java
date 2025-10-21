@@ -59,6 +59,15 @@ public class PurchaseOrder extends BaseEntity {
                 .mapToLong(PurchaseOrderProduct::calculateAmount)
                 .sum();
     }
+
+    public void update(LocalDateTime expectedDate, String description) {
+        if (expectedDate != null) this.expectedDate = expectedDate;
+        if (description != null) this.description = description;
+    }
+
+    public void clearItems() {
+        this.items.clear(); // orphanRemoval = true 설정 시 자동 삭제
+    }
     // ... 발주 승인 메서드 ...
     // ... 발주 확정 메서드 ...
     // ... 입고 완료 처리 메서드 ...

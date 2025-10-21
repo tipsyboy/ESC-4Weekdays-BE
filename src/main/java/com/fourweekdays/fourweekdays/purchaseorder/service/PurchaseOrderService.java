@@ -5,9 +5,9 @@ import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderProductRequestDto;
+import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
@@ -44,6 +45,7 @@ public class PurchaseOrderService {
 
     @Transactional
     public Long create(PurchaseOrderCreateDto requestDto) {
+        // TODO: 발주서 생성시 담당자인 Member가 필요하다.
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
@@ -66,6 +68,26 @@ public class PurchaseOrderService {
         return purchaseOrderList.map(PurchaseOrderReadDto::toDto);
     }
 
+    @Transactional
+    public Long update(Long id, PurchaseOrderUpdateDto requestDto) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+
+        if (!purchaseOrder.getStatus().equals(PurchaseOrderStatus.REQUESTED)) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL);
+        }
+
+        purchaseOrder.update(requestDto.expectedDate(), requestDto.description());
+
+        purchaseOrder.clearItems();
+        createOrderProducts(requestDto.items(), purchaseOrder);
+
+        return purchaseOrder.getId();
+    }
+
+
+    // TODO: 발주서 상태 변경 로직을 따로 짠다.
+    // TODO: 발주서가 승인 완료되면 입고서가 자동으로 생성되어야 한다.
 
     private PurchaseOrder createPurchaseOrder(Vendor vendor, PurchaseOrderCreateDto dto) {
         return PurchaseOrder.builder()

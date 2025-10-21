@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record PurchaseOrderProductResponseDto(
         Long id,
+        Long productId,
         String productName,
         Integer orderedQuantity,
         String description
@@ -13,6 +14,7 @@ public record PurchaseOrderProductResponseDto(
     public static PurchaseOrderProductResponseDto toDto(PurchaseOrderProduct item) {
         return PurchaseOrderProductResponseDto.builder()
                 .id(item.getId())
+                .productId(item.getProduct().getId())
                 .productName(item.getProduct().getName())
                 .orderedQuantity(item.getOrderedQuantity())
                 .description(item.getDescription())
