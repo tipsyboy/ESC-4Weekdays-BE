@@ -1,11 +1,15 @@
 package com.fourweekdays.fourweekdays.franchise.model.entity;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class FranchiseStore extends BaseEntity {
 
     @Id
