@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.inbound.service;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundItemDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundProductDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
@@ -20,6 +20,9 @@ import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExcept
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,17 +73,16 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
-    public InboundReadDto inboundDetail(Long id) {
-        Inbound entity = inboundRepository.findById(id)
+    public InboundReadDto findById(Long id) {
+        Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-        return InboundReadDto.from(entity);
+        return InboundReadDto.from(inbound);
     }
 
-    public List<InboundReadDto> inboundList() {
-        // TODO: paging 처리
-        return inboundRepository.findAll().stream()
-                .map(InboundReadDto::from)
-                .toList();
+    public Page<InboundReadDto> inboundList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inbound> paging = inboundRepository.findAllWithPaging(pageable);
+        return paging.map(InboundReadDto::from);
     }
 
     @Transactional
@@ -179,7 +181,7 @@ public class InboundService {
         });
     }
 
-    private InboundProduct convertToEntity(InboundItemDto dto, Inbound inbound) {
+    private InboundProduct convertToEntity(InboundProductDto dto, Inbound inbound) {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 

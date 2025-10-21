@@ -1,16 +1,14 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
+import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
-import com.fourweekdays.fourweekdays.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/inbounds")
@@ -33,17 +31,16 @@ public class InboundController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<InboundReadDto>>> listInbound(Integer page, Integer size) {
-//        List<InboundReadDto> result = inboundService.list(page, size);
-        List<InboundReadDto> mockData = new ArrayList<>();
-        return ResponseEntity.ok(BaseResponse.success(mockData));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<InboundReadDto>> detailInbound(@PathVariable Long id) {
-        InboundReadDto result = inboundService.inboundDetail(id);
+        InboundReadDto result = inboundService.findById(id);
         return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<Page<InboundReadDto>>> listByPaging(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.inboundList(page, size)));
     }
 
     @PatchMapping("/{id}")

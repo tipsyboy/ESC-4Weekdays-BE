@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class InboundProductItemResponseDto {
+public class InboundProductResponseDto {
 
     private Long id;
 
@@ -28,8 +28,8 @@ public class InboundProductItemResponseDto {
     private Integer orderedQuantity;  // 발주 수량 (비교용)
     private Boolean isFromPurchaseOrder;  // 발주 품목인지 추가 품목인지
 
-    public static InboundProductItemResponseDto from(InboundProduct item) {
-        return InboundProductItemResponseDto.builder()
+    public static InboundProductResponseDto from(InboundProduct item) {
+        return InboundProductResponseDto.builder()
                 .id(item.getId())
 
                 .productId(item.getProduct().getId())

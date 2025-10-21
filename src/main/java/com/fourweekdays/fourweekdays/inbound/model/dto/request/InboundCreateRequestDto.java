@@ -16,7 +16,7 @@ public class InboundCreateRequestDto {
 
     private Long purchaseOrderId;  // 발주서 기반 입고
     @Valid
-    private List<InboundItemDto> items;  // Optional: 직접/추가 품목
+    private List<InboundProductDto> items;  // Optional: 직접/추가 품목
 
     private LocalDateTime scheduledDate; // 입고 예상 시간
     private String description;

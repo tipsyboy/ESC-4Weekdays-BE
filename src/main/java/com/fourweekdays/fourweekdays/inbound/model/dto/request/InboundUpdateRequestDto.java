@@ -15,7 +15,7 @@ public class InboundUpdateRequestDto {
     private Long memberId;
 
     @Valid
-    private List<InboundItemDto> items;
+    private List<InboundProductDto> items;
 
     private LocalDateTime scheduledDate;
     private String description;
