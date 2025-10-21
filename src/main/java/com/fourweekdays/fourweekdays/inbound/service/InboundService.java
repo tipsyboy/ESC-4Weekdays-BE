@@ -2,7 +2,9 @@ package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundProductDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_INVALID_STATUS_FOR_INSPECTION;
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
@@ -94,6 +97,25 @@ public class InboundService {
         Inbound inbound = inboundRepository.findById(inboundId)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
         inbound.updateStatus(requestDto.status());
+    }
+
+    @Transactional
+    public void updateInspection(Long inboundId, List<InboundInspectionUpdateRequest> requestList) {
+        Inbound inbound = inboundRepository.findById(inboundId)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+
+        if (inbound.getStatus() != InboundStatus.INSPECTING) {
+            throw new InboundException(INBOUND_INVALID_STATUS_FOR_INSPECTION);
+        }
+
+        for (InboundInspectionUpdateRequest request : requestList) {
+            InboundProduct product = inbound.findProductById(request.inboundProductId())
+                    .orElseThrow(() -> new InboundException(InboundExceptionType.INBOUND_PRODUCT_NOT_FOUND));
+            product.updateInspectionResult(request.receivedQuantity());
+        }
+
+        // 검수 완료 시 적치 작업으로 변경
+        inbound.updateStatus(InboundStatus.PUTAWAY);
     }
 
     // 소프트 딜리트

@@ -59,7 +59,7 @@ public class InboundReadDto {
                                 .orderDate(inbound.getPurchaseOrder().getOrderDate())
                                 .build()
                         : null)
-                .items(inbound.getItems().stream()
+                .items(inbound.getProducts().stream()
                         .map(InboundProductResponseDto::from)
                         .toList())
                 .description(inbound.getDescription())

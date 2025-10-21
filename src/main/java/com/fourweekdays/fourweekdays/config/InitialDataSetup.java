@@ -680,10 +680,10 @@ public class InitialDataSetup {
                     .description("대용량 토너")
                     .build();
 
-            inbound1.getItems().add(inbound1Item1);
-            inbound1.getItems().add(inbound1Item2);
-            inbound1.getItems().add(inbound1Item3);
-            inbound1.getItems().add(inbound1Item4);
+            inbound1.getProducts().add(inbound1Item1);
+            inbound1.getProducts().add(inbound1Item2);
+            inbound1.getProducts().add(inbound1Item3);
+            inbound1.getProducts().add(inbound1Item4);
             inboundRepository.save(inbound1);
 
             // 입고 2: 코스맥스 제품 입고중
@@ -718,8 +718,8 @@ public class InitialDataSetup {
                     .description("레티놀 크림 검수중")
                     .build();
 
-            inbound2.getItems().add(inbound2Item1);
-            inbound2.getItems().add(inbound2Item2);
+            inbound2.getProducts().add(inbound2Item1);
+            inbound2.getProducts().add(inbound2Item2);
             inboundRepository.save(inbound2);
 
             // 입고 3: 미샤 제품 입고 예정

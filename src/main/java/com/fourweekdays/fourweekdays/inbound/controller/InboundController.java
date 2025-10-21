@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.inbound.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/inbounds")
@@ -47,6 +50,12 @@ public class InboundController {
     public ResponseEntity<BaseResponse<String>> updateInbound(@RequestBody InboundStatusUpdateRequest requestDto, @PathVariable Long id) {
         inboundService.updateInboundStatus(id, requestDto);
         return ResponseEntity.ok(BaseResponse.success(requestDto.status().name()));
+    }
+
+    @PatchMapping("/{id}/inspection")
+    public ResponseEntity<BaseResponse<String>> updateInspection(@PathVariable Long id, @RequestBody List<InboundInspectionUpdateRequest> requestList) {
+        inboundService.updateInspection(id, requestList);
+        return ResponseEntity.ok(BaseResponse.success("검수 완료"));
     }
 
     @DeleteMapping("/{id}")

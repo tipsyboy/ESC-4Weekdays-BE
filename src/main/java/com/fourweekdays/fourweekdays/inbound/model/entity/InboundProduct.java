@@ -43,7 +43,9 @@ public class InboundProduct extends BaseEntity {
     private String description; // 비고
 
     @Builder
-    public InboundProduct(Inbound inbound, Product product, PurchaseOrderProduct purchaseOrderProduct, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
+    public InboundProduct(Inbound inbound, Product product,
+                          PurchaseOrderProduct purchaseOrderProduct,
+                          Integer receivedQuantity, String lotNumber, String locationCode, String description) {
         assignInbound(inbound);
         this.product = product;
         this.purchaseOrderProduct = purchaseOrderProduct;
@@ -56,10 +58,12 @@ public class InboundProduct extends BaseEntity {
     // ===== 연관관계 편의 메서드 ===== //
     public void assignInbound(Inbound inbound) {
         this.inbound = inbound;
-        inbound.getItems().add(this);
+        inbound.getProducts().add(this);
     }
 
     // ===== 비즈니스 로직 ===== //
     // ... 입고 수량 검증 메서드 ...
-    // ... 발주 항목 입고 수량 업데이트 메서드 ...
+    public void updateInspectionResult(int receivedQuantity) {
+        this.receivedQuantity = receivedQuantity;
+    }
 }
