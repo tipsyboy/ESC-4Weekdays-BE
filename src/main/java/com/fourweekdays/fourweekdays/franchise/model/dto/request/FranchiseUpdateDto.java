@@ -16,13 +16,5 @@ public class FranchiseUpdateDto {
     private String email;
     private String description;
     private Address address;
-    private String status;
-
-    public FranchiseStatus validate() {
-        try {
-            return FranchiseStatus.valueOf(status.toUpperCase());
-        } catch (Exception e) {
-            throw new FranchiseException(FRANCHISE_INVALID_STATUS);
-        }
-    }
+    private FranchiseStatus status;
 }

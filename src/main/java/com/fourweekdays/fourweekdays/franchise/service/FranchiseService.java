@@ -45,13 +45,11 @@ public class FranchiseService {
 
     @Transactional
     public Long update(FranchiseUpdateDto dto, Long id) {
-        FranchiseStatus franchiseStatus = dto.validate();
-
         FranchiseStore franchiseStore = franchiseRepository.findById(id)
                 .orElseThrow(() -> new FranchiseException(FRANCHISE_NOT_FOUND));
 
         franchiseStore.update(dto.getName(), dto.getPhoneNumber(), dto.getEmail(), dto.getDescription(), dto.getAddress());
-        franchiseStore.changeStatus(franchiseStatus);
+        franchiseStore.changeStatus(dto.getStatus());
 
         return franchiseStore.getId();
     }
