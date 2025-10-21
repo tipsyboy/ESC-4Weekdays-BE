@@ -19,28 +19,33 @@ public class InboundController {
 
     private final InboundService inboundService;
 
+    // TODO: 입고는 발주서 승인시 자동 트리거로 생성된다.
+    // TODO: 입고는 수정할 수 없다.
+    // TODO: 발주 이후 배송이 완료되어 임시 창고에 입하되면 입고 작업을 할당할 수 있는 상태가 된다.
+    // TODO: 작업자는 할당된 작업에 나와있는 발주서를 통한 입고서로(or 작업 지시서) 검수 작업을 수행한다.
+    // TODO: 검수 작업이후 적치 예정과 같은 상태로 변경된 입고는 이후 적치 작업으로 할당된다.
+    // TODO: 작업자는 위치에 맞게 적치하고 완료 트리거를 통해 재고가 된다.
+    // 어제 얘기한 플로우 대로 한 번 적어봄
+
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateRequestDto dto) {
         Long result = inboundService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    // 입고 목록 조회
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<BaseResponse<List<InboundReadDto>>> listInbound(Integer page, Integer size) {
 //        List<InboundReadDto> result = inboundService.list(page, size);
         List<InboundReadDto> mockData = new ArrayList<>();
         return ResponseEntity.ok(BaseResponse.success(mockData));
     }
 
-    // 입고 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<InboundReadDto>> detailInbound(@PathVariable Long id) {
         InboundReadDto result = inboundService.inboundDetail(id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    // 입고 수정
     @PatchMapping("/{id}")
     public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto,
                                                             @PathVariable Long id) {
@@ -48,7 +53,6 @@ public class InboundController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    // 입고 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<String>> deleteInbound(@PathVariable Long id) {
         inboundService.softDelete(id);

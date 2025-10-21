@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.config;
 
 import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProductItem;
+import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
@@ -640,7 +640,7 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            InboundProductItem inbound1Item1 = InboundProductItem.builder()
+            InboundProduct inbound1Item1 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product1)
                     .purchaseOrderProduct(po1Item1)
@@ -650,7 +650,7 @@ public class InitialDataSetup {
                     .description("프리미엄존 보관")
                     .build();
 
-            InboundProductItem inbound1Item2 = InboundProductItem.builder()
+            InboundProduct inbound1Item2 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product2)
                     .purchaseOrderProduct(po1Item2)
@@ -660,7 +660,7 @@ public class InitialDataSetup {
                     .description("스킨케어존")
                     .build();
 
-            InboundProductItem inbound1Item3 = InboundProductItem.builder()
+            InboundProduct inbound1Item3 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product3)
                     .purchaseOrderProduct(po1Item3)
@@ -670,7 +670,7 @@ public class InitialDataSetup {
                     .description("색조 화장품존")
                     .build();
 
-            InboundProductItem inbound1Item4 = InboundProductItem.builder()
+            InboundProduct inbound1Item4 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product4)
                     .purchaseOrderProduct(po1Item4)
@@ -698,7 +698,7 @@ public class InitialDataSetup {
                     .items(new ArrayList<>())
                     .build();
 
-            InboundProductItem inbound2Item1 = InboundProductItem.builder()
+            InboundProduct inbound2Item1 = InboundProduct.builder()
                     .inbound(inbound2)
                     .product(product9)
                     .purchaseOrderProduct(po3Item1)
@@ -708,7 +708,7 @@ public class InitialDataSetup {
                     .description("비타민C 세럼 검수중")
                     .build();
 
-            InboundProductItem inbound2Item2 = InboundProductItem.builder()
+            InboundProduct inbound2Item2 = InboundProduct.builder()
                     .inbound(inbound2)
                     .product(product10)
                     .purchaseOrderProduct(po3Item2)

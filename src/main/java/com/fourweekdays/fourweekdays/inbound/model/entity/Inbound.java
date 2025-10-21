@@ -41,7 +41,7 @@ public class Inbound extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InboundProductItem> items = new ArrayList<>();
+    private List<InboundProduct> items = new ArrayList<>();
 
     private String description; // 비고
 
@@ -63,7 +63,7 @@ public class Inbound extends BaseEntity {
         this.description = description;
     }
 
-    public void updateItems(List<InboundProductItem> newItems) {
+    public void updateItems(List<InboundProduct> newItems) {
         this.items.clear();
         this.items.addAll(newItems);
     }

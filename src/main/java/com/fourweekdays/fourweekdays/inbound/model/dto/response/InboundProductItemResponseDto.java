@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.inbound.model.dto.response;
 
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProductItem;
+import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class InboundProductItemResponseDto {
     private Integer orderedQuantity;  // 발주 수량 (비교용)
     private Boolean isFromPurchaseOrder;  // 발주 품목인지 추가 품목인지
 
-    public static InboundProductItemResponseDto from(InboundProductItem item) {
+    public static InboundProductItemResponseDto from(InboundProduct item) {
         return InboundProductItemResponseDto.builder()
                 .id(item.getId())
 

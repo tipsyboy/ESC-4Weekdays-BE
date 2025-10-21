@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InboundProductItem extends BaseEntity {
+public class InboundProduct extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class InboundProductItem extends BaseEntity {
     private String description; // 비고
 
     @Builder
-    public InboundProductItem(Long id, Inbound inbound, Product product, PurchaseOrderProduct purchaseOrderProduct, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
+    public InboundProduct(Inbound inbound, Product product, PurchaseOrderProduct purchaseOrderProduct, Integer receivedQuantity, String lotNumber, String locationCode, String description) {
         assignInbound(inbound);
         this.product = product;
         this.purchaseOrderProduct = purchaseOrderProduct;
