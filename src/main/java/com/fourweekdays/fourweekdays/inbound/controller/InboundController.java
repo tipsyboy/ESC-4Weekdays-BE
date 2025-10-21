@@ -59,8 +59,8 @@ public class InboundController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<String>> deleteInbound(@PathVariable Long id) {
-        inboundService.softDelete(id);
-        return ResponseEntity.ok(BaseResponse.success("success"));
+    public ResponseEntity<BaseResponse<String>> cancelInbound(@PathVariable Long id) {
+        inboundService.cancel(id);
+        return ResponseEntity.ok(BaseResponse.success("입고 취소"));
     }
 }

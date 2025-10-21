@@ -120,9 +120,13 @@ public class InboundService {
 
     // 소프트 딜리트
     @Transactional
-    public void softDelete(Long id) {
+    public void cancel(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+
+        if (inbound.getStatus() != InboundStatus.CREATED && inbound.getStatus() != InboundStatus.SCHEDULED) {
+            throw new InboundException(InboundExceptionType.INBOUND_CANNOT_CANCEL);
+        }
         inbound.cancelInbound();
     }
 

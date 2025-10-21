@@ -637,7 +637,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().minusDays(2))
                     .purchaseOrder(po1)
                     .description("설화수, 라네즈 정상 입고 완료")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             InboundProduct inbound1Item1 = InboundProduct.builder()
@@ -695,7 +695,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now())
                     .purchaseOrder(po3)
                     .description("기능성 화장품 검수 진행중")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             InboundProduct inbound2Item1 = InboundProduct.builder()
@@ -730,7 +730,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().plusDays(5))
                     .purchaseOrder(po4)
                     .description("미샤 쿠션, 비비크림 입고 예정")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
             inboundRepository.save(inbound3);
 
@@ -742,7 +742,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().plusDays(7))
                     .purchaseOrder(po2)
                     .description("더페이스샵, 빌리프 입고 대기")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
             inboundRepository.save(inbound4);
 
