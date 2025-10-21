@@ -41,4 +41,10 @@ public class PurchaseOrderController {
                                                                   @Valid @RequestBody PurchaseOrderUpdateDto requestDto) {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.update(id, requestDto)));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> cancelOrder(@PathVariable Long id) {
+        purchaseOrderService.cancel(id);
+        return ResponseEntity.ok((BaseResponse.success("발주 취소")));
+    }
 }

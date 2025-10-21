@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
+import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderProductRequestDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
@@ -27,8 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
 @Transactional(readOnly = true)
@@ -83,6 +83,17 @@ public class PurchaseOrderService {
         createOrderProducts(requestDto.items(), purchaseOrder);
 
         return purchaseOrder.getId();
+    }
+
+    public void cancel(Long id) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+
+        if (!purchaseOrder.getStatus().equals(PurchaseOrderStatus.REQUESTED)) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_CANCEL_AFTER_APPROVAL);
+        }
+
+        purchaseOrder.cancel();
     }
 
 
