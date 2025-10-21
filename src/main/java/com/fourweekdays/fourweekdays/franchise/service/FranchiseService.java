@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
+import com.fourweekdays.fourweekdays.franchise.repository.FranchiseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
