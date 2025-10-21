@@ -14,7 +14,6 @@ public class FranchiseCreateDto {
     private String email;
     private String description;
     private Address address;
-    private String status; // (ACTIVE / INACTIVE)
 
     public FranchiseStore toEntity(String franchiseCode) {
         return FranchiseStore.builder()
