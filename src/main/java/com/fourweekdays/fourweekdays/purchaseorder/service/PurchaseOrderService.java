@@ -85,6 +85,7 @@ public class PurchaseOrderService {
         return purchaseOrder.getId();
     }
 
+    @Transactional
     public void cancel(Long id) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
