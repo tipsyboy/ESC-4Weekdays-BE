@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOr
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +24,14 @@ public class PurchaseOrderController {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto)));
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<PurchaseOrderReadDto>>> purchaseOrderList() {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.findAll()));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<PurchaseOrderReadDto>> purchaseOrderDetail(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.findByPurchaseOrderId(id)));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<Page<PurchaseOrderReadDto>>> purchaseOrderList(@RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.findPurchaseOrderListByPaging(page, size)));
     }
 }

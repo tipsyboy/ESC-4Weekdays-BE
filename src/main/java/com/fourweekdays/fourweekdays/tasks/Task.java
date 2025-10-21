@@ -50,3 +50,8 @@ public class Task extends BaseEntity {
     private LocalDateTime completedAt; // 작업 완료일시
 
 }
+
+
+// 1. enum type만 알려준다
+// 2. jpa 상속전략을 사용한다.
+// 3. 합성
