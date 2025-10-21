@@ -7,8 +7,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public enum FranchiseExceptionType implements ExceptionType {
 
-//    INBOUND_NOT_FOUND(NOT_FOUND, "해당 발주를 찾을 수 없습니다.")
-    ;
+    FRANCHISE_NOT_FOUND(NOT_FOUND, "해당 가맹점을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
