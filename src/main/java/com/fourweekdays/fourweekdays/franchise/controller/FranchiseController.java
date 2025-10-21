@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.franchise.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
+import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;
 import com.fourweekdays.fourweekdays.franchise.service.FranchiseService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class FranchiseController {
     public ResponseEntity<BaseResponse<Page<FranchiseReadDto>>> franchiseReads(@RequestParam(defaultValue = "0") Integer page,
                                                                          @RequestParam(defaultValue = "10") Integer size)  {
         Page<FranchiseReadDto> result = franchiseService.readAll(page, size);
-        return   ResponseEntity.ok(BaseResponse.success(result));
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<Long>> franchiseUpdate(@RequestBody FranchiseUpdateDto dto, @RequestParam Long id) {
+        Long result = franchiseService.update(dto, id);
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 }

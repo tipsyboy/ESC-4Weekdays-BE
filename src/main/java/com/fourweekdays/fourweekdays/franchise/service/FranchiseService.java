@@ -3,7 +3,9 @@ package com.fourweekdays.fourweekdays.franchise.service;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
+import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;
+import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStatus;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.franchise.repository.FranchiseRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +41,17 @@ public class FranchiseService {
         Pageable pageable = PageRequest.of(page, size);
         Page<FranchiseStore> result = franchiseRepository.findAllWithPaging(pageable);
         return result.map(FranchiseReadDto::from);
+    }
+
+    public Long update(FranchiseUpdateDto dto, Long id) {
+        FranchiseStatus franchiseStatus = dto.validate();
+
+        FranchiseStore franchiseStore = franchiseRepository.findById(id)
+                .orElseThrow(() -> new FranchiseException(FRANCHISE_NOT_FOUND));
+
+        franchiseStore.update(dto.getName(), dto.getPhoneNumber(), dto.getEmail(), dto.getDescription(), dto.getAddress());
+        franchiseStore.changeStatus(franchiseStatus);
+
+        return franchiseStore.getId();
     }
 }
