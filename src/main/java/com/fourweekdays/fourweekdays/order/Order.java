@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.order;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.franchise.FranchiseStore;
+import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
