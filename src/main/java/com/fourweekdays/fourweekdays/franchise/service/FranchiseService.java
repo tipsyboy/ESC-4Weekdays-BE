@@ -43,6 +43,7 @@ public class FranchiseService {
         return result.map(FranchiseReadDto::from);
     }
 
+    @Transactional
     public Long update(FranchiseUpdateDto dto, Long id) {
         FranchiseStatus franchiseStatus = dto.validate();
 
