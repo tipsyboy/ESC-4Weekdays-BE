@@ -37,7 +37,7 @@ public class FranchiseController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<Long>> franchiseUpdate(@RequestBody FranchiseUpdateDto dto, @RequestParam Long id) {
+    public ResponseEntity<BaseResponse<Long>> franchiseUpdate(@RequestBody FranchiseUpdateDto dto, @PathVariable Long id) {
         Long result = franchiseService.update(dto, id);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
