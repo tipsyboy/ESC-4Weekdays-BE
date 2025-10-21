@@ -28,7 +28,7 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @Transactional(readOnly = true)
 public class ProductService {
 
-    private static final String PRODUCT_CODE_PREFIX = "PO";
+    private static final String PRODUCT_CODE_PREFIX = "PRD";
 
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
@@ -44,8 +44,6 @@ public class ProductService {
         if (productRepository.existsByVendorAndName(vendor, requestDto.getName())) {
             throw new ProductException(PRODUCT_DUPLICATION);
         }
-
-
 
         Product product = requestDto.toEntity(codeGenerator.generate(PRODUCT_CODE_PREFIX));
         product.mappingVendor(vendor); // 연관 관계 매핑 

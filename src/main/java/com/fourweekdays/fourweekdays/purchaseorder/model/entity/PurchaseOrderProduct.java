@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PurchaseOrderProductItem extends BaseEntity {
+public class PurchaseOrderProduct extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +30,16 @@ public class PurchaseOrderProductItem extends BaseEntity {
     @Column(length = 500)
     private String description; // 비고
 
+
     // ===== 연관관계 편의 메서드 ===== //
-    // ... PurchaseOrder 할당 메서드 ...
+    public void mappingPurchaseOrder(PurchaseOrder purchaseOrder) {
+        this.purchaseOrder = purchaseOrder;
+    }
 
     // ===== 비즈니스 로직 ===== //
-    // ... 총액 계산 메서드 (product.getUnitPrice() * orderedQuantity) ...
+    public Long calculateAmount() {
+        return this.product.getUnitPrice() * orderedQuantity;
+    }
     // ... 입고 진행률 조회 메서드 (Inbound에서 집계) ...
 }
 

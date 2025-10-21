@@ -13,7 +13,7 @@ import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProductItem;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -213,7 +213,7 @@ public class InitialDataSetup {
             // 3. 상품 (화장품)
             // 아모레퍼시픽 제품들
             Product product1 = Product.builder()
-                    .productCode("P-001")
+                    .productCode("PRD-001")
                     .name("설화수 자음생 크림")
                     .unit("EA")
                     .unitPrice(380000L)
@@ -224,7 +224,7 @@ public class InitialDataSetup {
             productRepository.save(product1);
 
             Product product2 = Product.builder()
-                    .productCode("P-002")
+                    .productCode("PRD-002")
                     .name("라네즈 워터뱅크 세럼")
                     .unit("EA")
                     .unitPrice(32000L)
@@ -235,7 +235,7 @@ public class InitialDataSetup {
             productRepository.save(product2);
 
             Product product3 = Product.builder()
-                    .productCode("P-003")
+                    .productCode("PRD-003")
                     .name("헤라 센슈얼 누드 립스틱")
                     .unit("EA")
                     .unitPrice(28000L)
@@ -246,7 +246,7 @@ public class InitialDataSetup {
             productRepository.save(product3);
 
             Product product4 = Product.builder()
-                    .productCode("P-004")
+                    .productCode("PRD-004")
                     .name("이니스프리 그린티 토너")
                     .unit("EA")
                     .unitPrice(15000L)
@@ -258,7 +258,7 @@ public class InitialDataSetup {
 
             // LG생활건강 제품들
             Product product5 = Product.builder()
-                    .productCode("P-005")
+                    .productCode("PRD-005")
                     .name("더페이스샵 클렌징 폼")
                     .unit("EA")
                     .unitPrice(8000L)
@@ -269,7 +269,7 @@ public class InitialDataSetup {
             productRepository.save(product5);
 
             Product product6 = Product.builder()
-                    .productCode("P-006")
+                    .productCode("PRD-006")
                     .name("빌리프 아쿠아밤")
                     .unit("EA")
                     .unitPrice(38000L)
@@ -280,7 +280,7 @@ public class InitialDataSetup {
             productRepository.save(product6);
 
             Product product7 = Product.builder()
-                    .productCode("P-007")
+                    .productCode("PRD-007")
                     .name("숨 시크릿 에센스")
                     .unit("EA")
                     .unitPrice(45000L)
@@ -291,7 +291,7 @@ public class InitialDataSetup {
             productRepository.save(product7);
 
             Product product8 = Product.builder()
-                    .productCode("P-008")
+                    .productCode("PRD-008")
                     .name("오휘 프라임 어드바이저")
                     .unit("EA")
                     .unitPrice(65000L)
@@ -303,7 +303,7 @@ public class InitialDataSetup {
 
             // 코스맥스 제품들
             Product product9 = Product.builder()
-                    .productCode("P-009")
+                    .productCode("PRD-009")
                     .name("비타민C 세럼")
                     .unit("EA")
                     .unitPrice(25000L)
@@ -314,7 +314,7 @@ public class InitialDataSetup {
             productRepository.save(product9);
 
             Product product10 = Product.builder()
-                    .productCode("P-010")
+                    .productCode("PRD-010")
                     .name("레티놀 크림")
                     .unit("EA")
                     .unitPrice(35000L)
@@ -325,7 +325,7 @@ public class InitialDataSetup {
             productRepository.save(product10);
 
             Product product11 = Product.builder()
-                    .productCode("P-011")
+                    .productCode("PRD-011")
                     .name("히알루론산 토너")
                     .unit("EA")
                     .unitPrice(18000L)
@@ -337,7 +337,7 @@ public class InitialDataSetup {
 
             // 에이블씨엔씨 제품들
             Product product12 = Product.builder()
-                    .productCode("P-012")
+                    .productCode("PRD-012")
                     .name("미샤 쿠션 파운데이션")
                     .unit("EA")
                     .unitPrice(14000L)
@@ -348,7 +348,7 @@ public class InitialDataSetup {
             productRepository.save(product12);
 
             Product product13 = Product.builder()
-                    .productCode("P-013")
+                    .productCode("PRD-013")
                     .name("미샤 퍼펙트 커버 비비크림")
                     .unit("EA")
                     .unitPrice(9800L)
@@ -359,7 +359,7 @@ public class InitialDataSetup {
             productRepository.save(product13);
 
             Product product14 = Product.builder()
-                    .productCode("P-014")
+                    .productCode("PRD-014")
                     .name("미샤 타임 레볼루션 에센스")
                     .unit("EA")
                     .unitPrice(35000L)
@@ -371,7 +371,7 @@ public class InitialDataSetup {
 
             // 토니모리 제품들
             Product product15 = Product.builder()
-                    .productCode("P-015")
+                    .productCode("PRD-015")
                     .name("토니모리 치크 블러셔")
                     .unit("EA")
                     .unitPrice(12000L)
@@ -382,7 +382,7 @@ public class InitialDataSetup {
             productRepository.save(product15);
 
             Product product16 = Product.builder()
-                    .productCode("P-016")
+                    .productCode("PRD-016")
                     .name("토니모리 립틴트")
                     .unit("EA")
                     .unitPrice(9900L)
@@ -393,7 +393,7 @@ public class InitialDataSetup {
             productRepository.save(product16);
 
             Product product17 = Product.builder()
-                    .productCode("P-017")
+                    .productCode("PRD-017")
                     .name("토니모리 마스카라")
                     .unit("EA")
                     .unitPrice(15000L)
@@ -405,7 +405,7 @@ public class InitialDataSetup {
 
             // 네이처리퍼블릭 제품들
             Product product18 = Product.builder()
-                    .productCode("P-018")
+                    .productCode("PRD-018")
                     .name("알로에 수딩젤")
                     .unit("EA")
                     .unitPrice(7900L)
@@ -416,7 +416,7 @@ public class InitialDataSetup {
             productRepository.save(product18);
 
             Product product19 = Product.builder()
-                    .productCode("P-019")
+                    .productCode("PRD-019")
                     .name("아르간 에센셜 오일")
                     .unit("EA")
                     .unitPrice(25000L)
@@ -427,7 +427,7 @@ public class InitialDataSetup {
             productRepository.save(product19);
 
             Product product20 = Product.builder()
-                    .productCode("P-020")
+                    .productCode("PRD-020")
                     .name("시카 크림")
                     .unit("EA")
                     .unitPrice(22000L)
@@ -442,38 +442,37 @@ public class InitialDataSetup {
             // 4. 발주
             // 발주 1: 아모레퍼시픽 제품 대량 발주
             PurchaseOrder po1 = PurchaseOrder.builder()
-                    .orderNumber("PO-20250415-001")
+                    .orderCode("PO-20250415-001")
                     .vendor(vendor1)
                     .orderDate(LocalDateTime.now().minusDays(15))
                     .expectedDate(LocalDateTime.now().plusDays(3))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(2740000L)
                     .description("설화수, 라네즈 정기 발주")
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po1Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product1)  // 설화수 크림
                     .orderedQuantity(5)
                     .description("VIP 고객용")
                     .build();
 
-            PurchaseOrderProductItem po1Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product2)  // 라네즈 세럼
                     .orderedQuantity(20)
                     .description("베스트셀러 재고 보충")
                     .build();
 
-            PurchaseOrderProductItem po1Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product3)  // 헤라 립스틱
                     .orderedQuantity(30)
                     .description("시즌 신제품")
                     .build();
 
-            PurchaseOrderProductItem po1Item4 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po1Item4 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po1)
                     .product(product4)  // 이니스프리 토너
                     .orderedQuantity(50)
@@ -488,31 +487,30 @@ public class InitialDataSetup {
 
             // 발주 2: LG생활건강 제품 발주
             PurchaseOrder po2 = PurchaseOrder.builder()
-                    .orderNumber("PO-20250416-001")
+                    .orderCode("PO-20250416-001")
                     .vendor(vendor2)
                     .orderDate(LocalDateTime.now().minusDays(10))
                     .expectedDate(LocalDateTime.now().plusDays(7))
                     .status(PurchaseOrderStatus.REQUESTED)
-                    .totalAmount(2370000L)
                     .description("더페이스샵, 빌리프 신규 입고")
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po2Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product5)  // 클렌징 폼
                     .orderedQuantity(100)
                     .description("기초 클렌징")
                     .build();
 
-            PurchaseOrderProductItem po2Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product6)  // 빌리프 아쿠아밤
                     .orderedQuantity(30)
                     .description("프리미엄 라인")
                     .build();
 
-            PurchaseOrderProductItem po2Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po2Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po2)
                     .product(product7)  // 숨 에센스
                     .orderedQuantity(20)
@@ -526,24 +524,23 @@ public class InitialDataSetup {
 
             // 발주 3: 코스맥스 ODM 제품 발주
             PurchaseOrder po3 = PurchaseOrder.builder()
-                    .orderNumber("PO-20250417-001")
+                    .orderCode("PO-20250417-001")
                     .vendor(vendor3)
                     .orderDate(LocalDateTime.now().minusDays(8))
                     .expectedDate(LocalDateTime.now().plusDays(10))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(1530000L)
                     .description("기능성 화장품 긴급 발주")
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po3Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po3Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po3)
                     .product(product9)  // 비타민C 세럼
                     .orderedQuantity(40)
                     .description("인기 기능성")
                     .build();
 
-            PurchaseOrderProductItem po3Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po3Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po3)
                     .product(product10)  // 레티놀 크림
                     .orderedQuantity(25)
@@ -556,31 +553,30 @@ public class InitialDataSetup {
 
             // 발주 4: 미샤 제품 발주
             PurchaseOrder po4 = PurchaseOrder.builder()
-                    .orderNumber("PO-20250418-001")
+                    .orderCode("PO-20250418-001")
                     .vendor(vendor4)
                     .orderDate(LocalDateTime.now().minusDays(5))
                     .expectedDate(LocalDateTime.now().plusDays(5))
                     .status(PurchaseOrderStatus.APPROVED)
-                    .totalAmount(1913000L)
                     .description("미샤 인기 제품 재입고")
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po4Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product12)  // 쿠션
                     .orderedQuantity(80)
                     .description("베스트 쿠션")
                     .build();
 
-            PurchaseOrderProductItem po4Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product13)  // 비비크림
                     .orderedQuantity(60)
                     .description("스테디셀러")
                     .build();
 
-            PurchaseOrderProductItem po4Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po4Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po4)
                     .product(product14)  // 에센스
                     .orderedQuantity(15)
@@ -594,31 +590,30 @@ public class InitialDataSetup {
 
             // 발주 5: 토니모리 색조 제품 발주
             PurchaseOrder po5 = PurchaseOrder.builder()
-                    .orderNumber("PO-20250419-001")
+                    .orderCode("PO-20250419-001")
                     .vendor(vendor5)
                     .orderDate(LocalDateTime.now().minusDays(3))
                     .expectedDate(LocalDateTime.now().plusDays(12))
                     .status(PurchaseOrderStatus.REQUESTED)
-                    .totalAmount(1647000L)
                     .description("색조 화장품 대량 발주")
                     .items(new ArrayList<>())
                     .build();
 
-            PurchaseOrderProductItem po5Item1 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item1 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product15)  // 블러셔
                     .orderedQuantity(50)
                     .description("봄 시즌 색조")
                     .build();
 
-            PurchaseOrderProductItem po5Item2 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item2 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product16)  // 립틴트
                     .orderedQuantity(70)
                     .description("인기 틴트")
                     .build();
 
-            PurchaseOrderProductItem po5Item3 = PurchaseOrderProductItem.builder()
+            PurchaseOrderProduct po5Item3 = PurchaseOrderProduct.builder()
                     .purchaseOrder(po5)
                     .product(product17)  // 마스카라
                     .orderedQuantity(45)
@@ -648,7 +643,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item1 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product1)
-                    .purchaseOrderProductItem(po1Item1)
+                    .purchaseOrderProduct(po1Item1)
                     .receivedQuantity(5)
                     .lotNumber("LOT-2025-APF-001")
                     .locationCode("A-01-01")
@@ -658,7 +653,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item2 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product2)
-                    .purchaseOrderProductItem(po1Item2)
+                    .purchaseOrderProduct(po1Item2)
                     .receivedQuantity(20)
                     .lotNumber("LOT-2025-APF-002")
                     .locationCode("A-01-02")
@@ -668,7 +663,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item3 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product3)
-                    .purchaseOrderProductItem(po1Item3)
+                    .purchaseOrderProduct(po1Item3)
                     .receivedQuantity(30)
                     .lotNumber("LOT-2025-APF-003")
                     .locationCode("A-02-01")
@@ -678,7 +673,7 @@ public class InitialDataSetup {
             InboundProductItem inbound1Item4 = InboundProductItem.builder()
                     .inbound(inbound1)
                     .product(product4)
-                    .purchaseOrderProductItem(po1Item4)
+                    .purchaseOrderProduct(po1Item4)
                     .receivedQuantity(50)
                     .lotNumber("LOT-2025-APF-004")
                     .locationCode("A-01-03")
@@ -706,7 +701,7 @@ public class InitialDataSetup {
             InboundProductItem inbound2Item1 = InboundProductItem.builder()
                     .inbound(inbound2)
                     .product(product9)
-                    .purchaseOrderProductItem(po3Item1)
+                    .purchaseOrderProduct(po3Item1)
                     .receivedQuantity(40)
                     .lotNumber("LOT-2025-CSM-001")
                     .locationCode("B-01-01")
@@ -716,7 +711,7 @@ public class InitialDataSetup {
             InboundProductItem inbound2Item2 = InboundProductItem.builder()
                     .inbound(inbound2)
                     .product(product10)
-                    .purchaseOrderProductItem(po3Item2)
+                    .purchaseOrderProduct(po3Item2)
                     .receivedQuantity(25)
                     .lotNumber("LOT-2025-CSM-002")
                     .locationCode("B-01-02")

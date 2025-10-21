@@ -40,12 +40,12 @@ public class InboundProductItemResponseDto {
                 .description(item.getDescription())
 
                 .purchaseOrderProductItemId(
-                        item.getPurchaseOrderProductItem() != null ?
-                                item.getPurchaseOrderProductItem().getId() : null)
+                        item.getPurchaseOrderProduct() != null ?
+                                item.getPurchaseOrderProduct().getId() : null)
                 .orderedQuantity(
-                        item.getPurchaseOrderProductItem() != null ?
-                                item.getPurchaseOrderProductItem().getOrderedQuantity() : null)
-                .isFromPurchaseOrder(item.getPurchaseOrderProductItem() != null)
+                        item.getPurchaseOrderProduct() != null ?
+                                item.getPurchaseOrderProduct().getOrderedQuantity() : null)
+                .isFromPurchaseOrder(item.getPurchaseOrderProduct() != null)
                 .build();
     }
 }
