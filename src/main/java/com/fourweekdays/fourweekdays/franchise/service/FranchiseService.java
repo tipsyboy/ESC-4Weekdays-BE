@@ -21,7 +21,7 @@ import static com.fourweekdays.fourweekdays.franchise.exception.FranchiseExcepti
 @RequiredArgsConstructor
 public class FranchiseService {
 
-    public static final String FRANCHISE_CODE_PREFIX = "F";
+    public static final String FRANCHISE_CODE_PREFIX = "FRA";
 
     private final FranchiseRepository franchiseRepository;
     private final CodeGenerator codeGenerator;
