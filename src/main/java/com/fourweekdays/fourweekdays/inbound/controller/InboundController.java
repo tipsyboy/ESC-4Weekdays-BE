@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.inbound.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +43,10 @@ public class InboundController {
         return ResponseEntity.ok(BaseResponse.success(inboundService.inboundList(page, size)));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<Long>> updateInbound(@RequestBody InboundUpdateRequestDto dto,
-                                                            @PathVariable Long id) {
-        Long result = inboundService.update(dto, id);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<BaseResponse<String>> updateInbound(@RequestBody InboundStatusUpdateRequest requestDto, @PathVariable Long id) {
+        inboundService.updateInboundStatus(id, requestDto);
+        return ResponseEntity.ok(BaseResponse.success(requestDto.status().name()));
     }
 
     @DeleteMapping("/{id}")

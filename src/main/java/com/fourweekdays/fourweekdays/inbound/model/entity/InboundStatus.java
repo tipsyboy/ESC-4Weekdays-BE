@@ -19,4 +19,15 @@ public enum InboundStatus {
     InboundStatus(String description) {
         this.description = description;
     }
+
+    public boolean canTransitionTo(InboundStatus next) {
+        return switch (this) {
+            case CREATED -> next == SCHEDULED || next == CANCELLED;
+            case SCHEDULED -> next == ARRIVED || next == CANCELLED;
+            case ARRIVED -> next == INSPECTING || next == CANCELLED;
+            case INSPECTING -> next == PUTAWAY || next == CANCELLED;
+            case PUTAWAY -> next == COMPLETED || next == CANCELLED;
+            default -> false; // COMPLETED, CANCELLED 변경 불가
+        };
+    }
 }

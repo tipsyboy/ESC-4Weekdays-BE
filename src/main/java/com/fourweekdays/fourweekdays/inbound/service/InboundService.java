@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundProductDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundUpdateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
@@ -48,6 +48,10 @@ public class InboundService {
 
     public Long createByPurchaseOrder(PurchaseOrder purchaseOrder) {
         // TODO: member 연결하고 담당자 배정해야함.
+        // TODO: ASN 구현시 발주 승인 트리거가 아닌 ASN 수신 트리거에 의해 생성 로직이 실행되어야함.
+        // TODO: ASN 수신시 입고 예정일을 받아서 Inbound의 입고 예정일 상태를 변경해야함.
+        // TODO: 하나의 발주서로 여러 Inbound가 생성되지 않게 만드는 방어 로직 필요.
+
         Member manager = memberRepository.findById(1L)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
@@ -86,23 +90,10 @@ public class InboundService {
     }
 
     @Transactional
-    public Long update(InboundUpdateRequestDto requestDto, Long id) {
-        Member manager = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-        Inbound inbound = inboundRepository.findById(id)
+    public void updateInboundStatus(Long inboundId, InboundStatusUpdateRequest requestDto) {
+        Inbound inbound = inboundRepository.findById(inboundId)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-
-        inbound.updateData(manager.getName(), requestDto.getScheduledDate(), requestDto.getDescription());
-
-        if (requestDto.getItems() != null && !requestDto.getItems().isEmpty()) {
-            List<InboundProduct> items = requestDto.getItems().stream()
-                    .map(itemDto -> convertToEntity(itemDto, inbound))
-                    .toList();
-            inbound.updateItems(items);
-        }
-
-        return inbound.getId();
+        inbound.updateStatus(requestDto.status());
     }
 
     // 소프트 딜리트
@@ -114,19 +105,6 @@ public class InboundService {
     }
 
     // TODO: 하드 딜리트 - 꼭 구현을 해야하나?
-
-    private Inbound createBaseInbound(InboundCreateRequestDto requestDto) {
-        Member manager = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-        return Inbound.builder()
-                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
-                .status(InboundStatus.SCHEDULED)
-                .managerName(manager.getName())
-                .scheduledDate(requestDto.getScheduledDate())
-                .description(requestDto.getDescription())
-                .build();
-    }
 
 
     // TODO: 삭제? 발주서가 없는 입고는 어떻게 처리할까
@@ -144,6 +122,41 @@ public class InboundService {
         addDirectItems(requestDto, inbound);
 
         return inboundRepository.save(inbound).getId();
+    }
+
+    // TODO: 삭제?
+//    @Transactional
+//    public Long update(InboundStatusUpdateRequest requestDto, Long id) {
+//        Member manager = memberRepository.findById(requestDto.getMemberId())
+//                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+//
+//        Inbound inbound = inboundRepository.findById(id)
+//                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+//
+//        inbound.updateData(manager.getName(), requestDto.getScheduledDate(), requestDto.getDescription());
+//
+//        if (requestDto.getItems() != null && !requestDto.getItems().isEmpty()) {
+//            List<InboundProduct> items = requestDto.getItems().stream()
+//                    .map(itemDto -> convertToEntity(itemDto, inbound))
+//                    .toList();
+//            inbound.updateItems(items);
+//        }
+//
+//        return inbound.getId();
+//    }
+
+
+    private Inbound createBaseInbound(InboundCreateRequestDto requestDto) {
+        Member manager = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        return Inbound.builder()
+                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
+                .status(InboundStatus.SCHEDULED)
+                .managerName(manager.getName())
+                .scheduledDate(requestDto.getScheduledDate())
+                .description(requestDto.getDescription())
+                .build();
     }
 
     private void addItemsFromPurchaseOrder(InboundCreateRequestDto requestDto, Inbound inbound) {

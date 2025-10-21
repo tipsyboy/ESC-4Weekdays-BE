@@ -689,7 +689,7 @@ public class InitialDataSetup {
             // 입고 2: 코스맥스 제품 입고중
             Inbound inbound2 = Inbound.builder()
                     .inboundCode("IB-20250419-001")
-                    .status(InboundStatus.RECEIVING)
+                    .status(InboundStatus.INSPECTING)
                     .managerName(manager2.getName())
                     .workerName(worker2.getName())
                     .scheduledDate(LocalDateTime.now())

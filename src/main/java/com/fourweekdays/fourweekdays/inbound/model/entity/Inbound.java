@@ -1,6 +1,8 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +10,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_STATUS_TRANSITION_NOT_ALLOWED;
 
 @Entity
 @Getter
@@ -52,9 +56,11 @@ public class Inbound extends BaseEntity {
 
 
     // ===== ===== //
-
-    public void updatePurchaseOrder(PurchaseOrder purchaseOrder) {
-        this.purchaseOrder = purchaseOrder;
+    public void updateStatus(InboundStatus nextStatus) {
+        if (!this.status.canTransitionTo(nextStatus)) {
+            throw new InboundException(INBOUND_STATUS_TRANSITION_NOT_ALLOWED);
+        }
+        this.status = nextStatus;
     }
 
     public void updateData(String managerName, LocalDateTime scheduledDate, String description) {
