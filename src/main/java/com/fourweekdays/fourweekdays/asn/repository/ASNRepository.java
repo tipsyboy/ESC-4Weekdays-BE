@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ASNRepository extends JpaRepository<ASN, Long> {
 
-    boolean existsASNSByAsnCode(String asnCode);
+    boolean existsByAsnCode(String asnCode);
 }
 
