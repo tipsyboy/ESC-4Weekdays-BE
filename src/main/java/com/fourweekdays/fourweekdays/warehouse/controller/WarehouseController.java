@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.warehouse.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.warehouse.model.dto.request.WarehouseCreateDto;
+import com.fourweekdays.fourweekdays.warehouse.model.dto.response.WarehouseReadDto;
 import com.fourweekdays.fourweekdays.warehouse.service.WarehouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,19 +22,19 @@ public class WarehouseController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<BaseResponse<>> warehouseRead(@PathVariable Long id) {
-//        result = warehouseService.read(id);
-//        return ResponseEntity.ok(BaseResponse.success(result));
-//    }
-//
-//    @GetMapping("/list")
-//    public ResponseEntity<BaseResponse<Page<>>> warehouseReads(@RequestParam(defaultValue = "0") Integer page,
-//                                                               @RequestParam(defaultValue = "10") Integer size) {
-//        Page<> result = warehouseService.readAll(page, size);
-//        return ResponseEntity.ok(BaseResponse.success(result));
-//    }
-//
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<WarehouseReadDto>> warehouseRead(@PathVariable Long id) {
+        WarehouseReadDto result = warehouseService.read(id);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<BaseResponse<Page<WarehouseReadDto>>> warehouseReads(@RequestParam(defaultValue = "0") Integer page,
+                                                               @RequestParam(defaultValue = "10") Integer size) {
+        Page<WarehouseReadDto> result = warehouseService.readAll(page, size);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
 //    @PatchMapping("/{id}")
 //    public ResponseEntity<BaseResponse<Long>> warehouseUpdate(@RequestBody dto, @PathVariable Long id) {
 //        Long result = warehouseService.update(dto, id);
