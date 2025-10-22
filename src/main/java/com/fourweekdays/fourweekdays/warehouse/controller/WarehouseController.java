@@ -42,9 +42,9 @@ public class WarehouseController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<BaseResponse<String>> warehouseDelete(@PathVariable Long id) {
-//        warehouseService.suspend(id);
-//        return ResponseEntity.ok(BaseResponse.success("거래 중단"));
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> warehouseDelete(@PathVariable Long id) {
+        warehouseService.delete(id);
+        return ResponseEntity.ok(BaseResponse.success("거래 중단"));
+    }
 }

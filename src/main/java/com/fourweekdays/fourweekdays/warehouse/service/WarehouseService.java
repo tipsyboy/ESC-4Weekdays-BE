@@ -45,4 +45,11 @@ public class WarehouseService {
         return warehouse.getId();
 
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseException(WAREHOUSE_NOT_FOUND));
+        warehouse.isActive();
+    }
 }

@@ -4,6 +4,7 @@ import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.common.vo.Address;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -23,6 +24,9 @@ public class Warehouse extends BaseEntity {
     @Embedded
     private Address address;
 
+    @ColumnDefault("true")
+    private Boolean active;
+
 //    @OneToMany
 //    private List<Location> locations;
 
@@ -31,5 +35,9 @@ public class Warehouse extends BaseEntity {
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (email != null) this.email = email;
         if (address != null) this.address = address;
+    }
+
+    public void isActive() {
+        this.active = false;
     }
 }
