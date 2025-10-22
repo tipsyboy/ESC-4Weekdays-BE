@@ -4,6 +4,8 @@ import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class FranchiseReadDto {
@@ -15,6 +17,8 @@ public class FranchiseReadDto {
     private String description;
     private Address address;
     private String status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static FranchiseReadDto from(FranchiseStore entity) {
         return FranchiseReadDto.builder()
@@ -26,6 +30,8 @@ public class FranchiseReadDto {
                 .description(entity.getDescription())
                 .address(entity.getAddress())
                 .status(entity.getStatus().toString())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 }

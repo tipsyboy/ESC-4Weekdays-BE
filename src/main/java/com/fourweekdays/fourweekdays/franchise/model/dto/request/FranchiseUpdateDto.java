@@ -1,12 +1,9 @@
 package com.fourweekdays.fourweekdays.franchise.model.dto.request;
 
 import com.fourweekdays.fourweekdays.common.vo.Address;
-import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStatus;
 import lombok.Builder;
 import lombok.Getter;
-
-import static com.fourweekdays.fourweekdays.franchise.exception.FranchiseExceptionType.FRANCHISE_INVALID_STATUS;
 
 @Getter
 @Builder
