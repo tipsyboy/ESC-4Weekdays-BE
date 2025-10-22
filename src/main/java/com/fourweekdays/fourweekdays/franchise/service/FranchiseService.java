@@ -5,7 +5,6 @@ import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;
-import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStatus;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.franchise.repository.FranchiseRepository;
 import lombok.RequiredArgsConstructor;
