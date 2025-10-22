@@ -28,7 +28,7 @@ public class Warehouse extends BaseEntity {
     private Boolean active;
 
 //    @OneToMany
-//    private List<Location> locations;
+//    private List<Location> locations; //TODO 로케이션과 관계맺기
 
     public void update(String name, String phoneNumber, String email, Address address) {
         if (name != null) this.name = name;

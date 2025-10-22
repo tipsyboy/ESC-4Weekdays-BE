@@ -27,7 +27,8 @@ public class WarehouseService {
     }
 
     public WarehouseReadDto read(Long id) {
-        Warehouse result = warehouseRepository.findById(id).orElseThrow(() -> new WarehouseException(WAREHOUSE_NOT_FOUND));
+        Warehouse result = warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseException(WAREHOUSE_NOT_FOUND));
         return WarehouseReadDto.from(result);
     }
 
@@ -39,7 +40,8 @@ public class WarehouseService {
 
     @Transactional
     public Long update(WarehouseUpdateDto dto, Long id) {
-        Warehouse warehouse = warehouseRepository.findById(id).orElseThrow(() -> new WarehouseException(WAREHOUSE_NOT_FOUND));
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseException(WAREHOUSE_NOT_FOUND));
 
         warehouse.update(dto.getName(), dto.getPhoneNumber(), dto.getEmail(), dto.getAddress());
         return warehouse.getId();
