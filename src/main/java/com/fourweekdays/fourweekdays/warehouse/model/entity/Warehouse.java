@@ -1,10 +1,15 @@
-package com.fourweekdays.fourweekdays.warehouse;
+package com.fourweekdays.fourweekdays.warehouse.model.entity;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Warehouse extends BaseEntity {
 
     @Id
@@ -17,4 +22,7 @@ public class Warehouse extends BaseEntity {
 
     @Embedded
     private Address address;
+
+//    @OneToMany
+//    private List<Location> locations;
 }
