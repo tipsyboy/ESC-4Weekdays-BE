@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.warehouse.QWarehouse.warehouse;
+import static com.fourweekdays.fourweekdays.warehouse.model.entity.QWarehouse.warehouse;
 
 @RequiredArgsConstructor
 public class WarehouseRepositoryCustomImpl implements WarehouseRepositoryCustom {
