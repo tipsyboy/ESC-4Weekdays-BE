@@ -42,6 +42,11 @@ public class PurchaseOrderController {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.update(id, requestDto)));
     }
 
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.approve(id)));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<String>> cancelOrder(@PathVariable Long id) {
         purchaseOrderService.cancel(id);

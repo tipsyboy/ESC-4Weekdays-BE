@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.config;
 
 import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProductItem;
+import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
@@ -637,10 +637,10 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().minusDays(2))
                     .purchaseOrder(po1)
                     .description("설화수, 라네즈 정상 입고 완료")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
-            InboundProductItem inbound1Item1 = InboundProductItem.builder()
+            InboundProduct inbound1Item1 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product1)
                     .purchaseOrderProduct(po1Item1)
@@ -650,7 +650,7 @@ public class InitialDataSetup {
                     .description("프리미엄존 보관")
                     .build();
 
-            InboundProductItem inbound1Item2 = InboundProductItem.builder()
+            InboundProduct inbound1Item2 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product2)
                     .purchaseOrderProduct(po1Item2)
@@ -660,7 +660,7 @@ public class InitialDataSetup {
                     .description("스킨케어존")
                     .build();
 
-            InboundProductItem inbound1Item3 = InboundProductItem.builder()
+            InboundProduct inbound1Item3 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product3)
                     .purchaseOrderProduct(po1Item3)
@@ -670,7 +670,7 @@ public class InitialDataSetup {
                     .description("색조 화장품존")
                     .build();
 
-            InboundProductItem inbound1Item4 = InboundProductItem.builder()
+            InboundProduct inbound1Item4 = InboundProduct.builder()
                     .inbound(inbound1)
                     .product(product4)
                     .purchaseOrderProduct(po1Item4)
@@ -680,25 +680,25 @@ public class InitialDataSetup {
                     .description("대용량 토너")
                     .build();
 
-            inbound1.getItems().add(inbound1Item1);
-            inbound1.getItems().add(inbound1Item2);
-            inbound1.getItems().add(inbound1Item3);
-            inbound1.getItems().add(inbound1Item4);
+            inbound1.getProducts().add(inbound1Item1);
+            inbound1.getProducts().add(inbound1Item2);
+            inbound1.getProducts().add(inbound1Item3);
+            inbound1.getProducts().add(inbound1Item4);
             inboundRepository.save(inbound1);
 
             // 입고 2: 코스맥스 제품 입고중
             Inbound inbound2 = Inbound.builder()
                     .inboundCode("IB-20250419-001")
-                    .status(InboundStatus.RECEIVING)
+                    .status(InboundStatus.INSPECTING)
                     .managerName(manager2.getName())
                     .workerName(worker2.getName())
                     .scheduledDate(LocalDateTime.now())
                     .purchaseOrder(po3)
                     .description("기능성 화장품 검수 진행중")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
-            InboundProductItem inbound2Item1 = InboundProductItem.builder()
+            InboundProduct inbound2Item1 = InboundProduct.builder()
                     .inbound(inbound2)
                     .product(product9)
                     .purchaseOrderProduct(po3Item1)
@@ -708,7 +708,7 @@ public class InitialDataSetup {
                     .description("비타민C 세럼 검수중")
                     .build();
 
-            InboundProductItem inbound2Item2 = InboundProductItem.builder()
+            InboundProduct inbound2Item2 = InboundProduct.builder()
                     .inbound(inbound2)
                     .product(product10)
                     .purchaseOrderProduct(po3Item2)
@@ -718,8 +718,8 @@ public class InitialDataSetup {
                     .description("레티놀 크림 검수중")
                     .build();
 
-            inbound2.getItems().add(inbound2Item1);
-            inbound2.getItems().add(inbound2Item2);
+            inbound2.getProducts().add(inbound2Item1);
+            inbound2.getProducts().add(inbound2Item2);
             inboundRepository.save(inbound2);
 
             // 입고 3: 미샤 제품 입고 예정
@@ -730,7 +730,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().plusDays(5))
                     .purchaseOrder(po4)
                     .description("미샤 쿠션, 비비크림 입고 예정")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
             inboundRepository.save(inbound3);
 
@@ -742,7 +742,7 @@ public class InitialDataSetup {
                     .scheduledDate(LocalDateTime.now().plusDays(7))
                     .purchaseOrder(po2)
                     .description("더페이스샵, 빌리프 입고 대기")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
             inboundRepository.save(inbound4);
 

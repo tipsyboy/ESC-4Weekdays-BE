@@ -32,7 +32,7 @@ public class VendorController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@RequestParam(defaultValue = "0") Integer page,
                                                                          @RequestParam(defaultValue = "10") Integer size) {
 

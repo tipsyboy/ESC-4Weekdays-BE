@@ -69,6 +69,10 @@ public class PurchaseOrder extends BaseEntity {
         this.items.clear(); // orphanRemoval = true 설정 시 자동 삭제
     }
 
+    public void approve() {
+        this.status = PurchaseOrderStatus.APPROVED;
+    }
+
     public void cancel() {
         this.status = PurchaseOrderStatus.CANCELLED;
     }

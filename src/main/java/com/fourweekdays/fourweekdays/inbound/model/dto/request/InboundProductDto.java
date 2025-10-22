@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class InboundItemDto {
+public class InboundProductDto {
 
     @NotNull(message = "상품 ID는 필수입니다.")
     private Long productId;

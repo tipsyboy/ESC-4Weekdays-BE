@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
@@ -42,6 +43,7 @@ public class PurchaseOrderService {
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
+    private final InboundService inboundService;
 
     @Transactional
     public Long create(PurchaseOrderCreateDto requestDto) {
@@ -95,6 +97,15 @@ public class PurchaseOrderService {
         }
 
         purchaseOrder.cancel();
+    }
+
+    @Transactional
+    public Long approve(Long id) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+
+        purchaseOrder.approve();
+        return inboundService.createByPurchaseOrder(purchaseOrder);
     }
 
 
