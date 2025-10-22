@@ -12,72 +12,99 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PurchaseOrder extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String orderCode; // 발주번호 (예: PO-20250415-001)
+    @Column(nullable = false, unique = true)
+    private String orderCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseOrderProduct> items = new ArrayList<>();
-
-    @Column(nullable = false)
-    private LocalDateTime orderDate; // 발주일
-
-    @Column(nullable = false)
-    private LocalDateTime expectedDate; // 입고예정일
-
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PurchaseOrderStatus status;
 
+    private LocalDateTime orderDate;       // 발주일
+    private LocalDateTime expectedDate;    // 입고 예정일
+
     @Column(length = 1000)
-    private String description; // 비고
+    private String description;
 
-//    @Column(length = 100)
-//    private String orderedBy; // 발주 담당자
+    private Long totalAmount;
 
-    // ===== 연관관계 편의 메서드 ===== //
-    public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
-        this.items.add(purchaseOrderProduct);
-        purchaseOrderProduct.mappingPurchaseOrder(this);
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<PurchaseOrderProduct> items = new ArrayList<>();
+
+
+    // ===================== 연관관계 편의 메서드 ===================== //
+
+    public void addItem(PurchaseOrderProduct item) {
+        this.items.add(item);
+        item.mappingPurchaseOrder(this);
+        recalculateTotalAmount();
     }
-    // ... 상품 제거 메서드 ...
 
-    // ===== 비즈니스 로직 ===== //
-    public Long calculateTotalAmount() {
-        return items.stream()
-                .mapToLong(PurchaseOrderProduct::calculateAmount)
-                .sum();
+    public void removeItem(PurchaseOrderProduct item) {
+        this.items.remove(item);
+        recalculateTotalAmount();
     }
+
+    public void clearItems() {
+        this.items.clear();
+        this.totalAmount = 0L;
+    }
+
+
+    // ===================== 상태 관리 메서드 ===================== //
+
+    // 발주 승인
+    public void approve() {
+        this.status = PurchaseOrderStatus.APPROVED;
+    }
+
+    // 발주 확정 (공급사 납품 준비 완료)
+    public void confirm() {
+        this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
+    }
+
+    // 입고 완료 처리 (ASN → 입고 완료 시점)
+    public void completeInbound() {
+        this.status = PurchaseOrderStatus.DELIVERED;
+    }
+
+    // 발주 취소
+    public void cancel() {
+        this.status = PurchaseOrderStatus.CANCELLED;
+    }
+
+    // 상품 제거
+    public void deleteItem(PurchaseOrderProduct item) {
+        if (this.items.remove(item)) recalculateTotalAmount();
+    }
+
+
+    // ===================== 금액 및 수정 로직 ===================== //
 
     public void update(LocalDateTime expectedDate, String description) {
         if (expectedDate != null) this.expectedDate = expectedDate;
         if (description != null) this.description = description;
     }
 
-    public void clearItems() {
-        this.items.clear(); // orphanRemoval = true 설정 시 자동 삭제
+    public Long calculateTotalAmount() {
+        return items.stream()
+                .mapToLong(PurchaseOrderProduct::calculateAmount)
+                .sum();
     }
 
-    public void approve() {
-        this.status = PurchaseOrderStatus.APPROVED;
+    private void recalculateTotalAmount() {
+        this.totalAmount = calculateTotalAmount();
     }
-
-    public void cancel() {
-        this.status = PurchaseOrderStatus.CANCELLED;
-    }
-    // ... 발주 승인 메서드 ...
-    // ... 발주 확정 메서드 ...
-    // ... 입고 완료 처리 메서드 ...
-    // ... 발주 취소 메서드 ...
 }

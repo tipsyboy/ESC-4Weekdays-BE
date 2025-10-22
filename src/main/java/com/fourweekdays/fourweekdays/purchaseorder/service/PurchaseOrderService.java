@@ -6,7 +6,6 @@ import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderProductRequestDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
@@ -47,7 +46,6 @@ public class PurchaseOrderService {
 
     @Transactional
     public Long create(PurchaseOrderCreateDto requestDto) {
-        // TODO: 발주서 생성시 담당자인 Member가 필요하다.
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
@@ -57,60 +55,76 @@ public class PurchaseOrderService {
         return purchaseOrderRepository.save(purchaseOrder).getId();
     }
 
+    // 단건 조회
     public PurchaseOrderReadDto findByPurchaseOrderId(Long id) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
-
+        PurchaseOrder purchaseOrder = findByIdOrThrow(id);
         return PurchaseOrderReadDto.toDto(purchaseOrder);
     }
 
+    // 목록 조회
     public Page<PurchaseOrderReadDto> findPurchaseOrderListByPaging(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PurchaseOrder> purchaseOrderList = purchaseOrderRepository.findAllWithPaging(pageable);
-        return purchaseOrderList.map(PurchaseOrderReadDto::toDto);
+        Page<PurchaseOrder> list = purchaseOrderRepository.findAllWithPaging(pageable);
+        return list.map(PurchaseOrderReadDto::toDto);
     }
 
     @Transactional
     public Long update(Long id, PurchaseOrderUpdateDto requestDto) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+        PurchaseOrder order = findByIdOrThrow(id);
 
-        if (!purchaseOrder.getStatus().equals(PurchaseOrderStatus.REQUESTED)) {
+        if (order.getStatus() != PurchaseOrderStatus.REQUESTED) {
             throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL);
         }
 
-        purchaseOrder.update(requestDto.expectedDate(), requestDto.description());
+        order.update(requestDto.expectedDate(), requestDto.description());
+        order.clearItems();
+        createOrderProducts(requestDto.items(), order);
 
-        purchaseOrder.clearItems();
-        createOrderProducts(requestDto.items(), purchaseOrder);
-
-        return purchaseOrder.getId();
+        return order.getId();
     }
 
-    @Transactional
-    public void cancel(Long id) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
-
-        if (!purchaseOrder.getStatus().equals(PurchaseOrderStatus.REQUESTED)) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_CANCEL_AFTER_APPROVAL);
-        }
-
-        purchaseOrder.cancel();
-    }
-
+    // 발주 승인
     @Transactional
     public Long approve(Long id) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
-
-        purchaseOrder.approve();
-        return inboundService.createByPurchaseOrder(purchaseOrder);
+        PurchaseOrder order = findByIdOrThrow(id);
+        order.approve(); // 상태 변경
+        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
     }
 
+    // 발주 확정 (공급사 납품 준비 완료)
+    @Transactional
+    public void confirm(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        if (order.getStatus() != PurchaseOrderStatus.APPROVED) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
+        order.confirm();
+    }
 
-    // TODO: 발주서 상태 변경 로직을 따로 짠다.
-    // TODO: 발주서가 승인 완료되면 입고서가 자동으로 생성되어야 한다.
+    // 입고 완료 처리
+    @Transactional
+    public void completeInbound(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        if (order.getStatus() != PurchaseOrderStatus.AWAITING_DELIVERY) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
+        order.completeInbound();
+    }
+
+    // 발주 취소
+    @Transactional
+    public void cancel(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        if (order.getStatus() != PurchaseOrderStatus.REQUESTED) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_CANCEL_AFTER_APPROVAL);
+        }
+        order.cancel();
+    }
+
+    private PurchaseOrder findByIdOrThrow(Long id) {
+        return purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+    }
 
     private PurchaseOrder createPurchaseOrder(Vendor vendor, PurchaseOrderCreateDto dto) {
         return PurchaseOrder.builder()
@@ -123,13 +137,13 @@ public class PurchaseOrderService {
                 .build();
     }
 
-    private List<PurchaseOrderProduct> createOrderProducts(List<PurchaseOrderProductRequestDto> items, PurchaseOrder purchaseOrder) {
+    private List<PurchaseOrderProduct> createOrderProducts(List<PurchaseOrderProductRequestDto> items, PurchaseOrder order) {
         return items.stream()
-                .map(item -> createOrderProduct(item, purchaseOrder))
+                .map(item -> createOrderProduct(item, order))
                 .toList();
     }
 
-    private PurchaseOrderProduct createOrderProduct(PurchaseOrderProductRequestDto dto, PurchaseOrder purchaseOrder) {
+    private PurchaseOrderProduct createOrderProduct(PurchaseOrderProductRequestDto dto, PurchaseOrder order) {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 
@@ -139,7 +153,7 @@ public class PurchaseOrderService {
                 .description(dto.getDescription())
                 .build();
 
-        purchaseOrder.addItem(orderProduct);
+        order.addItem(orderProduct);
         return orderProduct;
     }
 }

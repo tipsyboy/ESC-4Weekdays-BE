@@ -8,6 +8,7 @@ public record PurchaseOrderProductResponseDto(
         Long id,
         Long productId,
         String productName,
+        Long unitPrice,
         Integer orderedQuantity,
         String description
 ) {
@@ -16,6 +17,7 @@ public record PurchaseOrderProductResponseDto(
                 .id(item.getId())
                 .productId(item.getProduct().getId())
                 .productName(item.getProduct().getName())
+                .unitPrice(item.getProduct().getUnitPrice())
                 .orderedQuantity(item.getOrderedQuantity())
                 .description(item.getDescription())
                 .build();

@@ -6,10 +6,12 @@ import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_DUPLICATION;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
@@ -57,11 +61,11 @@ public class ProductService {
         return ProductReadDto.from(product);
     }
 
-    public Page<ProductReadDto> getProductList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productList = productRepository.findAllWithPaging(pageable);
-        return productList.map(ProductReadDto::from);
-    }
+//    public Page<ProductReadDto> getProductList(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Product> productList = productRepository.findAllWithPaging(pageable);
+//        return productList.map(ProductReadDto::from);
+//    }
 
     @Transactional
     public Long update(Long id, ProductUpdateDto requestDto) {
@@ -84,6 +88,32 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
         product.delete();
+    }
+
+    public Page<ProductReadDto> getProductList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // RequestParam으로 전달된 vendorId 추출
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attrs != null ? attrs.getRequest() : null;
+
+        Long vendorId = null;
+        if (request != null && request.getParameter("vendorId") != null) {
+            vendorId = Long.valueOf(request.getParameter("vendorId"));
+        }
+
+        Page<Product> productList;
+
+        // vendorId가 존재하면 해당 벤더의 ACTIVE 상품만 조회
+        if (vendorId != null) {
+            productList = productRepository.findByVendorIdAndStatus(vendorId, ProductStatus.ACTIVE, pageable);
+        }
+        // vendorId 없으면 전체 ACTIVE 상품만 조회
+        else {
+            productList = productRepository.findByStatus(ProductStatus.ACTIVE, pageable);
+        }
+
+        return productList.map(ProductReadDto::from);
     }
 
 
