@@ -25,4 +25,11 @@ public class Warehouse extends BaseEntity {
 
 //    @OneToMany
 //    private List<Location> locations;
+
+    public void update(String name, String phoneNumber, String email, Address address) {
+        if (name != null) this.name = name;
+        if (phoneNumber != null) this.phoneNumber = phoneNumber;
+        if (email != null) this.email = email;
+        if (address != null) this.address = address;
+    }
 }
