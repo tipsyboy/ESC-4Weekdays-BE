@@ -76,6 +76,10 @@ public class PurchaseOrder extends BaseEntity {
         this.status = PurchaseOrderStatus.APPROVED;
     }
 
+    public void awaitDelivery() {
+        this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
+    }
+
     public void cancel() {
         this.status = PurchaseOrderStatus.CANCELLED;
     }
@@ -85,8 +89,6 @@ public class PurchaseOrder extends BaseEntity {
         this.rejectedAt = LocalDateTime.now();
         this.status = PurchaseOrderStatus.CANCELLED;
     }
-    // ... 발주 승인 메서드 ...
-    // ... 발주 확정 메서드 ...
+
     // ... 입고 완료 처리 메서드 ...
-    // ... 발주 취소 메서드 ...
 }

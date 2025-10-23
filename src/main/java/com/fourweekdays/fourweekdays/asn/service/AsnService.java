@@ -59,7 +59,9 @@ public class AsnService {
         asnRepository.save(asn);
 
         // inbound 자동 생성
-        inboundService.createByPurchaseOrder(purchaseOrder);
+        purchaseOrder.awaitDelivery(); // 배송대기 상태로 변경
+        inboundService.createByPurchaseOrder(purchaseOrder); // 발주서에 따른 입고서 생성
+
 
         return AsnReceiveResponse.builder()
                 .asnCode(asn.getAsnCode())
