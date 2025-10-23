@@ -1,6 +1,8 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
 import com.fourweekdays.fourweekdays.asn.exception.ASNException;
+import com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType;
+import com.fourweekdays.fourweekdays.asn.model.dto.response.ASNResponse;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
 import com.fourweekdays.fourweekdays.asn.model.entity.ASN;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
 
@@ -58,4 +61,12 @@ public class AsnService {
                 .message("ASN이 성공적으로 등록되었습니다")
                 .build();
     }
+
+    public ASNResponse asnDetail(Long asnId) {
+        ASN asn = asnRepository.findById(asnId)
+                .orElseThrow(() -> new ASNException(ASN_NOT_FOUND));
+        return ASNResponse.toDto(asn);
+    }
+
+
 }
