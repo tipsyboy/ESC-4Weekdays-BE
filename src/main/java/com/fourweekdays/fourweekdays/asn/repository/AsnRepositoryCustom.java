@@ -1,11 +1,11 @@
 package com.fourweekdays.fourweekdays.asn.repository;
 
 
-import com.fourweekdays.fourweekdays.asn.model.entity.ASN;
+import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ASNRepositoryCustom {
+public interface AsnRepositoryCustom {
 
-    Page<ASN> findAllWithPaging(Pageable pageable);
+    Page<Asn> findAllWithPaging(Pageable pageable);
 }

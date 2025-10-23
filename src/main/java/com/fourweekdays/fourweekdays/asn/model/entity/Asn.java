@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ASN extends BaseEntity {
+public class Asn extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,9 +34,9 @@ public class ASN extends BaseEntity {
     private String description; // 비고
 
 
-    public static ASN create(Vendor vendor, PurchaseOrder purchaseOrder,
+    public static Asn create(Vendor vendor, PurchaseOrder purchaseOrder,
                              String asnCode, LocalDateTime expectedDate, String description) {
-        ASN asn = new ASN();
+        Asn asn = new Asn();
         asn.vendor = vendor;
         asn.purchaseOrder = purchaseOrder;
         asn.asnCode = asnCode;
