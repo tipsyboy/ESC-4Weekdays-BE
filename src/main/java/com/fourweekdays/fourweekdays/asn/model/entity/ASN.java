@@ -31,13 +31,17 @@ public class ASN extends BaseEntity {
 
     private LocalDateTime expectedDate; // 도착 날짜
 
+    private String description; // 비고
 
-    public static ASN create(Vendor vendor, PurchaseOrder purchaseOrder, String asnCode, LocalDateTime expectedDate) {
+
+    public static ASN create(Vendor vendor, PurchaseOrder purchaseOrder,
+                             String asnCode, LocalDateTime expectedDate, String description) {
         ASN asn = new ASN();
         asn.vendor = vendor;
         asn.purchaseOrder = purchaseOrder;
         asn.asnCode = asnCode;
         asn.expectedDate = expectedDate;
+        asn.description = description;
         return asn;
     }
 

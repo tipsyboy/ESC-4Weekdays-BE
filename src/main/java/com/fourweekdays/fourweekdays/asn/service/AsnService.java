@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_DUPLICATION;
 import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
 
@@ -36,7 +35,9 @@ public class AsnService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderCode(request.orderCode())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
 
-        if (!purchaseOrder.getVendor().equals(vendor)) {
+        Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
+
+        if (!purchaseOrderVendorId.equals(vendor.getId())) {
             throw new ASNException(VENDOR_MISMATCH);
         }
 
@@ -44,11 +45,13 @@ public class AsnService {
                 vendor,
                 purchaseOrder,
                 codeGenerator.generate(ASN_CODE_PREFIX),
-                request.expectedDate()
+                request.expectedDate(),
+                request.description()
         );
         asnRepository.save(asn);
-
-        Long inboundId = inboundService.createByPurchaseOrder(purchaseOrder);
+        
+        // inbound 자동 생성
+//        Long inboundId = inboundService.createByPurchaseOrder(purchaseOrder);
 
         return AsnReceiveResponse.builder()
                 .asnCode(asn.getAsnCode())
