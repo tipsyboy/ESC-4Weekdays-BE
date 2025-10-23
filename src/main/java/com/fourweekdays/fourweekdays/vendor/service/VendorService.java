@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,8 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
@@ -47,20 +46,31 @@ public class VendorService {
         return vendors.map(VendorReadDto::from);
     }
 
+    // 내용 수정
     @Transactional
     public void update(Long id, VendorUpdateDto dto) {
         Vendor vendor = vendorRepository.findById(id)
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
         vendor.update(dto.getName(), dto.getPhoneNumber(), dto.getEmail(),
-                dto.getDescription(), dto.getStatus(), dto.getAddress());
+                dto.getDescription(), dto.getAddress());
     }
 
+    // 상태 변경
+    @Transactional
+    public void updateStatus(Long id, VendorStatus status) {
+        Vendor vendor = vendorRepository.findById(id)
+                .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
+
+        vendor.changeStatus(status);
+    }
+
+    // 거래 중단
     @Transactional
     public void suspend(Long id) {
         Vendor vendor = vendorRepository.findById(id)
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
-        vendor.suspended();
+        vendor.changeStatus(VendorStatus.SUSPENDED);
     }
 
 }
