@@ -1,19 +1,22 @@
 package com.fourweekdays.fourweekdays.vendor.model.entity;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@Entity
+
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@Entity
 public class Vendor extends BaseEntity {
 
     @Id
@@ -33,6 +36,9 @@ public class Vendor extends BaseEntity {
     @Column(length = 100)
     private String email;
 
+    @Column(unique = true)
+    private String apiKey;
+
     private String description; // 업체 설명 및 비고
 
     @Enumerated(EnumType.STRING)
@@ -42,16 +48,21 @@ public class Vendor extends BaseEntity {
     @Embedded
     private Address address;
 
-    @Builder.Default
     @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY) // TODO: think CASCADE
-    private List<Product> productList = new ArrayList<>();
+    private List<Product> productList;
 
-//    @Builder.Default
-//    @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
-//    private List<Outbound> outboundList = new ArrayList<>();
-
-//    @Column(length = 200)
-//    private String employee; // 담당자
+    @Builder
+    public Vendor(String vendorCode, String name, String phoneNumber, String email, String apiKey, String description, VendorStatus status, Address address) {
+        this.vendorCode = vendorCode;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.description = description;
+        this.status = status;
+        this.address = address;
+        this.productList = new ArrayList<>();
+        this.apiKey = generateApiKey();
+    }
 
     // ===== 비즈니스 로직 ===== //
     public void update(String name, String phoneNumber, String email,
@@ -72,4 +83,7 @@ public class Vendor extends BaseEntity {
         return this.status == VendorStatus.ACTIVE;
     }
 
+    private String generateApiKey() {
+        return UUID.randomUUID().toString();
+    }
 }

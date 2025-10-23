@@ -1,12 +1,11 @@
-package com.fourweekdays.fourweekdays.member.config;
+package com.fourweekdays.fourweekdays.config;
 
+import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
 import com.fourweekdays.fourweekdays.member.config.filter.JwtAuthFilter;
 import com.fourweekdays.fourweekdays.member.config.filter.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,10 +43,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http, VendorApiKeyFilter vendorApiKeyFilter) throws Exception {
         http.authorizeHttpRequests(
                 (auth) -> auth
                         .requestMatchers("/api/member/**").permitAll()
+                        .requestMatchers("/api/asn/**").permitAll()
                         .anyRequest().permitAll()
         );
 
@@ -59,6 +59,7 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.logout(AbstractHttpConfigurer::disable);
 
+        http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(new LoginFilter(configuration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
 

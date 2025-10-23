@@ -1,0 +1,80 @@
+package com.fourweekdays.fourweekdays.asn.service;
+
+import com.fourweekdays.fourweekdays.asn.exception.ASNException;
+import com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType;
+import com.fourweekdays.fourweekdays.asn.model.dto.response.ASNResponse;
+import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
+import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
+import com.fourweekdays.fourweekdays.asn.model.entity.ASN;
+import com.fourweekdays.fourweekdays.asn.repository.ASNRepository;
+import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.inbound.service.InboundService;
+import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
+import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
+
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Service
+public class AsnService {
+
+    private final String ASN_CODE_PREFIX = "ASN";
+
+    private final ASNRepository asnRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final InboundService inboundService;
+    private final CodeGenerator codeGenerator;
+
+    @Transactional
+    public AsnReceiveResponse receiveAsn(Vendor vendor, AsnReceiveRequest request) {
+
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderCode(request.orderCode())
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+
+        Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
+
+        if (!purchaseOrderVendorId.equals(vendor.getId())) {
+            throw new ASNException(VENDOR_MISMATCH);
+        }
+
+        ASN asn = ASN.create(
+                vendor,
+                purchaseOrder,
+                codeGenerator.generate(ASN_CODE_PREFIX),
+                request.expectedDate(),
+                request.description()
+        );
+        asnRepository.save(asn);
+
+        // inbound 자동 생성
+//        Long inboundId = inboundService.createByPurchaseOrder(purchaseOrder);
+
+        return AsnReceiveResponse.builder()
+                .asnCode(asn.getAsnCode())
+                .message("ASN이 성공적으로 등록되었습니다")
+                .build();
+    }
+
+    public ASNResponse asnDetail(Long asnId) {
+        ASN asn = asnRepository.findById(asnId)
+                .orElseThrow(() -> new ASNException(ASN_NOT_FOUND));
+        return ASNResponse.toDto(asn);
+    }
+
+    public Page<ASNResponse> asnListByPaging(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ASN> pageList = asnRepository.findAllWithPaging(pageable);
+        return pageList.map(ASNResponse::toDto);
+    }
+}
