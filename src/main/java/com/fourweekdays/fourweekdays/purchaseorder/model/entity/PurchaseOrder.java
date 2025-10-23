@@ -46,6 +46,9 @@ public class PurchaseOrder extends BaseEntity {
 //    @Column(length = 100)
 //    private String orderedBy; // 발주 담당자
 
+    private String rejectedReason;  // nullable
+    private LocalDateTime rejectedAt;  // nullable
+
     // ===== 연관관계 편의 메서드 ===== //
     public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
         this.items.add(purchaseOrderProduct);
@@ -74,6 +77,12 @@ public class PurchaseOrder extends BaseEntity {
     }
 
     public void cancel() {
+        this.status = PurchaseOrderStatus.CANCELLED;
+    }
+
+    public void rejectByVendor(String reason) {
+        this.rejectedReason = reason;
+        this.rejectedAt = LocalDateTime.now();
         this.status = PurchaseOrderStatus.CANCELLED;
     }
     // ... 발주 승인 메서드 ...

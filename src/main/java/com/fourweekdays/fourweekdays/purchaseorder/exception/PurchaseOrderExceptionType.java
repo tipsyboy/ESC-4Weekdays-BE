@@ -3,10 +3,11 @@ package com.fourweekdays.fourweekdays.purchaseorder.exception;
 import com.fourweekdays.fourweekdays.global.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 public enum PurchaseOrderExceptionType implements ExceptionType {
+
+    PURCHASE_ORDER_CANNOT_REJECT(BAD_REQUEST, "현재 상태에서는 거절할 수 없습니다"),
 
     PURCHASE_ORDER_NOT_FOUND(NOT_FOUND, "해당 발주서를 찾을 수 없습니다."),
 

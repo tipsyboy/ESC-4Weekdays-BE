@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.asn.controller;
 
 import com.fourweekdays.fourweekdays.asn.annotation.AuthenticatedVendor;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
+import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.ASNResponse;
 import com.fourweekdays.fourweekdays.asn.service.AsnService;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
@@ -23,6 +24,13 @@ public class ASNController {
                                                            @RequestBody AsnReceiveRequest request) {
         asnService.receiveAsn(vendor, request);
         return ResponseEntity.ok(BaseResponse.success("발주 ASN 전송 성공"));
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<BaseResponse<String>> rejectPurchaseOrder(@AuthenticatedVendor Vendor vendor,
+                                                                    @RequestBody PurchaseOrderRejectRequest request) {
+        asnService.rejectPurchaseOrderByVendor(vendor, request);
+        return ResponseEntity.ok(BaseResponse.success("배송 취소"));
     }
 
     @GetMapping("/{id}")
