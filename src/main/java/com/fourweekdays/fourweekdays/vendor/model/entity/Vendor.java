@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.vendor.model.entity;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.common.vo.Address;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,21 +55,24 @@ public class Vendor extends BaseEntity {
 
     // ===== 비즈니스 로직 ===== //
     public void update(String name, String phoneNumber, String email,
-                       String description, VendorStatus status, Address address) {
+                       String description, Address address) {
         if (name != null) this.name = name;
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (email != null) this.email = email;
         if (description != null) this.description = description;
-        if (status != null) this.status = status;
         if (address != null) this.address = address;
     }
 
-    public void suspended() {
-        this.status = VendorStatus.SUSPENDED;
+    public void changeStatus(VendorStatus status) {
+        if (status != null) this.status = status;
     }
 
-    public boolean canOrder() {
-        return this.status == VendorStatus.ACTIVE;
-    }
+//    public void suspended() {
+//        this.status = VendorStatus.SUSPENDED;
+//    }
+//
+//    public boolean canOrder() {
+//        return this.status == VendorStatus.ACTIVE;
+//    }
 
 }

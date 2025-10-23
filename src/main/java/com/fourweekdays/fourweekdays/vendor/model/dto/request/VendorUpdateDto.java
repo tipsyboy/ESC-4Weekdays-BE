@@ -27,9 +27,6 @@ public class VendorUpdateDto {
 
     private String description;
 
-    @NotNull
-    private VendorStatus status;
-
     private Address address;
 }
 
