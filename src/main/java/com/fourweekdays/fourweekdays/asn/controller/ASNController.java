@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.asn.controller;
 import com.fourweekdays.fourweekdays.asn.annotation.AuthenticatedVendor;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.ASNResponse;
+import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.service.AsnService;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -34,12 +34,12 @@ public class ASNController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<ASNResponse>> asnDetail(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<AsnResponse>> asnDetail(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(asnService.asnDetail(id)));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<ASNResponse>>> asnList(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<BaseResponse<Page<AsnResponse>>> asnList(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(BaseResponse.success(asnService.asnListByPaging(page, size)));
     }

@@ -1,19 +1,16 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
 import com.fourweekdays.fourweekdays.asn.exception.ASNException;
-import com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.ASNResponse;
+import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
-import com.fourweekdays.fourweekdays.asn.model.entity.ASN;
-import com.fourweekdays.fourweekdays.asn.repository.ASNRepository;
+import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
+import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,7 @@ public class AsnService {
 
     private final String ASN_CODE_PREFIX = "ASN";
 
-    private final ASNRepository asnRepository;
+    private final AsnRepository asnRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final InboundService inboundService;
     private final CodeGenerator codeGenerator;
@@ -52,7 +49,7 @@ public class AsnService {
             throw new ASNException(VENDOR_MISMATCH);
         }
 
-        ASN asn = ASN.create(
+        Asn asn = Asn.create(
                 vendor,
                 purchaseOrder,
                 codeGenerator.generate(ASN_CODE_PREFIX),
@@ -87,15 +84,15 @@ public class AsnService {
         purchaseOrder.rejectByVendor(request.description());
     }
 
-    public ASNResponse asnDetail(Long asnId) {
-        ASN asn = asnRepository.findById(asnId)
+    public AsnResponse asnDetail(Long asnId) {
+        Asn asn = asnRepository.findById(asnId)
                 .orElseThrow(() -> new ASNException(ASN_NOT_FOUND));
-        return ASNResponse.toDto(asn);
+        return AsnResponse.toDto(asn);
     }
 
-    public Page<ASNResponse> asnListByPaging(int page, int size) {
+    public Page<AsnResponse> asnListByPaging(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ASN> pageList = asnRepository.findAllWithPaging(pageable);
-        return pageList.map(ASNResponse::toDto);
+        Page<Asn> pageList = asnRepository.findAllWithPaging(pageable);
+        return pageList.map(AsnResponse::toDto);
     }
 }
