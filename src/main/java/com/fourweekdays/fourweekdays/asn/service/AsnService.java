@@ -24,6 +24,7 @@ import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_N
 import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class AsnService {
