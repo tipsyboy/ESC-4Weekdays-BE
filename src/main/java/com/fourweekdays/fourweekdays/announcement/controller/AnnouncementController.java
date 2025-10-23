@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,8 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> announcementCreate(@RequestBody AnnouncementCreateDto dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuth userAuth = (UserAuth) authentication.getPrincipal();
+    public ResponseEntity<BaseResponse<Long>> announcementCreate(@RequestBody AnnouncementCreateDto dto,
+                                                                 @AuthenticationPrincipal UserAuth userAuth) {
         String name = userAuth.getName();
         Long result = announcementService.create(dto, name);
         return ResponseEntity.ok(BaseResponse.success(result));
