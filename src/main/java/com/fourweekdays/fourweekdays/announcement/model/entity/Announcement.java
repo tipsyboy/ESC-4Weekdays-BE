@@ -19,6 +19,9 @@ public class Announcement extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String name; // 이름
+
+    @Column(nullable = false)
     private String title; // 제목
 
     @Column(nullable = false)

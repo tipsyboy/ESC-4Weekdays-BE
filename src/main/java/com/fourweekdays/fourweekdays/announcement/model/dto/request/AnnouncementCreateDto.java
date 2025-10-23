@@ -11,8 +11,9 @@ public class AnnouncementCreateDto {
     private String title;
     private String content;
 
-    public Announcement toEntity() {
+    public Announcement toEntity(String name) {
         return Announcement.builder()
+                .name(name)
                 .title(title)
                 .content(content)
                 .build();
