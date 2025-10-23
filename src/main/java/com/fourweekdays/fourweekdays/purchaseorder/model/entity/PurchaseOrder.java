@@ -39,17 +39,13 @@ public class PurchaseOrder extends BaseEntity {
 
     private Long totalAmount;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<PurchaseOrderProduct> items = new ArrayList<>();
+    private String rejectedReason;  // nullable
+    private LocalDateTime rejectedAt;  // nullable
 
-
-    // ===================== 연관관계 편의 메서드 ===================== //
-
-    public void addItem(PurchaseOrderProduct item) {
-        this.items.add(item);
-        item.mappingPurchaseOrder(this);
-        recalculateTotalAmount();
+    // ===== 연관관계 편의 메서드 ===== //
+    public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
+        this.items.add(purchaseOrderProduct);
+        purchaseOrderProduct.mappingPurchaseOrder(this);
     }
 
     public void removeItem(PurchaseOrderProduct item) {
@@ -108,3 +104,19 @@ public class PurchaseOrder extends BaseEntity {
         this.totalAmount = calculateTotalAmount();
     }
 }
+
+public void awaitDelivery() {
+    this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
+}
+
+public void cancel() {
+    this.status = PurchaseOrderStatus.CANCELLED;
+}
+
+public void rejectByVendor(String reason) {
+    this.rejectedReason = reason;
+    this.rejectedAt = LocalDateTime.now();
+    this.status = PurchaseOrderStatus.CANCELLED;
+}
+
+// ... 입고 완료 처리 메서드 ...

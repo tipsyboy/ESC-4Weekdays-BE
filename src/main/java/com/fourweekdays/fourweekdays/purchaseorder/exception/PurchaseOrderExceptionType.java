@@ -7,6 +7,8 @@ import static org.springframework.http.HttpStatus.*;
 
 public enum PurchaseOrderExceptionType implements ExceptionType {
 
+    PURCHASE_ORDER_CANNOT_REJECT(BAD_REQUEST, "현재 상태에서는 거절할 수 없습니다"),
+
     PURCHASE_ORDER_NOT_FOUND(NOT_FOUND, "해당 발주서를 찾을 수 없습니다."),
 
     PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL(CONFLICT, "이미 승인된 발주서는 수정할 수 없습니다."),
