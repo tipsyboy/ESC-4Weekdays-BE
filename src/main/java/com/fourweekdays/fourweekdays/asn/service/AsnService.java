@@ -14,6 +14,9 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +55,7 @@ public class AsnService {
                 request.description()
         );
         asnRepository.save(asn);
-        
+
         // inbound 자동 생성
 //        Long inboundId = inboundService.createByPurchaseOrder(purchaseOrder);
 
@@ -68,5 +71,9 @@ public class AsnService {
         return ASNResponse.toDto(asn);
     }
 
-
+    public Page<ASNResponse> asnListByPaging(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ASN> pageList = asnRepository.findAllWithPaging(pageable);
+        return pageList.map(ASNResponse::toDto);
+    }
 }
