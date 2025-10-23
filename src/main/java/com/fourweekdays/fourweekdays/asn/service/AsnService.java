@@ -59,7 +59,7 @@ public class AsnService {
         asnRepository.save(asn);
 
         // inbound 자동 생성
-//        Long inboundId = inboundService.createByPurchaseOrder(purchaseOrder);
+        inboundService.createByPurchaseOrder(purchaseOrder);
 
         return AsnReceiveResponse.builder()
                 .asnCode(asn.getAsnCode())
@@ -77,7 +77,7 @@ public class AsnService {
             throw new ASNException(VENDOR_MISMATCH);
         }
 
-        if (purchaseOrder.getStatus() != APPROVED && purchaseOrder.getStatus() != AWAITING_DELIVERY) {
+        if (purchaseOrder.getStatus() != APPROVED) {
             throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_REJECT);
         }
 
