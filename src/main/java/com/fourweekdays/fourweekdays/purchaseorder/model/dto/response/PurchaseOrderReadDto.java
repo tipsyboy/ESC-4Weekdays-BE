@@ -35,7 +35,7 @@ public class PurchaseOrderReadDto {
                 .status(entity.getStatus())
                 .totalAmount(entity.calculateTotalAmount())
                 .description(entity.getDescription())
-                .items(entity.getItems().stream()
+                .items(entity.getProducts().stream()
                         .map(PurchaseOrderProductResponseDto::toDto)
                         .toList())
                 .build();

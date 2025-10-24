@@ -27,53 +27,75 @@ public class PurchaseOrder extends BaseEntity {
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseOrderProduct> products = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PurchaseOrderStatus status;
 
-    private LocalDateTime orderDate;       // 발주일
-    private LocalDateTime expectedDate;    // 입고 예정일
-
     @Column(length = 1000)
     private String description;
 
+    private LocalDateTime orderDate; // 발주일
+    private LocalDateTime expectedDate; // 입고 예정일
     private Long totalAmount;
+    private String rejectedReason;
+    private LocalDateTime rejectedAt;
 
-    private String rejectedReason;  // nullable
-    private LocalDateTime rejectedAt;  // nullable
 
     // ===== 연관관계 편의 메서드 ===== //
     public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
-        this.items.add(purchaseOrderProduct);
+        this.products.add(purchaseOrderProduct);
         purchaseOrderProduct.mappingPurchaseOrder(this);
     }
 
+    // ===== 비즈니스 로직 ===== //
+    public void update(LocalDateTime expectedDate, String description) {
+        if (expectedDate != null) this.expectedDate = expectedDate;
+        if (description != null) this.description = description;
+    }
+
+    public void rejectByVendor(String reason) {
+        this.rejectedReason = reason;
+        this.rejectedAt = LocalDateTime.now();
+        this.status = PurchaseOrderStatus.CANCELLED;
+    }
+
+    public Long calculateTotalAmount() {
+        return products.stream()
+                .mapToLong(PurchaseOrderProduct::calculateAmount)
+                .sum();
+    }
+
+    private void recalculateTotalAmount() {
+        this.totalAmount = calculateTotalAmount();
+    }
+
     public void removeItem(PurchaseOrderProduct item) {
-        this.items.remove(item);
+        this.products.remove(item);
         recalculateTotalAmount();
     }
 
     public void clearItems() {
-        this.items.clear();
+        this.products.clear();
         this.totalAmount = 0L;
     }
 
-
-    // ===================== 상태 관리 메서드 ===================== //
-
-    // 발주 승인
+    // ===== 상태 관리 메서드 ===== //
     public void approve() {
         this.status = PurchaseOrderStatus.APPROVED;
     }
 
     // 발주 확정 (공급사 납품 준비 완료)
-    public void confirm() {
+    public void awaitDelivery() {
         this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
     }
 
     // 입고 완료 처리 (ASN → 입고 완료 시점)
-    public void completeInbound() {
-        this.status = PurchaseOrderStatus.DELIVERED;
+    public void completeDelivery() {
+        this.status = PurchaseOrderStatus.COMPLETED;
     }
 
     // 발주 취소
@@ -83,40 +105,8 @@ public class PurchaseOrder extends BaseEntity {
 
     // 상품 제거
     public void deleteItem(PurchaseOrderProduct item) {
-        if (this.items.remove(item)) recalculateTotalAmount();
-    }
-
-
-    // ===================== 금액 및 수정 로직 ===================== //
-
-    public void update(LocalDateTime expectedDate, String description) {
-        if (expectedDate != null) this.expectedDate = expectedDate;
-        if (description != null) this.description = description;
-    }
-
-    public Long calculateTotalAmount() {
-        return items.stream()
-                .mapToLong(PurchaseOrderProduct::calculateAmount)
-                .sum();
-    }
-
-    private void recalculateTotalAmount() {
-        this.totalAmount = calculateTotalAmount();
+        if (this.products.remove(item)) {
+            recalculateTotalAmount();
+        }
     }
 }
-
-public void awaitDelivery() {
-    this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
-}
-
-public void cancel() {
-    this.status = PurchaseOrderStatus.CANCELLED;
-}
-
-public void rejectByVendor(String reason) {
-    this.rejectedReason = reason;
-    this.rejectedAt = LocalDateTime.now();
-    this.status = PurchaseOrderStatus.CANCELLED;
-}
-
-// ... 입고 완료 처리 메서드 ...

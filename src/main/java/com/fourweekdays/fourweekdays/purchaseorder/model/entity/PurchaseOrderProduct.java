@@ -40,6 +40,7 @@ public class PurchaseOrderProduct extends BaseEntity {
     public Long calculateAmount() {
         return this.product.getUnitPrice() * orderedQuantity;
     }
+
     // ... 입고 진행률 조회 메서드 (Inbound에서 집계) ...
 }
 

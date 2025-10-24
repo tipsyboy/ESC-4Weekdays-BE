@@ -448,7 +448,7 @@ public class InitialDataSetup {
                     .expectedDate(LocalDateTime.now().plusDays(3))
                     .status(PurchaseOrderStatus.APPROVED)
                     .description("설화수, 라네즈 정기 발주")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             PurchaseOrderProduct po1Item1 = PurchaseOrderProduct.builder()
@@ -479,10 +479,10 @@ public class InitialDataSetup {
                     .description("인기 상품")
                     .build();
 
-            po1.getItems().add(po1Item1);
-            po1.getItems().add(po1Item2);
-            po1.getItems().add(po1Item3);
-            po1.getItems().add(po1Item4);
+            po1.getProducts().add(po1Item1);
+            po1.getProducts().add(po1Item2);
+            po1.getProducts().add(po1Item3);
+            po1.getProducts().add(po1Item4);
             purchaseOrderRepository.save(po1);
 
             // 발주 2: LG생활건강 제품 발주
@@ -493,7 +493,7 @@ public class InitialDataSetup {
                     .expectedDate(LocalDateTime.now().plusDays(7))
                     .status(PurchaseOrderStatus.REQUESTED)
                     .description("더페이스샵, 빌리프 신규 입고")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             PurchaseOrderProduct po2Item1 = PurchaseOrderProduct.builder()
@@ -517,9 +517,9 @@ public class InitialDataSetup {
                     .description("고급 라인")
                     .build();
 
-            po2.getItems().add(po2Item1);
-            po2.getItems().add(po2Item2);
-            po2.getItems().add(po2Item3);
+            po2.getProducts().add(po2Item1);
+            po2.getProducts().add(po2Item2);
+            po2.getProducts().add(po2Item3);
             purchaseOrderRepository.save(po2);
 
             // 발주 3: 코스맥스 ODM 제품 발주
@@ -530,7 +530,7 @@ public class InitialDataSetup {
                     .expectedDate(LocalDateTime.now().plusDays(10))
                     .status(PurchaseOrderStatus.APPROVED)
                     .description("기능성 화장품 긴급 발주")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             PurchaseOrderProduct po3Item1 = PurchaseOrderProduct.builder()
@@ -547,8 +547,8 @@ public class InitialDataSetup {
                     .description("주름개선")
                     .build();
 
-            po3.getItems().add(po3Item1);
-            po3.getItems().add(po3Item2);
+            po3.getProducts().add(po3Item1);
+            po3.getProducts().add(po3Item2);
             purchaseOrderRepository.save(po3);
 
             // 발주 4: 미샤 제품 발주
@@ -559,7 +559,7 @@ public class InitialDataSetup {
                     .expectedDate(LocalDateTime.now().plusDays(5))
                     .status(PurchaseOrderStatus.APPROVED)
                     .description("미샤 인기 제품 재입고")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             PurchaseOrderProduct po4Item1 = PurchaseOrderProduct.builder()
@@ -583,9 +583,9 @@ public class InitialDataSetup {
                     .description("고가 라인")
                     .build();
 
-            po4.getItems().add(po4Item1);
-            po4.getItems().add(po4Item2);
-            po4.getItems().add(po4Item3);
+            po4.getProducts().add(po4Item1);
+            po4.getProducts().add(po4Item2);
+            po4.getProducts().add(po4Item3);
             purchaseOrderRepository.save(po4);
 
             // 발주 5: 토니모리 색조 제품 발주
@@ -596,7 +596,7 @@ public class InitialDataSetup {
                     .expectedDate(LocalDateTime.now().plusDays(12))
                     .status(PurchaseOrderStatus.REQUESTED)
                     .description("색조 화장품 대량 발주")
-                    .items(new ArrayList<>())
+                    .products(new ArrayList<>())
                     .build();
 
             PurchaseOrderProduct po5Item1 = PurchaseOrderProduct.builder()
@@ -620,9 +620,9 @@ public class InitialDataSetup {
                     .description("롱래쉬")
                     .build();
 
-            po5.getItems().add(po5Item1);
-            po5.getItems().add(po5Item2);
-            po5.getItems().add(po5Item3);
+            po5.getProducts().add(po5Item1);
+            po5.getProducts().add(po5Item2);
+            po5.getProducts().add(po5Item3);
             purchaseOrderRepository.save(po5);
 
             log.info("✓ 발주 5건 생성");

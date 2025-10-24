@@ -68,7 +68,7 @@ public class InboundService {
                 .scheduledDate(purchaseOrder.getExpectedDate())
                 .build();
 
-        purchaseOrder.getItems().forEach(purchaseOrderProduct -> {
+        purchaseOrder.getProducts().forEach(purchaseOrderProduct -> {
             InboundProduct.builder()
                     .inbound(inbound)
                     .product(purchaseOrderProduct.getProduct())
@@ -190,7 +190,7 @@ public class InboundService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(requestDto.getPurchaseOrderId())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
 
-        purchaseOrder.getItems().forEach(poItem -> {
+        purchaseOrder.getProducts().forEach(poItem -> {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(poItem.getProduct())
                     .purchaseOrderProduct(poItem)

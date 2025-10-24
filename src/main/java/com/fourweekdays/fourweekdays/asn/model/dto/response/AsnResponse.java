@@ -28,7 +28,7 @@ public class AsnResponse {
                 .vendorName(asn.getVendor().getName())
                 .expectedDate(asn.getExpectedDate())
                 .description(asn.getDescription())
-                .products(purchaseOrder.getItems().stream()
+                .products(purchaseOrder.getProducts().stream()
                         .map(PurchaseOrderProductResponseDto::toDto)
                         .toList())
                 .build();
