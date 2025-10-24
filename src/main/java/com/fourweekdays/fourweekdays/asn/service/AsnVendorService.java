@@ -1,9 +1,8 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
-import com.fourweekdays.fourweekdays.asn.exception.ASNException;
-import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.exception.AsnException;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
+import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
 import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
@@ -14,25 +13,20 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_CANNOT_REJECT;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.ASN_ALREADY_EXISTS;
+import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.VENDOR_MISMATCH;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
 import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus.APPROVED;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus.AWAITING_DELIVERY;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class AsnService {
+public class AsnVendorService {
 
-    private final String ASN_CODE_PREFIX = "ASN";
+    private static final String ASN_CODE_PREFIX = "ASN";
 
     private final AsnRepository asnRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
@@ -41,12 +35,14 @@ public class AsnService {
 
     @Transactional
     public AsnReceiveResponse receiveAsn(Vendor vendor, AsnReceiveRequest request) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderCode(request.orderCode())
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+        PurchaseOrder purchaseOrder = findAndValidatePurchaseOrder(vendor, request.orderCode());
 
-        Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
-        if (!purchaseOrderVendorId.equals(vendor.getId())) {
-            throw new ASNException(VENDOR_MISMATCH);
+        if (purchaseOrder.getStatus() != APPROVED) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_FOR_ASN);
+        }
+
+        if (asnRepository.existsByPurchaseOrder(purchaseOrder)) {
+            throw new AsnException(ASN_ALREADY_EXISTS);
         }
 
         Asn asn = Asn.create(
@@ -62,7 +58,6 @@ public class AsnService {
         purchaseOrder.awaitDelivery(); // 배송대기 상태로 변경
         inboundService.createByPurchaseOrder(purchaseOrder); // 발주서에 따른 입고서 생성
 
-
         return AsnReceiveResponse.builder()
                 .asnCode(asn.getAsnCode())
                 .message("ASN이 성공적으로 등록되었습니다")
@@ -71,13 +66,7 @@ public class AsnService {
 
     @Transactional
     public void rejectPurchaseOrderByVendor(Vendor vendor, PurchaseOrderRejectRequest request) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderCode(request.orderCode())
-                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
-
-        Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
-        if (!purchaseOrderVendorId.equals(vendor.getId())) {
-            throw new ASNException(VENDOR_MISMATCH);
-        }
+        PurchaseOrder purchaseOrder = findAndValidatePurchaseOrder(vendor, request.orderCode());
 
         if (purchaseOrder.getStatus() != APPROVED) {
             throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_REJECT);
@@ -86,15 +75,16 @@ public class AsnService {
         purchaseOrder.rejectByVendor(request.description());
     }
 
-    public AsnResponse asnDetail(Long asnId) {
-        Asn asn = asnRepository.findById(asnId)
-                .orElseThrow(() -> new ASNException(ASN_NOT_FOUND));
-        return AsnResponse.toDto(asn);
-    }
 
-    public Page<AsnResponse> asnListByPaging(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Asn> pageList = asnRepository.findAllWithPaging(pageable);
-        return pageList.map(AsnResponse::toDto);
+    private PurchaseOrder findAndValidatePurchaseOrder(Vendor vendor, String orderCode) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findByOrderCode(orderCode)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+
+        Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
+        if (!purchaseOrderVendorId.equals(vendor.getId())) {
+            throw new AsnException(VENDOR_MISMATCH);
+        }
+
+        return purchaseOrder;
     }
 }

@@ -3,9 +3,9 @@ package com.fourweekdays.fourweekdays.asn.exception;
 import com.fourweekdays.fourweekdays.global.exception.BaseException;
 import com.fourweekdays.fourweekdays.global.exception.ExceptionType;
 
-public class ASNException extends BaseException {
+public class AsnException extends BaseException {
 
-    public ASNException(ExceptionType exceptionType) {
+    public AsnException(ExceptionType exceptionType) {
         super(exceptionType);
     }
 }
