@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.order;
+package com.fourweekdays.fourweekdays.order.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
