@@ -1,5 +1,7 @@
 package com.fourweekdays.fourweekdays.member.service;
 
+import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
+import com.fourweekdays.fourweekdays.announcement.model.entity.Announcement;
 import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
@@ -7,6 +9,9 @@ import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -70,5 +75,12 @@ public class MemberService implements UserDetailsService {
                 .name(member.getName())
                 .role(member.getRole())
                 .build();
+    }
+
+    //페이징 처리 조회
+    public Page<MemberResponseDto> readAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Member> result = memberRepository.findAllWithPaging(pageable);
+        return result.map(MemberResponseDto::from);
     }
 }
