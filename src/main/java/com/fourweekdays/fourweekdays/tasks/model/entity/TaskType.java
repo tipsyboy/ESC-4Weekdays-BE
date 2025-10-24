@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.tasks;
+package com.fourweekdays.fourweekdays.tasks.model.entity;
 
 public enum TaskType {
     INBOUND,   // 입고 작업
