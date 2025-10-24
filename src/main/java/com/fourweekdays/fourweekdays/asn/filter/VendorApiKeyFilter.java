@@ -23,7 +23,7 @@ public class VendorApiKeyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        if (!request.getRequestURI().startsWith("/api/asn")) {
+        if (!request.getRequestURI().startsWith("/api/vendor/asn")) {
             filterChain.doFilter(request, response);
             return;
         }
