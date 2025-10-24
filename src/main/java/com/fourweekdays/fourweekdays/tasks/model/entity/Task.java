@@ -39,7 +39,10 @@ public class Task extends BaseEntity {
     }
 
     // 공통 비즈니스 로직
-    public void assignTo(Member worker) { }
+    public void assignTo(Member worker) {
+        this.status = TaskStatus.ASSIGNED;
+        this.worker = worker;
+    }
     public void start() {  }
     public void complete() {  }
 }

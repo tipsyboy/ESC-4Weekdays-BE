@@ -121,7 +121,6 @@ public class InboundService {
         inbound.updateStatus(InboundStatus.PUTAWAY);
     }
 
-    // 소프트 딜리트
     @Transactional
     public void cancel(Long id) {
         Inbound inbound = inboundRepository.findById(id)
