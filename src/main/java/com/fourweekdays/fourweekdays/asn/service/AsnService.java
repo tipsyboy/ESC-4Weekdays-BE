@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
-import com.fourweekdays.fourweekdays.asn.exception.ASNException;
+import com.fourweekdays.fourweekdays.asn.exception.AsnException;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
@@ -20,12 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.ASN_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.asn.exception.ASNExceptionType.VENDOR_MISMATCH;
+import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.ASN_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_CANNOT_REJECT;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus.APPROVED;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus.AWAITING_DELIVERY;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ public class AsnService {
 
         Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
         if (!purchaseOrderVendorId.equals(vendor.getId())) {
-            throw new ASNException(VENDOR_MISMATCH);
+            throw new AsnException(VENDOR_MISMATCH);
         }
 
         Asn asn = Asn.create(
@@ -76,7 +75,7 @@ public class AsnService {
 
         Long purchaseOrderVendorId = purchaseOrder.getVendor().getId();
         if (!purchaseOrderVendorId.equals(vendor.getId())) {
-            throw new ASNException(VENDOR_MISMATCH);
+            throw new AsnException(VENDOR_MISMATCH);
         }
 
         if (purchaseOrder.getStatus() != APPROVED) {
@@ -88,7 +87,7 @@ public class AsnService {
 
     public AsnResponse asnDetail(Long asnId) {
         Asn asn = asnRepository.findById(asnId)
-                .orElseThrow(() -> new ASNException(ASN_NOT_FOUND));
+                .orElseThrow(() -> new AsnException(ASN_NOT_FOUND));
         return AsnResponse.toDto(asn);
     }
 

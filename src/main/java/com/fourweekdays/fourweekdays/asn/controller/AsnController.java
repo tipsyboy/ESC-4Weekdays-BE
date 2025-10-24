@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/asn")
 @RequiredArgsConstructor
 @RestController
-public class ASNController {
+public class AsnController {
 
     private final AsnService asnService;
 

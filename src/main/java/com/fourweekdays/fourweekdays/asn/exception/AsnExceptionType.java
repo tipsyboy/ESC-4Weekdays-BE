@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
-public enum ASNExceptionType implements ExceptionType {
+public enum AsnExceptionType implements ExceptionType {
 
     VENDOR_MISMATCH(BAD_REQUEST, "발주서의 공급업체가 일치하지 않습니다"),
 
@@ -16,7 +16,7 @@ public enum ASNExceptionType implements ExceptionType {
     private final HttpStatus status;
     private final String message;
 
-    ASNExceptionType(HttpStatus status, String message) {
+    AsnExceptionType(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }
