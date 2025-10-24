@@ -23,6 +23,9 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId; // 주문 ID
 
+    @Column
+    private String orderCode;
+
     @ManyToOne
     @JoinColumn(name = "franchise_store_id")
     private FranchiseStore franchiseStore;
