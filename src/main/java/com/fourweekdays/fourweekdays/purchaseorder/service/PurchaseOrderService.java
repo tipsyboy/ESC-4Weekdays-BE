@@ -83,34 +83,6 @@ public class PurchaseOrderService {
         return order.getId();
     }
 
-    // 발주 승인
-    @Transactional
-    public Long approve(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        order.approve(); // 상태 변경
-        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
-    }
-
-    // 발주 확정 (공급사 납품 준비 완료)
-    @Transactional
-    public void confirm(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        if (order.getStatus() != PurchaseOrderStatus.APPROVED) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
-        }
-        order.confirm();
-    }
-
-    // 입고 완료 처리
-    @Transactional
-    public void completeInbound(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        if (order.getStatus() != PurchaseOrderStatus.AWAITING_DELIVERY) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
-        }
-        order.completeInbound();
-    }
-
     // 발주 취소
     @Transactional
     public void cancel(Long id) {
@@ -120,6 +92,34 @@ public class PurchaseOrderService {
         }
         order.cancel();
     }
+
+    // 발주 승인
+    @Transactional
+    public Long approve(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        order.approve(); // 상태 변경
+        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
+    }
+
+    @Transactional
+    public void confirm(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        if (order.getStatus() != PurchaseOrderStatus.APPROVED) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
+        order.awaitDelivery();
+    }
+
+    // 입고 완료 처리
+    @Transactional
+    public void completeInbound(Long id) {
+        PurchaseOrder order = findByIdOrThrow(id);
+        if (order.getStatus() != PurchaseOrderStatus.AWAITING_DELIVERY) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
+        order.completeDelivery();
+    }
+
 
     private PurchaseOrder findByIdOrThrow(Long id) {
         return purchaseOrderRepository.findById(id)
