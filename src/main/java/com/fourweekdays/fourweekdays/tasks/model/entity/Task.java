@@ -4,6 +4,7 @@ import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class Task extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TaskType type; // INBOUND, OUTBOUND, RELOCATION
+    private TaskCategory category; // INBOUND, OUTBOUND, RELOCATION
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -30,6 +31,12 @@ public class Task extends BaseEntity {
 
     private LocalDateTime assignedAt;
     private LocalDateTime completedAt;
+
+    @Builder
+    public Task(TaskCategory category, TaskStatus status) {
+        this.category = category;
+        this.status = status;
+    }
 
     // 공통 비즈니스 로직
     public void assignTo(Member worker) { }
