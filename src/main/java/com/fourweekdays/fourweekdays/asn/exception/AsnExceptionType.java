@@ -11,7 +11,7 @@ public enum AsnExceptionType implements ExceptionType {
 
     ASN_NOT_FOUND(NOT_FOUND, "해당 ASN을 찾을 수 없습니다."),
 
-    ASN_DUPLICATION(CONFLICT, "이미 등록된 ASN입니다.") ;
+    ASN_ALREADY_EXISTS(CONFLICT, "이미 수신한 ASN 입니다.");
 
     private final HttpStatus status;
     private final String message;
