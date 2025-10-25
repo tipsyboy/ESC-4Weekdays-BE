@@ -1,7 +1,15 @@
 package com.fourweekdays.fourweekdays.tasks.model.entity;
 
 public enum TaskCategory {
-    INBOUND, // 입고 작업
-    OUTBOUND, // 출고 작업
-    STOCK_TAKE // 재고 조사
+
+    INSPECTION("검수"),
+    PUTAWAY("적치"),
+    PICKING("피킹"),
+    PACKING("포장");
+
+    private final String description;
+
+    TaskCategory(String description) {
+        this.description = description;
+    }
 }

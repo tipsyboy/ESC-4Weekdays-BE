@@ -1,7 +1,11 @@
 package com.fourweekdays.fourweekdays.tasks.repository;
 
-import com.fourweekdays.fourweekdays.tasks.model.entity.InboundTask;
+import com.fourweekdays.fourweekdays.tasks.model.entity.InspectionTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface InboundTaskRepository extends JpaRepository<InboundTask, Long> {
+import java.util.Optional;
+
+public interface InboundTaskRepository extends JpaRepository<InspectionTask, Long> {
+
+    Optional<InspectionTask> findByTaskId(Long taskId);
 }

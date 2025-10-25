@@ -35,10 +35,11 @@ public class Task extends BaseEntity {
     @Column(name = "reference_id")
     private Long referenceId; // 입고, 출고
 
+    private String note; // 내용 기록
+
     private LocalDateTime assignedAt;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
-
 
     @Builder
     public Task(TaskCategory category, TaskStatus status, Long referenceId) {
@@ -46,7 +47,6 @@ public class Task extends BaseEntity {
         this.status = status;
         this.referenceId = referenceId;
     }
-
 
     // 공통 비즈니스 로직
     public void assignTo(Member worker) {
@@ -66,18 +66,20 @@ public class Task extends BaseEntity {
         this.startedAt = LocalDateTime.now();
     }
 
-    public void complete() {
+    public void complete(String note) {
         if (this.status != TaskStatus.IN_PROGRESS) {
             throw new TaskException(TASK_CANNOT_COMPLETE);
         }
+        this.note = note;
         this.status = TaskStatus.COMPLETED;
         this.completedAt = LocalDateTime.now();
     }
 
-    public void cancel() {
+    public void cancel(String note) {
         if (this.status == TaskStatus.COMPLETED) {
             throw new TaskException(TASK_CANNOT_CANCEL);
         }
+        this.note = note;
         this.status = TaskStatus.CANCELLED;
     }
 }

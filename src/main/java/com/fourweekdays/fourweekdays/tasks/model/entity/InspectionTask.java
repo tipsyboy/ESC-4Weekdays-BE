@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class InboundTask {
+public class InspectionTask {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,13 +18,9 @@ public class InboundTask {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @Enumerated(EnumType.STRING)
-    private InboundWorkType workType; // INSPECTION, PUTAWAY
-
     @Builder
-    public InboundTask(Long inboundId, Task task, InboundWorkType workType) {
+    public InspectionTask(Long inboundId, Task task) {
         this.inboundId = inboundId;
         this.task = task;
-        this.workType = workType;
     }
 }

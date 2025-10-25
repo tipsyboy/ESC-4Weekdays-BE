@@ -1,38 +1,51 @@
 package com.fourweekdays.fourweekdays.tasks.factory;
 
+import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.tasks.model.entity.*;
 import com.fourweekdays.fourweekdays.tasks.repository.InboundTaskRepository;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class InboundTaskFactory {
 
     private final TaskRepository taskRepository;
     private final InboundTaskRepository inboundTaskRepository;
+    private final InboundRepository inboundRepository;
 
+    @Transactional
     public Long createInspectionTask(Long inboundId) {
-        Task task = createTask(TaskCategory.INBOUND);
-        InboundTask inboundTask = createInboundTask(task, InboundWorkType.INSPECTION, inboundId);
+        Inbound inbound = inboundRepository.findById(inboundId)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+
+        Task task = createTask(TaskCategory.INSPECTION, inboundId);
+        InspectionTask inspectionTask = createInboundTask(task, inboundId);
+
+        inboundTaskRepository.save(inspectionTask);
         return task.getId();
     }
 
-    private Task createTask(TaskCategory category) {
+    private Task createTask(TaskCategory category, Long referenceId) {
         Task task = Task.builder()
                 .category(category)
                 .status(TaskStatus.PENDING)
+                .referenceId(referenceId)
                 .build();
         return taskRepository.save(task);
     }
 
-    private InboundTask createInboundTask(Task task, InboundWorkType workType, Long inboundId) {
-        InboundTask inboundTask = InboundTask.builder()
+    private InspectionTask createInboundTask(Task task, Long inboundId) {
+        InspectionTask inspectionTask = InspectionTask.builder()
                 .task(task)
-                .workType(workType)
                 .inboundId(inboundId)
                 .build();
-        return inboundTaskRepository.save(inboundTask);
+        return inboundTaskRepository.save(inspectionTask);
     }
 }

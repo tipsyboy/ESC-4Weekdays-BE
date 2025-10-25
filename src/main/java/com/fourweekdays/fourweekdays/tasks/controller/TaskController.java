@@ -1,7 +1,10 @@
 package com.fourweekdays.fourweekdays.tasks.controller;
 
+import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.AssignRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.CompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,5 +21,27 @@ public class TaskController {
                                              @RequestBody AssignRequest request) {
         taskService.assignWorker(taskId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{taskId}/start")
+    public ResponseEntity<BaseResponse<Void>> startTask(@PathVariable Long taskId) {
+        taskService.startTask(taskId);
+        return ResponseEntity.ok(BaseResponse.success(null));
+    }
+
+    @PostMapping("/{taskId}/complete")
+    public ResponseEntity<BaseResponse<Void>> completeTask(@PathVariable Long taskId,
+                                                           @Valid @RequestBody CompleteRequest request) {
+
+        taskService.completeTask(taskId, request);
+        return ResponseEntity.ok(BaseResponse.success(null));
+    }
+
+    @PostMapping("/{taskId}/cancel")
+    public ResponseEntity<BaseResponse<Void>> cancelTask(@PathVariable Long taskId,
+                                                         @RequestParam String reason) {
+
+        taskService.cancelTask(taskId, reason);
+        return ResponseEntity.ok(BaseResponse.success(null));
     }
 }
