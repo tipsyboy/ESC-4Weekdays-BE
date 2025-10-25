@@ -1,0 +1,23 @@
+package com.fourweekdays.fourweekdays.tasks.controller;
+
+import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
+import com.fourweekdays.fourweekdays.tasks.service.InboundTaskService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequestMapping("/api/inbound-tasks")
+@RequiredArgsConstructor
+@RestController
+public class InboundTaskController {
+
+    private final InboundTaskService inboundTaskService;
+
+    @PostMapping("/{taskId}/complete")
+    public ResponseEntity<BaseResponse<String>> complete(@PathVariable Long taskId, @RequestBody TaskCompleteRequest request) {;
+        inboundTaskService.completeInspection(taskId, request);
+        return ResponseEntity.ok(BaseResponse.success("검수 완료"));
+    }
+
+}

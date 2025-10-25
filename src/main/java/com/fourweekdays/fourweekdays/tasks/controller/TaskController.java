@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.tasks.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.tasks.model.dto.request.AssignRequest;
-import com.fourweekdays.fourweekdays.tasks.model.dto.request.CompleteRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskAssignRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class TaskController {
 
     @PostMapping("/{taskId}/assign")
     public ResponseEntity<Void> assignWorker(@PathVariable Long taskId,
-                                             @RequestBody AssignRequest request) {
+                                             @RequestBody TaskAssignRequest request) {
         taskService.assignWorker(taskId, request);
         return ResponseEntity.ok().build();
     }
@@ -31,7 +31,7 @@ public class TaskController {
 
     @PostMapping("/{taskId}/complete")
     public ResponseEntity<BaseResponse<Void>> completeTask(@PathVariable Long taskId,
-                                                           @Valid @RequestBody CompleteRequest request) {
+                                                           @Valid @RequestBody TaskCompleteRequest request) {
 
         taskService.completeTask(taskId, request);
         return ResponseEntity.ok(BaseResponse.success(null));

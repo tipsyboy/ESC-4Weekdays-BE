@@ -4,12 +4,10 @@ import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
-import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;
-import com.fourweekdays.fourweekdays.tasks.model.dto.request.AssignRequest;
-import com.fourweekdays.fourweekdays.tasks.model.dto.request.CompleteRequest;
-import com.fourweekdays.fourweekdays.tasks.model.entity.InspectionTask;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskAssignRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
-import com.fourweekdays.fourweekdays.tasks.repository.InboundTaskRepository;
+import com.fourweekdays.fourweekdays.tasks.repository.InspectionTaskRepository;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,11 +21,11 @@ import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.*;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final InboundTaskRepository inboundTaskRepository;
+    private final InspectionTaskRepository inspectionTaskRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void assignWorker(Long taskId, AssignRequest request) {
+    public void assignWorker(Long taskId, TaskAssignRequest request) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskException(TASK_NOT_FOUND));
 
@@ -47,7 +45,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void completeTask(Long taskId, CompleteRequest request) {
+    public void completeTask(Long taskId, TaskCompleteRequest request) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskException(TASK_NOT_FOUND));
 

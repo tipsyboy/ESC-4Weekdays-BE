@@ -3,9 +3,10 @@ package com.fourweekdays.fourweekdays.tasks.model.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class InspectionTask {
 

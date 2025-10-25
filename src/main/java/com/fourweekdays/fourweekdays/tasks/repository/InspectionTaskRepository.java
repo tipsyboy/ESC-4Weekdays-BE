@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface InboundTaskRepository extends JpaRepository<InspectionTask, Long> {
+public interface InspectionTaskRepository extends JpaRepository<InspectionTask, Long> {
 
     Optional<InspectionTask> findByTaskId(Long taskId);
 }

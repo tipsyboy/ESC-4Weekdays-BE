@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.tasks.model.entity.*;
-import com.fourweekdays.fourweekdays.tasks.repository.InboundTaskRepository;
+import com.fourweekdays.fourweekdays.tasks.repository.InspectionTaskRepository;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionTy
 public class InboundTaskFactory {
 
     private final TaskRepository taskRepository;
-    private final InboundTaskRepository inboundTaskRepository;
+    private final InspectionTaskRepository inspectionTaskRepository;
     private final InboundRepository inboundRepository;
 
     @Transactional
@@ -28,7 +28,7 @@ public class InboundTaskFactory {
         Task task = createTask(TaskCategory.INSPECTION, inboundId);
         InspectionTask inspectionTask = createInboundTask(task, inboundId);
 
-        inboundTaskRepository.save(inspectionTask);
+        inspectionTaskRepository.save(inspectionTask);
         return task.getId();
     }
 
@@ -46,6 +46,10 @@ public class InboundTaskFactory {
                 .task(task)
                 .inboundId(inboundId)
                 .build();
-        return inboundTaskRepository.save(inspectionTask);
+        return inspectionTaskRepository.save(inspectionTask);
+    }
+
+    public void createPutawayTask(Long inboundId) {
+
     }
 }
