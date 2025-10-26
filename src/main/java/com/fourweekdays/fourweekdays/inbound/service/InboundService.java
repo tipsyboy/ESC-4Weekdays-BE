@@ -21,6 +21,7 @@ import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
+import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +49,7 @@ public class InboundService {
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
+    private final InboundTaskFactory inboundTaskFactory;
 
     public Long createByPurchaseOrder(PurchaseOrder purchaseOrder) {
         // -> 발주 트리거에 의해 트랜잭션 전파 Transactional 어노테이션 없음.
@@ -119,7 +121,6 @@ public class InboundService {
         inbound.updateStatus(InboundStatus.PUTAWAY);
     }
 
-    // 소프트 딜리트
     @Transactional
     public void cancel(Long id) {
         Inbound inbound = inboundRepository.findById(id)
@@ -131,8 +132,17 @@ public class InboundService {
         inbound.cancelInbound();
     }
 
-    // TODO: 하드 딜리트 - 꼭 구현을 해야하나?
+    @Transactional
+    public void arriveDelivery(Long inboundId) {
+        Inbound inbound = inboundRepository.findById(inboundId)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+        inbound.updateStatus(InboundStatus.ARRIVED);
 
+        PurchaseOrder purchaseOrder = inbound.getPurchaseOrder();
+        purchaseOrder.completeDelivery();
+
+        inboundTaskFactory.createInspectionTask(inboundId);
+    }
 
     // TODO: 삭제? 발주서가 없는 입고는 어떻게 처리할까
     @Transactional
