@@ -14,10 +14,16 @@ public class InboundTaskController {
 
     private final InboundTaskService inboundTaskService;
 
-    @PostMapping("/{taskId}/complete")
-    public ResponseEntity<BaseResponse<String>> complete(@PathVariable Long taskId, @RequestBody TaskCompleteRequest request) {;
+    @PostMapping("inspection/{taskId}/complete")
+    public ResponseEntity<BaseResponse<String>> completeInspection(@PathVariable Long taskId, @RequestBody TaskCompleteRequest request) {;
         inboundTaskService.completeInspection(taskId, request);
         return ResponseEntity.ok(BaseResponse.success("검수 완료"));
+    }
+
+    @PostMapping("putaway/{taskId}/complete")
+    public ResponseEntity<BaseResponse<String>> completePutaway(@PathVariable Long taskId, @RequestBody TaskCompleteRequest request) {
+        inboundTaskService.completePutaway(taskId, request);
+        return ResponseEntity.ok(BaseResponse.success("적치 완료"));
     }
 
 }

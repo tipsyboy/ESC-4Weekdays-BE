@@ -52,11 +52,13 @@ public class InboundService {
     private final InboundTaskFactory inboundTaskFactory;
 
     public Long createByPurchaseOrder(PurchaseOrder purchaseOrder) {
-        // -> 발주 트리거에 의해 트랜잭션 전파 Transactional 어노테이션 없음.
-        // TODO: member 연결하고 담당자 배정해야함.
-        // TODO: ASN 구현시 발주 승인 트리거가 아닌 ASN 수신 트리거에 의해 생성 로직이 실행되어야함.
-        // TODO: ASN 수신시 입고 예정일을 받아서 Inbound의 입고 예정일 상태를 변경해야함.
-        // TODO: 하나의 발주서로 여러 Inbound가 생성되지 않게 만드는 방어 로직 필요.
+        /**
+         * -> 발주 트리거에 의해 트랜잭션 전파 Transactional 어노테이션 없음.
+         * TODO: 1. member 연결하고 담당자 배정해야함.
+         * TODO: 2. ASN 구현시 발주 승인 트리거가 아닌 ASN 수신 트리거에 의해 생성 로직이 실행되어야함.
+         * TODO: 3. ASN 수신시 입고 예정일을 받아서 Inbound의 입고 예정일 상태를 변경해야함.
+         * TODO: 4. 하나의 발주서로 여러 Inbound가 생성되지 않게 만드는 방어 로직 필요.
+         */
 
         Member manager = memberRepository.findById(1L)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
