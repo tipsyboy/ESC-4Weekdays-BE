@@ -29,4 +29,9 @@ public class OrderProductItem extends BaseEntity {
 
     @Column(length = 500)
     private String description; // 비고
+
+    // ===== 연관관계 편의 메서드 ===== //
+    public void mappingOrder(Order order) {
+        this.order = order;
+    }
 }

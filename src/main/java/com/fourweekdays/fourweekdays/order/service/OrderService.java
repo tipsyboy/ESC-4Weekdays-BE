@@ -31,10 +31,12 @@ public class OrderService {
     private final CodeGenerator codeGenerator;
 
     @Transactional
-    public void receiveCreateOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
+    public Long receiveCreateOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
         // franchise 와 관계를 맺은 order가 생성되게 하기
         Order order = createOrder(franchiseStore, dto);
         createOrderProducts(dto.getItems(), order);
+
+        return orderRepository.save(order).getOrderId();
     }
 
     private Order createOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
@@ -62,5 +64,8 @@ public class OrderService {
                 .orderedQuantity(dto.getOrderedQuantity())
                 .description(dto.getDescription())
                 .build();
+
+        order.addItem(orderProductItem);
+        return orderProductItem;
     }
 }

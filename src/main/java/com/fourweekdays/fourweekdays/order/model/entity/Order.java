@@ -3,15 +3,13 @@ package com.fourweekdays.fourweekdays.order.model.entity;
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "orders")
 @Builder
@@ -49,4 +47,9 @@ public class Order extends BaseEntity {
     @Column(length = 1000)
     private String description; // 비고
 
+    // ===== 연관관계 편의 메서드 ===== //
+    public void addItem(OrderProductItem orderProductItem) {
+        this.items.add(orderProductItem);
+        orderProductItem.mappingOrder(this);
+    }
 }
