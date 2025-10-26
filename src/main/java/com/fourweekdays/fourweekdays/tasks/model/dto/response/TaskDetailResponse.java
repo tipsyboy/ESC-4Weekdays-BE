@@ -1,10 +1,7 @@
 package com.fourweekdays.fourweekdays.tasks.model.dto.response;
 
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.tasks.model.entity.InspectionTask;
-import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
-import com.fourweekdays.fourweekdays.tasks.model.entity.TaskCategory;
-import com.fourweekdays.fourweekdays.tasks.model.entity.TaskStatus;
+import com.fourweekdays.fourweekdays.tasks.model.entity.*;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +17,23 @@ public record TaskDetailResponse(
 
         Long referenceId,
         String referenceCode
-//        String referenceName, // 거래처명
-//        Integer totalQuantity
 ) {
-    public static TaskDetailResponse ofInspection(Task task, InspectionTask detail, Inbound inbound) {
+    public static TaskDetailResponse ofInspection(Task task, InspectionTask inspectionTask, Inbound inbound) {
+        return new TaskDetailResponse(
+                task.getId(),
+                task.getCategory(),
+                task.getStatus(),
+                task.getWorker() != null ? task.getWorker().getName() : null,
+                task.getNote(),
+                task.getAssignedAt(),
+                task.getStartedAt(),
+                task.getCompletedAt(),
+                inbound.getId(),
+                inbound.getInboundCode()
+        );
+    }
+
+    public static TaskDetailResponse ofPutaway(Task task, PutawayTask putawayTask, Inbound inbound) {
         return new TaskDetailResponse(
                 task.getId(),
                 task.getCategory(),

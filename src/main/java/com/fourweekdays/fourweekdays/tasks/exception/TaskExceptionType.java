@@ -9,6 +9,7 @@ public enum TaskExceptionType implements ExceptionType {
 
     TASK_NOT_FOUND(NOT_FOUND, "작업을 찾을 수 없습니다"),
     INSPECTION_TASK_NOT_FOUND(NOT_FOUND, "검수 작업 상세를 찾을 수 없습니다"),
+    PUTAWAY_TASK_NOT_FOUND(NOT_FOUND, "적치 작업 상세를 찾을 수 없습니다"),
 
     TASK_CANNOT_ASSIGN(BAD_REQUEST, "대기 중인 작업만 할당할 수 있습니다"),
     TASK_CANNOT_START(BAD_REQUEST, "할당된 작업만 시작할 수 있습니다"),
