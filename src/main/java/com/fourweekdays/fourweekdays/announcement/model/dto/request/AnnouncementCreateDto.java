@@ -10,12 +10,14 @@ public class AnnouncementCreateDto {
 
     private String title;
     private String content;
+    private Boolean pinned;
 
     public Announcement toEntity(String name) {
         return Announcement.builder()
                 .name(name)
                 .title(title)
                 .content(content)
+                .pinned(pinned)
                 .build();
     }
 }
