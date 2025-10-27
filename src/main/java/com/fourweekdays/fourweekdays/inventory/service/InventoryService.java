@@ -1,10 +1,15 @@
 package com.fourweekdays.fourweekdays.inventory.service;
 
 
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
+import com.fourweekdays.fourweekdays.location.exception.LocationException;
+import com.fourweekdays.fourweekdays.location.exception.LocationExceptionType;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
+    private final InboundRepository inboundRepository;
 
     @Transactional
     public void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,
@@ -55,6 +62,28 @@ public class InventoryService {
                     .build();
 
             inventoryRepository.save(newInventory);
+        }
+    }
+
+    @Transactional
+    public void createInventoryFromInbound(Long inboundId, String locationCode) {
+        // Inbound 조회
+        Inbound inbound = inboundRepository.findById(inboundId)
+                .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+
+        // Location 조회
+        Location location = locationRepository.findByLocationCode(locationCode)
+                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
+
+        // 모든 InboundProduct를 순회하며 재고 생성
+        for (InboundProduct inboundProduct : inbound.getProducts()) {
+            createOrIncreaseInventory(
+                    inboundProduct.getProduct().getId(),
+                    location.getId(),
+                    inboundProduct.getLotNumber(),
+                    inboundProduct.getReceivedQuantity(),
+                    inbound.getId()
+            );
         }
     }
 

@@ -36,7 +36,6 @@ public class PutawayTask {
 
 
     public boolean isLocationAssigned() {
-        // TODO: 할당 조회
-        return true;
+        return this.assignedLocationCode != null;
     }
 }

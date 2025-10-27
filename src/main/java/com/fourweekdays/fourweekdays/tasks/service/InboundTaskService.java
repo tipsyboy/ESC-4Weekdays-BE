@@ -87,6 +87,7 @@ public class InboundTaskService {
                 .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
         location.validateForPutaway(vendorId, totalQuantity);
 
+        // TODO: 동시성 이슈?
         putawayTask.assignLocation(request.locationCode()); // 적치 작업에 적치 위치 할당
 
         // 작업자 할당
@@ -110,27 +111,15 @@ public class InboundTaskService {
         taskService.completeTask(taskId, taskCompleteRequest);
 
         // ===== 재고 생성 ===== //
-        Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
-                .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
-
         String locationCode = putawayTask.getAssignedLocationCode();
-        Location location = locationRepository.findByLocationCode(locationCode)
-                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
-
-        // 모든 InboundProduct를 순회하며 재고 생성
-        for (InboundProduct inboundProduct : inbound.getProducts()) {
-            inventoryService.createOrIncreaseInventory(
-                    inboundProduct.getProduct().getId(),
-                    location.getId(),
-                    inboundProduct.getLotNumber(),
-                    inboundProduct.getReceivedQuantity(),
-                    inbound.getId()
-            );
-        }
+        inventoryService.createInventoryFromInbound(
+                putawayTask.getInboundId(),
+                locationCode
+        );
 
         // Inbound 상태 변경: PUTAWAY → COMPLETED
         inboundService.updateInboundStatus(
-                inbound.getId(),
+                putawayTask.getInboundId(),
                 new InboundStatusUpdateRequest(InboundStatus.COMPLETED)
         );
     }
