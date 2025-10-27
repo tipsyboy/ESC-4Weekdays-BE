@@ -1,17 +1,15 @@
-package com.fourweekdays.fourweekdays.order;
+package com.fourweekdays.fourweekdays.order.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "orders")
 @Builder
@@ -22,6 +20,9 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId; // 주문 ID
+
+    @Column
+    private String orderCode;
 
     @ManyToOne
     @JoinColumn(name = "franchise_store_id")
@@ -46,4 +47,20 @@ public class Order extends BaseEntity {
     @Column(length = 1000)
     private String description; // 비고
 
+    private String rejectedReason; // 거절 사유
+
+    private LocalDateTime rejectedAt; //취소 시간
+
+    // ===== 연관관계 편의 메서드 ===== //
+    public void addItem(OrderProductItem orderProductItem) {
+        this.items.add(orderProductItem);
+        orderProductItem.mappingOrder(this);
+    }
+
+    // ===== 비즈니스 메서드 ===== //
+    public void rejectByFranchise(String reason) {
+        this.rejectedReason = reason;
+        this.rejectedAt = LocalDateTime.now();
+        this.status = OrderStatus.CANCELLED;
+    }
 }

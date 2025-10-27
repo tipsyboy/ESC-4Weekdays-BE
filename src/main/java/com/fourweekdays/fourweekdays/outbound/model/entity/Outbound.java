@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.outbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
-import com.fourweekdays.fourweekdays.order.Order;
+import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

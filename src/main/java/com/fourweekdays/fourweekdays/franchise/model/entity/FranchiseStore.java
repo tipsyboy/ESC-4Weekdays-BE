@@ -31,6 +31,9 @@ public class FranchiseStore extends BaseEntity {
     @Column(length = 100)
     private String email;
 
+    @Column(unique = true)
+    private String apiKey;
+
     private String description; // 업체 설명 및 비고
 
     @Embedded
