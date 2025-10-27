@@ -1,6 +1,9 @@
 package com.fourweekdays.fourweekdays.config;
 
 import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStatus;
+import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
+import com.fourweekdays.fourweekdays.franchise.repository.FranchiseRepository;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * 초기 더미 데이터 생성
- *
+ * <p>
  * 사용법:
  * 1. 이 파일을 그대로 두고 애플리케이션 실행
  * 2. 데이터가 생성되면 이 파일 삭제하거나 @Configuration 주석 처리
@@ -49,6 +52,7 @@ public class InitialDataSetup {
             ProductRepository productRepository,
             PurchaseOrderRepository purchaseOrderRepository,
             InboundRepository inboundRepository,
+            FranchiseRepository franchiseRepository,
             PasswordEncoder passwordEncoder) {
 
         return args -> {
@@ -747,6 +751,95 @@ public class InitialDataSetup {
             inboundRepository.save(inbound4);
 
             log.info("✓ 입고 4건 생성");
+
+            // 2. 가맹점 (Franchise)
+            FranchiseStore franchise1 = franchiseRepository.save(FranchiseStore.builder()
+                    .franchiseCode("F-001")
+                    .name("올리브영 강남본점")
+                    .phoneNumber("02-555-0001")
+                    .email("gangnam@oliveyoung.co.kr")
+                    .apiKey("API-OLIVE-001")
+                    .description("서울 중심가 플래그십 스토어")
+                    .status(FranchiseStatus.ACTIVE)
+                    .address(Address.builder()
+                            .zipcode("06164")
+                            .street("서울특별시 강남구 강남대로 390")
+                            .detail("미진빌딩 1층")
+                            .city("서울")
+                            .country("KR")
+                            .build())
+                    .build());
+
+            FranchiseStore franchise2 = franchiseRepository.save(FranchiseStore.builder()
+                    .franchiseCode("F-002")
+                    .name("올리브영 홍대입구점")
+                    .phoneNumber("02-333-2222")
+                    .email("hongdae@oliveyoung.co.kr")
+                    .apiKey("API-OLIVE-002")
+                    .description("유동인구 많은 트렌디 매장")
+                    .status(FranchiseStatus.ACTIVE)
+                    .address(Address.builder()
+                            .zipcode("04038")
+                            .street("서울특별시 마포구 양화로 147")
+                            .detail("메세나폴리스몰 2층")
+                            .city("서울")
+                            .country("KR")
+                            .build())
+                    .build());
+
+            FranchiseStore franchise3 = franchiseRepository.save(FranchiseStore.builder()
+                    .franchiseCode("F-003")
+                    .name("올리브영 부산서면점")
+                    .phoneNumber("051-802-3456")
+                    .email("seomyeon@oliveyoung.co.kr")
+                    .apiKey("API-OLIVE-003")
+                    .description("부산 최대 상권 중심 매장")
+                    .status(FranchiseStatus.ACTIVE)
+                    .address(Address.builder()
+                            .zipcode("47291")
+                            .street("부산광역시 부산진구 중앙대로 692")
+                            .detail("서면몰 1층")
+                            .city("부산")
+                            .country("KR")
+                            .build())
+                    .build());
+
+            FranchiseStore franchise4 = franchiseRepository.save(FranchiseStore.builder()
+                    .franchiseCode("F-004")
+                    .name("올리브영 대전둔산점")
+                    .phoneNumber("042-482-5678")
+                    .email("dunsan@oliveyoung.co.kr")
+                    .apiKey("API-OLIVE-004")
+                    .description("중부권 대표 매장")
+                    .status(FranchiseStatus.SUSPENDED)
+                    .address(Address.builder()
+                            .zipcode("35229")
+                            .street("대전광역시 서구 둔산로 137")
+                            .detail("센트럴타워 1층")
+                            .city("대전")
+                            .country("KR")
+                            .build())
+                    .build());
+
+            FranchiseStore franchise5 = franchiseRepository.save(FranchiseStore.builder()
+                    .franchiseCode("F-005")
+                    .name("올리브영 광주충장로점")
+                    .phoneNumber("062-223-7890")
+                    .email("chungjang@oliveyoung.co.kr")
+                    .apiKey("API-OLIVE-005")
+                    .description("호남권 대형 매장")
+                    .status(FranchiseStatus.INACTIVE)
+                    .address(Address.builder()
+                            .zipcode("61475")
+                            .street("광주광역시 동구 충장로 88")
+                            .detail("현대빌딩 1층")
+                            .city("광주")
+                            .country("KR")
+                            .build())
+                    .build());
+
+            log.info("✓ 가맹점 5개 생성");
+
             log.info("========== 초기 데이터 생성 완료 ==========");
             log.info("로그인 계정:");
             log.info("  - admin@company.com / admin1234 (관리자)");
