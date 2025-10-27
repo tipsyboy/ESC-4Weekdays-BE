@@ -31,7 +31,7 @@ public class LocationService {
     }
 
     public LocationResponse getLocationByCode(String locationCode) {
-        Location location = locationRepository.findByLocationCode(locationCode)
+        Location location = locationRepository.findByLocationCodeWithLock(locationCode)
                 .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
         return LocationResponse.from(location);
     }
