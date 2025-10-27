@@ -2,6 +2,8 @@ package com.fourweekdays.fourweekdays.member.service;
 
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.announcement.model.entity.Announcement;
+import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
 import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
@@ -82,5 +84,12 @@ public class MemberService implements UserDetailsService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Member> result = memberRepository.findAllWithPaging(pageable);
         return result.map(MemberResponseDto::from);
+    }
+
+    public void checkEmailDuplicate(String email) {
+        memberRepository.findByEmail(email)
+                .ifPresent(m -> {
+                    throw new MemberException(MemberExceptionType.DUPLICATE_EMAIL);
+                });
     }
 }

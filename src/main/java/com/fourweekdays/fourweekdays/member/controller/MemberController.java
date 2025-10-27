@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.member.controller;
 
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.member.model.dto.MemberEmailCheckDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
@@ -45,5 +46,12 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Long>> updateMember(@PathVariable Long id,
                                                            @RequestBody MemberUpdateDto requestDto) {
         return ResponseEntity.ok(BaseResponse.success(memberService.update(id, requestDto)));
+    }
+
+    //이메일 중복체크 기능
+    @PostMapping("/check-email")
+    public  ResponseEntity<BaseResponse<String>> checkEmail(@RequestBody MemberEmailCheckDto dto) {
+        memberService.checkEmailDuplicate(dto.getEmail());
+        return ResponseEntity.ok(BaseResponse.success("사용 가능한 이메일입니다."));
     }
 }
