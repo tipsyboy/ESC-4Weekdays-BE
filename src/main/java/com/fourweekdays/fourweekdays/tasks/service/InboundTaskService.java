@@ -17,6 +17,9 @@ import com.fourweekdays.fourweekdays.location.service.LocationService;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType;
 import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.PutawayCompleteRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.PutawayLocationAssignRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskAssignRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.model.entity.InspectionTask;
 import com.fourweekdays.fourweekdays.tasks.model.entity.PutawayTask;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.INSPECTION_TASK_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.PUTAWAY_TASK_NOT_FOUND;
 
@@ -53,30 +57,67 @@ public class InboundTaskService {
         // TODO: status 업데이트 구문을 dto가 아닌 방식도 생각해보자.
         inboundService.updateInboundStatus(inspectionTask.getInboundId(), new InboundStatusUpdateRequest(InboundStatus.PUTAWAY));
 
+        // 검수 완료시에는 적치 위치가 지정되지 않은 적치 작업이 자동으로 생성
         inboundTaskFactory.createPutawayTask(inspectionTask.getInboundId());
     }
 
     @Transactional
-    public void completePutaway(Long taskId, TaskCompleteRequest request) {
-        // TODO: 적치 작업이 완료되면 재고 생성 트리거가 발생해야 한다.
-
-        taskService.completeTask(taskId, request);
-
+    public void assignLocationAndWorker(Long taskId, PutawayLocationAssignRequest request) {
+        // 검수 완료로 생성된 PutawayTask 조회
         PutawayTask putawayTask = putawayTaskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
 
-        Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+        if (putawayTask.isLocationAssigned()) {
+            throw new TaskException(TaskExceptionType.PUTAWAY_LOCATION_ALREADY_ASSIGNED);
+        }
 
+        Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
+                .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
+
+        // vendorId
+        Long vendorId = inbound.getPurchaseOrder().getVendor().getId();
+
+        // 총 수량 계산
         int totalQuantity = inbound.getProducts().stream()
                 .mapToInt(InboundProduct::getReceivedQuantity)
                 .sum();
 
-        // TODO: 작업자가 아니고 관리자가 할당할 때 위치 지정해줘야 할거 같은데
-        Location location = locationRepository.findByLocationCode("Mock-Data-Location")
-                .orElseThrow(() -> new LocationException(LocationExceptionType.LOCATION_NOT_FOUND));
-        location.validateForPutaway(inbound.getPurchaseOrder().getVendor().getId(), totalQuantity);
+        // Location 검증 - Vendor 일치 + 용량 확인
+        Location location = locationRepository.findByLocationCode(request.locationCode())
+                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
+        location.validateForPutaway(vendorId, totalQuantity);
 
+        putawayTask.assignLocation(request.locationCode()); // 적치 작업에 적치 위치 할당
+
+        // 작업자 할당
+        TaskAssignRequest assignRequest = new TaskAssignRequest(
+                request.workerId(),
+                request.note()
+        );
+        taskService.assignWorker(taskId, assignRequest);
+    }
+
+    @Transactional
+    public void completePutawayTask(Long taskId, PutawayCompleteRequest request) {
+        // PutawayTask 완료 처리
+        PutawayTask putawayTask = putawayTaskRepository.findByTaskId(taskId)
+                .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
+
+        TaskCompleteRequest taskCompleteRequest = new TaskCompleteRequest(
+                taskId,
+                request.note()
+        );
+        taskService.completeTask(taskId, taskCompleteRequest);
+
+        // ===== 재고 생성 ===== //
+        Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
+                .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
+
+        String locationCode = putawayTask.getAssignedLocationCode();
+        Location location = locationRepository.findByLocationCode(locationCode)
+                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
+
+        // 모든 InboundProduct를 순회하며 재고 생성
         for (InboundProduct inboundProduct : inbound.getProducts()) {
             inventoryService.createOrIncreaseInventory(
                     inboundProduct.getProduct().getId(),
@@ -87,7 +128,10 @@ public class InboundTaskService {
             );
         }
 
-        // TODO: status 업데이트 구문을 dto가 아닌 방식도 생각해보자.
-        inboundService.updateInboundStatus(putawayTask.getInboundId(), new InboundStatusUpdateRequest(InboundStatus.COMPLETED));
+        // Inbound 상태 변경: PUTAWAY → COMPLETED
+        inboundService.updateInboundStatus(
+                inbound.getId(),
+                new InboundStatusUpdateRequest(InboundStatus.COMPLETED)
+        );
     }
 }
