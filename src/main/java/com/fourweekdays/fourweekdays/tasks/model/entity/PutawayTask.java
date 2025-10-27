@@ -19,9 +19,23 @@ public class PutawayTask {
     @JoinColumn(name = "task_id")
     private Task task;
 
+    @Column(length = 20)
+    private String assignedLocationCode; // 적치 위치는 관리자가 작업 할당시 지정
+
     @Builder
     public PutawayTask(Long inboundId, Task task) {
         this.inboundId = inboundId;
         this.task = task;
+        this.assignedLocationCode = null;
+    }
+
+    // ===== 비즈니스 로직 ===== //
+    public void assignLocation(String locationCode) {
+        this.assignedLocationCode = locationCode;
+    }
+
+
+    public boolean isLocationAssigned() {
+        return this.assignedLocationCode != null;
     }
 }
