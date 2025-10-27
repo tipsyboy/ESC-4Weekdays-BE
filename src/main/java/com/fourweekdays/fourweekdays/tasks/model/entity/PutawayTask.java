@@ -20,7 +20,7 @@ public class PutawayTask {
     private Task task;
 
     @Column(length = 20)
-    private String assignedLocationCode; // 적치 위치는 관리자가 작업 할당시 지정합니다.
+    private String assignedLocationCode; // 적치 위치는 관리자가 작업 할당시 지정
 
     @Builder
     public PutawayTask(Long inboundId, Task task) {

@@ -23,16 +23,18 @@ import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskAssignRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.model.entity.InspectionTask;
 import com.fourweekdays.fourweekdays.tasks.model.entity.PutawayTask;
+import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
+import com.fourweekdays.fourweekdays.tasks.model.entity.TaskStatus;
 import com.fourweekdays.fourweekdays.tasks.repository.InspectionTaskRepository;
 import com.fourweekdays.fourweekdays.tasks.repository.PutawayTaskRepository;
+import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.INSPECTION_TASK_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.PUTAWAY_TASK_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.*;
 
 @RequiredArgsConstructor
 @Service
@@ -46,13 +48,16 @@ public class InboundTaskService {
     private final InboundRepository inboundRepository;
     private final InventoryService inventoryService;
     private final LocationRepository locationRepository;
+    private final TaskRepository taskRepository;
 
     @Transactional
     public void completeInspection(Long taskId, TaskCompleteRequest request) {
-        taskService.completeTask(taskId, request);
-
         InspectionTask inspectionTask = inspectionTaskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new TaskException(INSPECTION_TASK_NOT_FOUND));
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskException(TASK_NOT_FOUND));
+
+        task.complete(request.note()); // 단일 트랜잭션으로 변경
 
         // TODO: status 업데이트 구문을 dto가 아닌 방식도 생각해보자.
         inboundService.updateInboundStatus(inspectionTask.getInboundId(), new InboundStatusUpdateRequest(InboundStatus.PUTAWAY));
@@ -64,9 +69,14 @@ public class InboundTaskService {
     @Transactional
     public void assignLocationAndWorker(Long taskId, PutawayLocationAssignRequest request) {
         // 검수 완료로 생성된 PutawayTask 조회
+        // TODO: 이것도 여러 관리자가 동시에 작업 할당을 하는 경우 동시성 이슈가 생길 수 있으나, 현재는 지금 구조로 진행.
         PutawayTask putawayTask = putawayTaskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
 
+        Task task = putawayTask.getTask();
+        if (task.getStatus() != TaskStatus.PENDING) {
+            throw new TaskException(TASK_CANNOT_ASSIGN);
+        }
         if (putawayTask.isLocationAssigned()) {
             throw new TaskException(TaskExceptionType.PUTAWAY_LOCATION_ALREADY_ASSIGNED);
         }
@@ -77,13 +87,11 @@ public class InboundTaskService {
         // vendorId
         Long vendorId = inbound.getPurchaseOrder().getVendor().getId();
 
-        // 총 수량 계산
-        int totalQuantity = inbound.getProducts().stream()
-                .mapToInt(InboundProduct::getReceivedQuantity)
-                .sum();
+        // 총 수량
+        int totalQuantity = inbound.getTotalReceivedQuantity();
 
         // Location 검증 - Vendor 일치 + 용량 확인
-        Location location = locationRepository.findByLocationCode(request.locationCode())
+        Location location = locationRepository.findByLocationCodeWithLock(request.locationCode())
                 .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
         location.validateForPutaway(vendorId, totalQuantity);
 
@@ -104,10 +112,7 @@ public class InboundTaskService {
         PutawayTask putawayTask = putawayTaskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
 
-        TaskCompleteRequest taskCompleteRequest = new TaskCompleteRequest(
-                taskId,
-                request.note()
-        );
+        TaskCompleteRequest taskCompleteRequest = new TaskCompleteRequest(request.note());
         taskService.completeTask(taskId, taskCompleteRequest);
 
         // ===== 재고 생성 ===== //

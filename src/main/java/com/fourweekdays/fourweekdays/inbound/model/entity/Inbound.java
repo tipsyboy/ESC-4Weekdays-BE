@@ -77,6 +77,12 @@ public class Inbound extends BaseEntity {
                 .findFirst();
     }
 
+    public int getTotalReceivedQuantity() {
+        return products.stream()
+                .mapToInt(InboundProduct::getReceivedQuantity)
+                .sum();
+    }
+
     // ===== 입고 상태 변경 메서드 ===== //
     public void updateStatus(InboundStatus nextStatus) {
         if (!this.status.canTransitionTo(nextStatus)) {
