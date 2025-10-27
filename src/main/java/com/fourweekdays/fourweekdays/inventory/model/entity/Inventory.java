@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.inventory.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
@@ -28,13 +29,18 @@ public class Inventory extends BaseEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inbound_id", insertable = false, updatable = false)
+    private Inbound inbound;
+
+    @Column(name = "inbound_id", insertable = false, updatable = false)
+    private Long inboundId; // 입고 history 추적 때문에 넣음
+
     @Column(length = 50)
     private String lotNumber;
 
     @Column(nullable = false)
     private Integer quantity;
-
-    private Long inboundId; // 입고 history 추적 때문에 넣음
 
     @Column(length = 1000)
     private String description;

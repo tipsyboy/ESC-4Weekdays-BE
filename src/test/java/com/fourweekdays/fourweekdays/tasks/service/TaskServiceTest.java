@@ -86,7 +86,7 @@ class TaskServiceTest {
     void 작업을_완료한다() {
         // given
         Long taskId = 1L;
-        TaskCompleteRequest request = new TaskCompleteRequest(taskId, "완료");
+        TaskCompleteRequest request = new TaskCompleteRequest("완료");
 
         Task task = Task.builder()
                 .category(TaskCategory.INSPECTION)

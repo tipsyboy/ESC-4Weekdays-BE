@@ -36,7 +36,8 @@ public class InventoryService {
                                           Integer quantity, Long inboundId) {
 
         // 재고 조회
-        Optional<Inventory> existingInventory = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
+        Optional<Inventory> existingInventory
+                = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
 
         if (existingInventory.isPresent()) {
             // 기존 재고가 있으면 수량 증가

@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.inventory.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchDto;
+import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryListDto;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class InventoryController {
 
     // 재고 목록 조회
     @GetMapping
-    public ResponseEntity<BaseResponse<InventoryListDto>> inventoryList(InventorySearchDto dto) {
+    public ResponseEntity<BaseResponse<InventoryListDto>> inventoryList(InventorySearchRequest request) {
         return ResponseEntity.ok(BaseResponse.success(new InventoryListDto()));
     }
 
