@@ -26,7 +26,7 @@ public class FranchiseApiKeyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        if (!request.getRequestURI().startsWith("/api/order")) {
+        if (!request.getRequestURI().startsWith("/api/franchise/order")) {
             filterChain.doFilter(request, response);
             return;
         }
