@@ -116,7 +116,7 @@ public class OutboundService {
             OutboundProductItem outboundProductItem = OutboundProductItem.builder()
                     .product(opItem.getProduct())
                     .orderProductItem(opItem)
-                    .receivedQuantity(opItem.getOrderedQuantity())
+                    .orderedQuantity(opItem.getOrderedQuantity())
                     .description(opItem.getDescription())
                     .build();
 
