@@ -37,4 +37,10 @@ public class OutboundProductItem {
 
     @Column(length = 1000)
     private String description; // 비고
+
+    // ===== 연관관계 편의 메서드 ===== //
+    public void assignOutbound(Outbound outbound) {
+        this.outbound = outbound;
+        outbound.getItems().add(this);
+    }
 }

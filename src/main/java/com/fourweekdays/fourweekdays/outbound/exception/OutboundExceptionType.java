@@ -13,7 +13,10 @@ public enum OutboundExceptionType implements ExceptionType {
     OUTBOUND_CANNOT_CANCEL(BAD_REQUEST, "출고를 취소할 수 없습니다." ),
 
     OUTBOUND_NOT_FOUND(NOT_FOUND, "해당 출고를 찾을 수 없습니다."),
-    OUTBOUND_PRODUCT_NOT_FOUND(NOT_FOUND, "출고 상품을 찾을 수 없습니다."), ;
+    OUTBOUND_PRODUCT_NOT_FOUND(NOT_FOUND, "출고 상품을 찾을 수 없습니다."),
+
+    OUTBOUND_ORDER_EXISTENCE (BAD_REQUEST, "중복된 출고 요청."),
+    ;
 
 
     private final HttpStatus httpStatus;

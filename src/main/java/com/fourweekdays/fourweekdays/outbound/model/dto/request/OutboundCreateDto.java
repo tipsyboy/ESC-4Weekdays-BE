@@ -18,9 +18,9 @@ public class OutboundCreateDto {
 
     private Long memberId;
     private Long orderId;
-//     private List<InboundProductDto> items; // 직접/추가
     private LocalDateTime scheduledDate; // 출고 예상 시간
     private String description;
+//     private List<InboundProductDto> items; // 직접/추가
 
     public Outbound toEntity(String outboundCode, OutboundStatus status) {
         return Outbound.builder()
