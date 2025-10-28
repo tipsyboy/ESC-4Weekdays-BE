@@ -8,11 +8,14 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @Repository
 @RequiredArgsConstructor
@@ -45,7 +48,7 @@ public class InboundRepositoryCustomImpl implements InboundRepositoryCustom {
             productBuilder.and(product.name.containsIgnoreCase(productName));
         }
         if (vendorIds != null && !vendorIds.isEmpty()) {
-            productBuilder.and(product.vendor.id.in(vendorIds));
+            productBuilder.and(inbound.purchaseOrder.vendor.id.in(vendorIds));
         }
 
         return queryFactory
@@ -53,13 +56,26 @@ public class InboundRepositoryCustomImpl implements InboundRepositoryCustom {
                 .from(inbound)
                 .leftJoin(inbound.products, inboundProduct).fetchJoin()
                 .leftJoin(inboundProduct.product, product).fetchJoin()
+                .leftJoin(inbound.purchaseOrder, purchaseOrder).fetchJoin()
+                .leftJoin(purchaseOrder.vendor, vendor).fetchJoin()
                 .where(inboundBuilder.and(productBuilder))
                 .fetch();
     }
 
     @Override
     public Page<Inbound> findAllWithPaging(Pageable pageable) {
-        return null;
+        List<Inbound> inbounds = queryFactory
+                .selectFrom(inbound)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(inbound.createdAt.desc())
+                .fetch();
+        Long total = queryFactory
+                .select(inbound.count())
+                .from(inbound)
+                .fetchOne();
+
+        return new PageImpl<>(inbounds, pageable, total);
     }
 
 }
