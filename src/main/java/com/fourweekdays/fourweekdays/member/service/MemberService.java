@@ -1,11 +1,10 @@
 package com.fourweekdays.fourweekdays.member.service;
 
-import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
-import com.fourweekdays.fourweekdays.announcement.model.entity.Announcement;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
 import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
+import com.fourweekdays.fourweekdays.member.model.dto.MemberSearchDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
@@ -96,5 +95,18 @@ public class MemberService implements UserDetailsService {
                 .ifPresent(m -> {
                     throw new MemberException(MemberExceptionType.DUPLICATE_EMAIL);
                 });
+    }
+
+    public Page<MemberResponseDto> searchMembers(MemberSearchDto dto ,Pageable pageable) {
+        Page<Member> members = memberRepository.searchMembers(
+                dto.getName(),
+                dto.getStatus(),
+                dto.getRole(),
+                dto.getFromDate(),
+                dto.getToDate(),
+                pageable
+        );
+
+        return members.map(MemberResponseDto::from);
     }
 }
