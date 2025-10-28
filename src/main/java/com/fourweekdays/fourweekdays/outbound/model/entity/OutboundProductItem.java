@@ -29,7 +29,7 @@ public class OutboundProductItem {
     private OrderProductItem orderProductItem;
 
     @Column(nullable = false)
-    private Integer receivedQuantity; // 입고 수량
+    private Integer receivedQuantity; // 주문 수량
 
 //    @Column(length = 50, nullable = true)
 //    private String lotNumber; // 로트번호 이거 상품에 대해 개별적인 추적이 필요할 때만 사용한다고 하네요 우리는 화장품이라 필요 없는것 같아요

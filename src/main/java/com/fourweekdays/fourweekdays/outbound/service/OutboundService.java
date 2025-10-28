@@ -57,7 +57,7 @@ public class OutboundService {
         Order order = verification(dto);
 
         // Outboun Entity 만들기
-        Outbound outbound = creatBaseOutbound(dto);
+        Outbound outbound = createBaseOutbound(dto);
 
         // order에 상품 목록으로 OutboundProductItems 만들기
         addItemsFromOrder(outbound, order);
@@ -88,7 +88,7 @@ public class OutboundService {
     }
 
     private Order verification(OutboundCreateDto dto) {
-        Member member = memberRepository.findById(dto.getMemberId())
+        Member manager = memberRepository.findById(dto.getMemberId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         Order order = orderRepository.findById(dto.getOrderId())
@@ -104,7 +104,7 @@ public class OutboundService {
         return order;
     }
 
-    private Outbound creatBaseOutbound(OutboundCreateDto dto) {
+    private Outbound createBaseOutbound (OutboundCreateDto dto) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.PENDING;
 
@@ -112,12 +112,12 @@ public class OutboundService {
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {
-        order.getItems().forEach(poItem -> {
+        order.getItems().forEach(opItem -> {
             OutboundProductItem outboundProductItem = OutboundProductItem.builder()
-                    .product(poItem.getProduct())
-                    .orderProductItem(poItem)
-                    .receivedQuantity(0)
-                    .description(poItem.getDescription())
+                    .product(opItem.getProduct())
+                    .orderProductItem(opItem)
+                    .receivedQuantity(opItem.getOrderedQuantity())
+                    .description(opItem.getDescription())
                     .build();
 
             outboundProductItem.assignOutbound(outbound);

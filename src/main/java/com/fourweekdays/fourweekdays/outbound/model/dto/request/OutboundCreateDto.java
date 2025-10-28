@@ -24,7 +24,7 @@ public class OutboundCreateDto {
 
     public Outbound toEntity(String outboundCode, OutboundStatus status) {
         return Outbound.builder()
-                .member(Member.builder().id(memberId).build())
+                .outboundManager(Member.builder().id(memberId).build())
                 .order(Order.builder().orderId(orderId).build())
                 .scheduledDate(scheduledDate)
                 .description(description)
