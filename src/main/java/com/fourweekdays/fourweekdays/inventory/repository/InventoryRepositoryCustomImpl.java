@@ -17,6 +17,7 @@ import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inboun
 import static com.fourweekdays.fourweekdays.inventory.model.entity.QInventory.inventory;
 import static com.fourweekdays.fourweekdays.location.model.entity.QLocation.location;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
+import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @RequiredArgsConstructor
 public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom {
@@ -30,6 +31,7 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
                 .leftJoin(inventory.product, product).fetchJoin()
                 .leftJoin(inventory.location, location).fetchJoin()
                 .leftJoin(inventory.inbound, inbound).fetchJoin()
+                .leftJoin(product.vendor, vendor).fetchJoin()
                 .where(
                         inboundCodeEq(request.inboundCode()),
                         managerNameLike(request.inboundManagerName()),
@@ -62,6 +64,8 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
         return new PageImpl<>(inventories, pageable, total != null ? total : 0L);
     }
 
+
+    //===== 조건 =====//
     private BooleanExpression productCodeEq(String productCode) {
         return StringUtils.hasText(productCode) ? product.productCode.eq(productCode) : null;
     }
