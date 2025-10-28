@@ -43,6 +43,7 @@ public class InboundReadDto {
         private String vendorName;
         private LocalDateTime orderDate;
     }
+    private InboundOrderDto order;
 
     public static InboundReadDto from(Inbound inbound) {
         return InboundReadDto.builder()
@@ -51,17 +52,21 @@ public class InboundReadDto {
                 .status(inbound.getStatus())
                 .managerName(inbound.getManagerName())
                 .scheduledDate(inbound.getScheduledDate())
-                .purchaseOrder(inbound.getPurchaseOrder() != null ?
-                        PurchaseOrderSummary.builder()
-                                .id(inbound.getPurchaseOrder().getId())
-                                .orderNumber(inbound.getPurchaseOrder().getOrderCode())
-                                .vendorName(inbound.getPurchaseOrder().getVendor().getName())
-                                .orderDate(inbound.getPurchaseOrder().getOrderDate())
-                                .build()
-                        : null)
+                .order(InboundOrderDto.from(inbound.getPurchaseOrder()))
                 .items(inbound.getProducts().stream()
                         .map(InboundProductResponseDto::from)
                         .toList())
+//                .purchaseOrder(inbound.getPurchaseOrder() != null ?
+//                        PurchaseOrderSummary.builder()
+//                                .id(inbound.getPurchaseOrder().getId())
+//                                .orderNumber(inbound.getPurchaseOrder().getOrderCode())
+//                                .vendorName(inbound.getPurchaseOrder().getVendor().getName())
+//                                .orderDate(inbound.getPurchaseOrder().getOrderDate())
+//                                .build()
+//                        : null)
+//                .items(inbound.getProducts().stream()
+//                        .map(InboundProductResponseDto::from)
+//                        .toList())
                 .description(inbound.getDescription())
                 .createdAt(inbound.getCreatedAt())
                 .updatedAt(inbound.getUpdatedAt())
