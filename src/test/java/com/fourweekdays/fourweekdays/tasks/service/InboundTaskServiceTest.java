@@ -44,7 +44,7 @@ class InboundTaskServiceTest {
         // given
         Long taskId = 1L;
         Long inboundId = 100L;
-        TaskCompleteRequest request = new TaskCompleteRequest(taskId, "검수 완료");
+        TaskCompleteRequest request = new TaskCompleteRequest("검수 완료");
 
         InspectionTask inspectionTask = InspectionTask.builder()
                 .inboundId(inboundId)
@@ -69,7 +69,7 @@ class InboundTaskServiceTest {
     void 검수_작업이_없으면_예외를_발생시킨다() {
         // given
         Long taskId = 1L;
-        TaskCompleteRequest request = new TaskCompleteRequest(taskId, "검수 완료");
+        TaskCompleteRequest request = new TaskCompleteRequest("검수 완료");
 
         given(inspectionTaskRepository.findByTaskId(taskId))
                 .willReturn(Optional.empty());

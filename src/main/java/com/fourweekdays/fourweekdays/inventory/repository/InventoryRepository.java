@@ -10,14 +10,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface InventoryRepository extends JpaRepository<Inventory, Long> {
+public interface InventoryRepository extends JpaRepository<Inventory, Long>, InventoryRepositoryCustom {
 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT i FROM Inventory i " +
             "WHERE i.product.id = :productId " +
             "AND i.location.id = :locationId " +
-            "AND (:lotNumber IS NULL OR i.lotNumber = :lotNumber)")
+            "AND (i.lotNumber = :lotNumber)")
     Optional<Inventory> findByProductAndLocationAndLotWithLock(@Param("productId") Long productId,
                                                                @Param("locationId") Long locationId,
                                                                @Param("lotNumber") String lotNumber);
