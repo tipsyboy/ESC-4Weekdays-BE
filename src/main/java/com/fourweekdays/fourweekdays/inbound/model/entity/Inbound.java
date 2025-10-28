@@ -90,4 +90,8 @@ public class Inbound extends BaseEntity {
         }
         this.status = nextStatus;
     }
+
+    public Long getVendorId() {
+        return this.purchaseOrder.getId();
+    }
 }

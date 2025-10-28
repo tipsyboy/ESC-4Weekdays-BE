@@ -17,7 +17,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long>, Inv
     @Query("SELECT i FROM Inventory i " +
             "WHERE i.product.id = :productId " +
             "AND i.location.id = :locationId " +
-            "AND (:lotNumber IS NULL OR i.lotNumber = :lotNumber)")
+            "AND (i.lotNumber = :lotNumber)")
     Optional<Inventory> findByProductAndLocationAndLotWithLock(@Param("productId") Long productId,
                                                                @Param("locationId") Long locationId,
                                                                @Param("lotNumber") String lotNumber);

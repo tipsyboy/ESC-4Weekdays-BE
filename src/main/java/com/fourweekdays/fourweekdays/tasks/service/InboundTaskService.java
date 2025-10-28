@@ -84,11 +84,8 @@ public class InboundTaskService {
         Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
                 .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
 
-        // vendorId
-        Long vendorId = inbound.getPurchaseOrder().getVendor().getId();
-
-        // 총 수량
-        int totalQuantity = inbound.getTotalReceivedQuantity();
+        Long vendorId = inbound.getVendorId(); // vendorId
+        int totalQuantity = inbound.getTotalReceivedQuantity(); // 총 수량
 
         // Location 검증 - Vendor 일치 + 용량 확인
         Location location = locationRepository.findByLocationCodeWithLock(request.locationCode())

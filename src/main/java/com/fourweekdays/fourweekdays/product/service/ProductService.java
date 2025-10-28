@@ -91,6 +91,7 @@ public class ProductService {
     }
 
     public Page<ProductReadDto> getProductList(int page, int size) {
+        // TODO: 리팩토링 포인트 - HttpRequest가 Service 레이어까지 침범
         Pageable pageable = PageRequest.of(page, size);
 
         // RequestParam으로 전달된 vendorId 추출

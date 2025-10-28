@@ -5,6 +5,8 @@ import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
+import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
+import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
@@ -13,6 +15,9 @@ import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,39 +35,6 @@ public class InventoryService {
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
     private final InboundRepository inboundRepository;
-
-    @Transactional
-    public void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,
-                                          Integer quantity, Long inboundId) {
-
-        // 재고 조회
-        Optional<Inventory> existingInventory
-                = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
-
-        if (existingInventory.isPresent()) {
-            // 기존 재고가 있으면 수량 증가
-            Inventory inventory = existingInventory.get();
-            inventory.increaseQuantity(quantity);
-        } else {
-            // 없으면 새로운 재고 생성
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
-            Location location = locationRepository.findById(locationId)
-                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
-
-            location.increaseUsedCapacity(quantity); // Location 용량 증가
-
-            Inventory newInventory = Inventory.builder()
-                    .product(product)
-                    .location(location)
-                    .lotNumber(lotNumber)
-                    .quantity(quantity)
-                    .inboundId(inboundId)
-                    .build();
-
-            inventoryRepository.save(newInventory);
-        }
-    }
 
     @Transactional
     public void createInventoryFromInbound(Long inboundId, String locationCode) {
@@ -99,6 +71,13 @@ public class InventoryService {
         }
     }
 
+    public Page<InventoryReadDto> searchInventory(InventorySearchRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inventory> inventories = inventoryRepository.searchInventory(pageable, request);
+
+        return inventories.map(InventoryReadDto::from);
+    }
+
     public int getTotalQuantityByProduct(Long productId) {
         return inventoryRepository.findByProductId(productId)
                 .stream()
@@ -111,5 +90,36 @@ public class InventoryService {
                 .stream()
                 .mapToInt(Inventory::getQuantity)
                 .sum();
+    }
+
+    private void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,
+                                           Integer quantity, Long inboundId) {
+
+        // 재고 조회
+        Optional<Inventory> existingInventory
+                = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
+
+        if (existingInventory.isPresent()) {
+            // 기존 재고가 있으면 수량 증가
+            Inventory inventory = existingInventory.get();
+            inventory.increaseQuantity(quantity);
+        } else {
+            // 없으면 새로운 재고 생성
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+            Location location = locationRepository.findById(locationId)
+                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+
+            location.increaseUsedCapacity(quantity); // Location 용량 증가
+
+            Inventory newInventory = Inventory.builder()
+                    .product(product)
+                    .location(location)
+                    .lotNumber(lotNumber)
+                    .quantity(quantity)
+                    .build();
+
+            inventoryRepository.save(newInventory);
+        }
     }
 }

@@ -33,8 +33,8 @@ public class Inventory extends BaseEntity {
     @JoinColumn(name = "inbound_id", insertable = false, updatable = false)
     private Inbound inbound;
 
-    @Column(name = "inbound_id", insertable = false, updatable = false)
-    private Long inboundId; // 입고 history 추적 때문에 넣음
+//    @Column(name = "inbound_id", insertable = false, updatable = false)
+//    private Long inboundId; // 입고 history 추적 때문에 넣음
 
     @Column(length = 50)
     private String lotNumber;
@@ -47,12 +47,11 @@ public class Inventory extends BaseEntity {
 
     @Builder
     public Inventory(Product product, Location location, String lotNumber,
-                     Integer quantity, Long inboundId, String description) {
+                     Integer quantity, String description) {
         this.product = product;
         this.location = location;
         this.lotNumber = lotNumber;
         this.quantity = quantity;
-        this.inboundId = inboundId;
         this.description = description;
     }
 
