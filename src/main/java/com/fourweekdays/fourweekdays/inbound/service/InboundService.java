@@ -85,6 +85,20 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
+    public List<InboundReadDto> searchInbounds(String inboundCode, String managerName,
+                                        String productName, List<Long> vendorIds) {
+        List<Inbound> inbounds = inboundRepository.searchInboundWithProduct(
+                inboundCode,
+                managerName,
+                productName,
+                vendorIds
+        );
+
+        return inbounds.stream()
+                .map(InboundReadDto::from)
+                .toList();
+    }
+
     public InboundReadDto findById(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
