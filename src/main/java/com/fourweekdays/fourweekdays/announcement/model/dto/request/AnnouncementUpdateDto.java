@@ -6,5 +6,6 @@ import lombok.Getter;
 public class AnnouncementUpdateDto {
     private String title;
     private String content;
+    private Boolean pinned;
 }
 
