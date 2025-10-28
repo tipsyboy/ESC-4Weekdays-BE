@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.*;
@@ -56,8 +57,8 @@ public class OrderFranchiseService {
         Order order = orderRepository.findByOrderCode(orderCode)
                 .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
 
-        Long orderId = order.getOrderId();
-        if (!orderId.equals(franchiseStore.getId())) {
+        Long orderFranchiseId = order.getFranchiseStore().getId();
+        if (!orderFranchiseId.equals(franchiseStore.getId())) {
             throw new OrderException(FRANCHISE_MISMATCH);
         }
 
@@ -71,6 +72,7 @@ public class OrderFranchiseService {
                 .dueDate(dto.getDueDate())
                 .description(dto.getDescription())
                 .status(OrderStatus.REQUESTED)
+                .orderDate(LocalDateTime.now())
                 .build();
     }
 
