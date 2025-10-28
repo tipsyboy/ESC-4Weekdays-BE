@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequ
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,17 @@ public class InboundController {
     public ResponseEntity<BaseResponse<InboundReadDto>> detailInbound(@PathVariable Long id) {
         InboundReadDto result = inboundService.findById(id);
         return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<InboundReadDto>> searchInbounds(
+            @RequestParam(required = false) String inboundCode,
+            @RequestParam(required = false) String managerName,
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) List<Long> vendorIds
+    ) {
+
+        return ResponseEntity.ok(inboundService.searchInbounds(inboundCode, managerName, productName, vendorIds));
     }
 
     @GetMapping

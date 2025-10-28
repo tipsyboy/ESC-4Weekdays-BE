@@ -58,7 +58,12 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
-        member.update(dto.getName(), dto.getPhoneNumber(), dto.getPassword(),
+        String encodedPassword = null;
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            encodedPassword = passwordEncoder.encode(dto.getPassword());
+        }
+
+        member.update(dto.getName(), dto.getPhoneNumber(), encodedPassword,
                 dto.getRole(), dto.getStatus());
 
         return member.getId();

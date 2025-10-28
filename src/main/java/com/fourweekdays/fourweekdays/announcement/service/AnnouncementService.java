@@ -43,7 +43,7 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(() -> new AnnouncementException(ANNOUNCEMENT_NOT_FOUND));
 
-        announcement.update(dto.getTitle(), dto.getContent());
+        announcement.update(dto.getTitle(), dto.getContent(),dto.getPinned());
         return announcement.getId();
 
     }

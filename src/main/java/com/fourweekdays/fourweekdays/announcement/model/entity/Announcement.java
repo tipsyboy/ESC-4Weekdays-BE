@@ -28,11 +28,17 @@ public class Announcement extends BaseEntity {
     private String content; // 내용
 
     @Builder.Default
-    private Boolean active = true ;
+    @Column(nullable = false)
+    private Boolean active = true ; //활성 상태 (삭제 시 false)
 
-    public void update(String title, String content) {
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean pinned = false; // 중요 공지 여부 (true면 상단 고정)
+
+    public void update(String title, String content , Boolean pinned) {
         if (title != null) this.title = title;
         if (content != null) this.content = content;
+        if (pinned != null) this.pinned = pinned;
     }
     public void isActive() {
         this.active = false;

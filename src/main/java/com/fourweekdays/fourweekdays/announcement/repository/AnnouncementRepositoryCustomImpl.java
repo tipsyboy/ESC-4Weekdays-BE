@@ -23,7 +23,7 @@ public class  AnnouncementRepositoryCustomImpl implements AnnouncementRepository
                 .selectFrom(announcement)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(announcement.createdAt.desc())
+                .orderBy(announcement.pinned.desc(), announcement.createdAt.desc())
                 .fetch();
 
         Long total = queryFactory

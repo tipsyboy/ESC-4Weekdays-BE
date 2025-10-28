@@ -40,9 +40,9 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime dueDate;   // 납기일
-
-    @Column(nullable = false)
-    private Long totalAmount; // 총 금액
+//
+//    @Column(nullable = false)
+//    private Long totalAmount; // 총 금액
 
     @Column(length = 1000)
     private String description; // 비고
