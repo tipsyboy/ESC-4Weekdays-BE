@@ -2,14 +2,15 @@ package com.fourweekdays.fourweekdays.member.controller;
 
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberEmailCheckDto;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberUpdateDto;
+import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.member.model.dto.*;
+import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
+import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
 import com.fourweekdays.fourweekdays.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +55,15 @@ public class MemberController {
     public  ResponseEntity<BaseResponse<String>> checkEmail(@RequestBody MemberEmailCheckDto dto) {
         memberService.checkEmailDuplicate(dto.getEmail());
         return ResponseEntity.ok(BaseResponse.success("사용 가능한 이메일입니다."));
+    }
+
+    //검색 기능
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<Page<MemberResponseDto>>> searchMember(
+            MemberSearchDto dto,
+            Pageable pageable
+    ) {
+        Page<MemberResponseDto> result = memberService.searchMembers(dto, pageable);
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 }
