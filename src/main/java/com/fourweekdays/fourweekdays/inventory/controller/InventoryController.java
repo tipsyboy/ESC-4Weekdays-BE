@@ -16,10 +16,10 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<BaseResponse<Page<InventoryReadDto>>> inventoryList(@RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "10") int size,
-                                                            @RequestBody InventorySearchRequest request) {
+                                                                              @RequestParam(defaultValue = "10") int size,
+                                                                              @RequestBody InventorySearchRequest request) {
         Page<InventoryReadDto> inventories = inventoryService.searchInventory(request, page, size);
         return ResponseEntity.ok(BaseResponse.success(inventories));
     }
