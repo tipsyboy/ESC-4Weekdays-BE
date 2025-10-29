@@ -43,4 +43,9 @@ public class OutboundProductItem {
         this.outbound = outbound;
         outbound.getItems().add(this);
     }
+
+    // ===== 비즈니스 로직 ===== //
+    public void updateInspectionResult(Integer orderedQuantity) {
+        this.orderedQuantity = orderedQuantity;
+    }
 }

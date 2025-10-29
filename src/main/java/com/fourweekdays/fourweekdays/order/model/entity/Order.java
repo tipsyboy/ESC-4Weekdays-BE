@@ -63,4 +63,9 @@ public class Order extends BaseEntity {
         this.rejectedAt = LocalDateTime.now();
         this.status = OrderStatus.CANCELLED;
     }
+
+    // ===== 비즈니스 로직 ===== //
+    public void updateShipped() {
+        this.status = OrderStatus.SHIPPED;
+    }
 }
