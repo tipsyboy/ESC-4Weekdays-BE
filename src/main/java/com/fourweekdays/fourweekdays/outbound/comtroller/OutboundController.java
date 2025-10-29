@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.outbound.comtroller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
+import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundStatusResponse;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
@@ -27,20 +28,6 @@ public class OutboundController {
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
-    // 출고 승인
-    @PostMapping("/{id}/approve")
-    public ResponseEntity<BaseResponse<OutboundStatusResponse>> approveOutbound(@PathVariable Long id) {
-        OutboundStatusResponse result = outboundService.approveOutbound(id);
-        return ResponseEntity.ok(BaseResponse.success(result));
-    }
-
-    // 출고 거절
-    @PostMapping("/{id}/reject")
-    public ResponseEntity<BaseResponse<OutboundStatusResponse>> rejectOutbound(@PathVariable Long id) {
-        OutboundStatusResponse result = outboundService.rejectOutbound(id);
-        return ResponseEntity.ok(BaseResponse.success(result));
-    }
-
     // 출고서 전체 조회
     @GetMapping
     public ResponseEntity<BaseResponse<List<OutboundReadDto>>> getOutboundList() {
@@ -57,5 +44,26 @@ public class OutboundController {
                     .body(BaseResponse.error(BaseResponseStatus.OUTBOUND_NOT_FOUND));
         }
         return ResponseEntity.ok(BaseResponse.success(outboundDto));
+    }
+
+    // 출고 승인
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<BaseResponse<String>> approveOutbound(@PathVariable Long id) {
+        outboundService.approveOutbound(id);
+        return ResponseEntity.ok(BaseResponse.success("출고 승인 완료"));
+    }
+
+    // 검수 작업
+    @PatchMapping("/{id}/inspection")
+    public ResponseEntity<BaseResponse<String>> inspectionOutbound(@PathVariable Long id, @RequestBody List<OutboundInspectionRequest> requestList) {
+        outboundService.updateInspection(id, requestList);
+        return ResponseEntity.ok(BaseResponse.success("출고 검수 완료"));
+    }
+
+    // 출고 거절
+    @PatchMapping("/{id}/cancelled")
+    public ResponseEntity<BaseResponse<String>> cancelledOutbound(@PathVariable Long id) {
+        outboundService.cancelledOutbound(id);
+        return ResponseEntity.ok(BaseResponse.success("출고 작업 취소"));
     }
 }

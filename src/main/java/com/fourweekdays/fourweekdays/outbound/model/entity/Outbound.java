@@ -1,9 +1,9 @@
 package com.fourweekdays.fourweekdays.outbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
+import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType.OUTBOUND_STATUS_TRANSITION_NOT_ALLOWED;
 
 @Entity
 @Getter
@@ -50,6 +53,20 @@ public class Outbound extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "outbound", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OutboundProductItem> items = new ArrayList<>();
+
+    // ===== 입고 상태 변경 메서드 ===== //
+    public void updateStatus(OutboundStatus nextStatus) {
+        if (!this.status.canTransitionTo(nextStatus)) {
+            throw new OutboundException(OUTBOUND_STATUS_TRANSITION_NOT_ALLOWED);
+        }
+        this.status = nextStatus;
+    }
+
+    public Optional<OutboundProductItem> findByItemId(Long outboundProductid) {
+        return items.stream()
+                .filter(item -> item.getId().equals(outboundProductid))
+                .findFirst();
+    }
 //
 //    @ManyToOne
 //    @JoinColumn(name = "franchise_store_id")

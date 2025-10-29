@@ -1,11 +1,7 @@
 package com.fourweekdays.fourweekdays.outbound.service;
 
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
@@ -13,16 +9,12 @@ import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
+import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
-import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundStatusResponse;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.model.entity.OutboundProductItem;
 import com.fourweekdays.fourweekdays.outbound.model.entity.OutboundStatus;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +24,7 @@ import java.util.List;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_CANNOT_APPROVED;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType.OUTBOUND_ORDER_EXISTENCE;
-import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +58,67 @@ public class OutboundService {
     }
 
     // 출고 승인
-    public OutboundStatusResponse approveOutbound(Long id) {
-        return null;
+    @Transactional
+    public void approveOutbound(Long id) {
+        Outbound outbound = chekOutbound(id);
+        outbound.updateStatus(OutboundStatus.APPROVED);
+        // TODO 재고 차감
+        // TODO 출고 작업 생성
     }
 
     // 출고 거절
-    public OutboundStatusResponse rejectOutbound(Long id) {
-        return null;
+    @Transactional
+    public void cancelledOutbound(Long id) {
+        Outbound outbound = chekOutbound(id);
+
+        if (outbound.getStatus() != OutboundStatus.APPROVED && outbound.getStatus() != OutboundStatus.REQUESTED) {
+            throw new OutboundException(OUTBOUND_CANNOT_CANCEL);
+        }
+        outbound.updateStatus(OutboundStatus.CANCELLED);
+        // TODO 재고 차감되었던만큼 증가
+    }
+
+    // TODO task가 작업 착수 -> 피킹중
+    @Transactional
+    public void updatePicking(Long id) {
+        Outbound outbound = chekOutbound(id);
+        outbound.updateStatus(OutboundStatus.PICKING);
+    }
+
+    // TODO task가 피킹 완료 -> 검수중
+    @Transactional
+    public void updatePacking(Long id) {
+        Outbound outbound = chekOutbound(id);
+        outbound.updateStatus(OutboundStatus.INSPECTION);
+    }
+
+    // 검수 완료 작업
+    @Transactional
+    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
+        Outbound outbound = chekOutbound(id);
+
+        if (outbound.getStatus() != OutboundStatus.INSPECTION) {
+            throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
+        }
+
+        for (OutboundInspectionRequest request : requestList) {
+            OutboundProductItem item = outbound.findByItemId(request.getOutboundProductid())
+                    .orElseThrow(() -> new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND));
+            item.updateInspectionResult(request.getOrderedQuantity());
+        }
+
+        // 검수 완료 -> 패킹작업으로 변경
+        outbound.updateStatus(OutboundStatus.PACKING);
+    }
+
+    // TODO 패킹완료 -> 출하
+    @Transactional
+    public void updateShipped(Long id) {
+        Outbound outbound = chekOutbound(id);
+        Order order = orderRepository.findById(outbound.getOrder().getOrderId())
+                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
+        order.updateShipped();
+        outbound.updateStatus(OutboundStatus.SHIPPED);
     }
 
     // 출고 목록 조회
@@ -88,7 +132,7 @@ public class OutboundService {
     }
 
     private Order verification(OutboundCreateDto dto) {
-        Member manager = memberRepository.findById(dto.getMemberId())
+        memberRepository.findById(dto.getMemberId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         Order order = orderRepository.findById(dto.getOrderId())
@@ -104,9 +148,9 @@ public class OutboundService {
         return order;
     }
 
-    private Outbound createBaseOutbound (OutboundCreateDto dto) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
-        OutboundStatus status = OutboundStatus.PENDING;
+        OutboundStatus status = OutboundStatus.REQUESTED;
 
         return dto.toEntity(OutboundCode, status);
     }
@@ -116,12 +160,17 @@ public class OutboundService {
             OutboundProductItem outboundProductItem = OutboundProductItem.builder()
                     .product(opItem.getProduct())
                     .orderProductItem(opItem)
-                    .receivedQuantity(opItem.getOrderedQuantity())
+                    .orderedQuantity(opItem.getOrderedQuantity())
                     .description(opItem.getDescription())
                     .build();
 
             outboundProductItem.assignOutbound(outbound);
         });
+    }
+
+    private Outbound chekOutbound(Long id) {
+        return outboundRepository.findById(id)
+                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
     }
 
 }
