@@ -7,17 +7,17 @@ import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
-import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventorySummaryResponse;
+import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
+import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -80,39 +80,14 @@ public class InventoryService {
         return inventories.map(InventoryReadDto::from);
     }
 
-    public Page<InventorySummaryResponse> getInventorySummary(InventorySearchRequest request, int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
-        Page<Inventory> inventories = inventoryRepository.searchInventory(pageable, request);
+    public Page<ProductInventoryResponse> searchInventoryByProduct(InventorySearchRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inventoryRepository.searchInventoryByProduct(pageable, request);
+    }
 
-        Map<Long, Integer> totalQuantityMap = new HashMap<>();
-        Map<Long, Inventory> productMap = new HashMap<>();
-
-        for (Inventory inv : inventories.getContent()) {
-            Long productId = inv.getProduct().getId();
-
-            totalQuantityMap.put(productId,
-                    totalQuantityMap.getOrDefault(productId, 0) + inv.getQuantity());
-
-            if (!productMap.containsKey(productId)) {
-                productMap.put(productId, inv);
-            }
-        }
-
-        List<InventorySummaryResponse> summaries = new ArrayList<>();
-        for (Map.Entry<Long, Inventory> entry : productMap.entrySet()) {
-            Long productId = entry.getKey();
-            Inventory inv = entry.getValue();
-
-            summaries.add(InventorySummaryResponse.builder()
-                    .productId(productId)
-                    .productCode(inv.getProduct().getProductCode())
-                    .productName(inv.getProduct().getName())
-                    .totalQuantity(totalQuantityMap.get(productId))
-                    .vendorName(inv.getProduct().getVendor() != null ? inv.getProduct().getVendor().getName() : "-")
-                    .build());
-        }
-
-        return new PageImpl<>(summaries, pageable, inventories.getTotalElements());
+    public ProductInventoryResponse productInventoryDetail(String productCode) {
+        return inventoryRepository.findDetailByProductCode(productCode)
+                .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
     }
 
     public int getTotalQuantityByProduct(Long productId) {
