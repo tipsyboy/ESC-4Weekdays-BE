@@ -98,7 +98,8 @@ public class PurchaseOrderService {
     public Long approve(Long id) {
         PurchaseOrder order = findByIdOrThrow(id);
         order.approve(); // 상태 변경
-        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
+        return null;
+//        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
     }
 
     @Transactional
