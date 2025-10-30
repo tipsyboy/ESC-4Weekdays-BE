@@ -867,9 +867,9 @@ public class InitialDataSetup {
                     loc2.increaseUsedCapacity(15);
                     inventoryRepository.save(inv3);
 
-                    // Item 4: 라네즈 크림스킨
+                    // Item 4: 미샤 쿠션
                     Inventory inv4 = Inventory.builder()
-                            .product(product4)
+                            .product(product12)
                             .location(loc2)
                             .lotNumber("LOT-2025-AP-004")
                             .quantity(40)
@@ -877,9 +877,20 @@ public class InitialDataSetup {
                             .build();
                     loc2.increaseUsedCapacity(40);
                     inventoryRepository.save(inv4);
+
+                    // Item 5: 설화수 윤조에센스 - 같은 상품 다른 로트, 위치
+                    Inventory inv5 = Inventory.builder()
+                            .product(product1)
+                            .location(loc2)
+                            .lotNumber("LOT-2025-AP-002")
+                            .quantity(100)
+                            .description("입고 완료로 자동 생성된 재고")
+                            .build();
+                    loc2.increaseUsedCapacity(20);
+                    inventoryRepository.save(inv5);
                 }
 
-                log.info("✓ 재고 데이터 4건 생성 완료 (입고 완료 기준)");
+                log.info("✓ 재고 데이터 5건 생성 완료 (입고 완료 기준)");
             }
 
             log.info("========== 초기 데이터 생성 완료 ==========");
@@ -897,7 +908,7 @@ public class InitialDataSetup {
             log.info("  - 발주: 5건 (승인 4, 대기 1)");
             log.info("  - 입고: 4건 (완료 1, 검수중 1, 예정 2)");
             log.info("  - 검수 작업: 4건 (완료 1, 진행중 1, 할당 1, 대기 1)");
-            log.info("  - 재고: 4건 (완료된 입고 기준)");
+            log.info("  - 재고: 5건 (완료된 입고 기준)");
             log.info("===========================================");
         };
     }

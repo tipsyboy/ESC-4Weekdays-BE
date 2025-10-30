@@ -27,6 +27,4 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long>, Inv
 
     @Query("SELECT i FROM Inventory i WHERE i.location.id = :locationId AND i.quantity > 0")
     List<Inventory> findByLocationId(@Param("locationId") Long locationId);
-
-    List<Inventory> findByInboundId(Long inboundId);
 }
