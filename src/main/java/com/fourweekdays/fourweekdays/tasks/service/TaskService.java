@@ -114,6 +114,7 @@ public class TaskService {
         return TaskDetailResponse.ofPutaway(task, putawayTask, inbound);
     }
 
+    //TODO : 지금 서비스단에서 조회하고 하는데 나중에 TaskRepositoryCustomImpl 여기서 fetch join으로 조회하게 수정.
     public Page<TaskListResponse> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Task> tasks = taskRepository.findAllWithPaging(pageable);
