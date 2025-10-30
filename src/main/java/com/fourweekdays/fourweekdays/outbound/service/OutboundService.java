@@ -16,15 +16,15 @@ import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
-import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
-import com.fourweekdays.fourweekdays.outbound.model.entity.OutboundProductItem;
-import com.fourweekdays.fourweekdays.outbound.model.entity.OutboundStatus;
+import com.fourweekdays.fourweekdays.outbound.model.entity.*;
+import com.fourweekdays.fourweekdays.outbound.repository.OutboundInventoryHistoryRepository;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
 import com.fourweekdays.fourweekdays.tasks.factory.OutboundTaskFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,6 +49,7 @@ public class OutboundService {
     private final OutboundTaskFactory otfTaskFactory;
     private final LocationRepository locationRepository;
     private final InventoryRepository inventoryRepository;
+    private final OutboundInventoryHistoryRepository outboundHistoryRepository;
 
     // 재고 감소 또는 제거
     @Transactional
@@ -66,15 +67,20 @@ public class OutboundService {
         Map<Long, Location> locationMap = locations.stream()
                 .collect(Collectors.toMap(Location::getVendorId, l -> l));
 
+        List<OutboundInventoryHistory> allHistories = new ArrayList<>();
+
         for (OutboundProductItem item : outbound.getItems()) {
             Long vendorId = item.getProduct().getVendor().getId();
             Location location = locationMap.get(vendorId);
-            destroyOrDecreaseInventory(item.getProduct().getId(), item.getOrderedQuantity(), location.getId());
+            List<OutboundInventoryHistory> outboundHistoryList =
+                    destroyOrDecreaseInventory(item.getProduct().getId(), item.getOrderedQuantity(), location.getId(), outbound);
+            allHistories.addAll(outboundHistoryList);
         }
+        outboundHistoryRepository.saveAll(allHistories);
     }
 
     // 출고 생성
-    // 주문과 완전 동일하게 생성되는 시나리오로 진행하겠음
+// 주문과 완전 동일하게 생성되는 시나리오로 진행하겠음
     @Transactional
     public Long createOutbound(OutboundCreateDto dto) {
 
@@ -99,7 +105,7 @@ public class OutboundService {
         outbound.updateStatus(OutboundStatus.APPROVED);
 
         // 출고 작업 생성
-        otfTaskFactory.createInspectionTask(id);
+        otfTaskFactory.createPickingTask(id);
     }
 
     // 출고 거절
@@ -112,6 +118,7 @@ public class OutboundService {
         }
         outbound.updateStatus(OutboundStatus.CANCELLED);
         // TODO 재고 차감되었던만큼 증가
+
     }
 
     // TODO task가 작업 착수 -> 피킹중
@@ -209,11 +216,12 @@ public class OutboundService {
                 .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
     }
 
-    private void destroyOrDecreaseInventory(Long productId, Integer orderedQuantity, Long locationId) {
+    private List<OutboundInventoryHistory> destroyOrDecreaseInventory(Long productId, Integer orderedQuantity, Long locationId, Outbound outbound) {
         List<Inventory> inventories =
                 inventoryRepository.findByProductIdAndLocationIdOrderByLotNumberAscForUpdate(productId, locationId);
 
         int remaining = orderedQuantity;
+        List<OutboundInventoryHistory> histories = new ArrayList<>();
 
         for (Inventory inventory : inventories) {
             if (remaining <= 0) break;
@@ -222,11 +230,24 @@ public class OutboundService {
             int deducted = Math.min(currentQty, remaining);
 
             inventory.decrease(deducted);
+            OutboundInventoryHistory history = OutboundInventoryHistory.builder()
+                    .outbound(outbound)
+                    .inventory(inventory)
+                    .lotNumber(inventory.getLotNumber())
+                    .quantityChanged(-deducted)
+                    .status(OutboundInventoryHistoryStatus.ACTIVE)
+                    .build();
+
+            histories.add(history);
             remaining -= deducted;
         }
 
         if (remaining > 0) {
             throw new InventoryException(INSUFFICIENT_INVENTORY);
         }
+
+        inventoryRepository.saveAll(inventories);
+
+        return histories;
     }
 }
