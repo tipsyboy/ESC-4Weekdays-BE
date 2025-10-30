@@ -7,11 +7,13 @@ import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
+import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
+import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
@@ -76,6 +78,16 @@ public class InventoryService {
         Page<Inventory> inventories = inventoryRepository.searchInventory(pageable, request);
 
         return inventories.map(InventoryReadDto::from);
+    }
+
+    public Page<ProductInventoryResponse> searchInventoryByProduct(InventorySearchRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inventoryRepository.searchInventoryByProduct(pageable, request);
+    }
+
+    public ProductInventoryResponse productInventoryDetail(String productCode) {
+        return inventoryRepository.findDetailByProductCode(productCode)
+                .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
     }
 
     public int getTotalQuantityByProduct(Long productId) {
