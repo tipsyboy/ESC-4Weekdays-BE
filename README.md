@@ -8,12 +8,48 @@
 <br /><br />
   
 ## 👨‍💻 팀원 구성
-<table align="center">
-  <tr>
-  
-  [팀원 이미지]()
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <a href="https://github.com/tipsyboy">
+          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+        </a>
+      </td>
+      <td>
+        <a href="https://github.com/seol-kang">
+          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+        </a>
+      </td>
+      <td>
+        <a href="https://github.com/wonzzu">
+          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+        </a>
+      </td>
+      <td>
+        <a href="https://github.com/why48382">
+          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/tipsyboy">양형모</a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/seol-kang">강설</a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/wonzzu">김원중</a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/why48382">이현식</a>
+      </td>
+    </tr>
+  </table>
+</div>
 
-  </tr>
+<br><br>
 
 ## 📘 프로젝트 기획서
 <table align="center">
@@ -116,3 +152,4 @@
  [🔗swagger 화면(PDF)](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/docs/4weekdays%20swagger.pdf)  
 
  [🔗swagger 링크](http://54.180.120.236:8080/swagger-ui/index.html)
+
