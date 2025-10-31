@@ -160,8 +160,13 @@ GitHub main 브랜치에 푸시되면 다음 단계가 실행됩니다:
 
 ## 📂 관련 프로젝트 바로가기
 
-📄 [Frontend 저장소 바로가기](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)  
-📄 [Backend 저장소 바로가기](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE)
+📄 [Frontend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)
+
+<br/>
+
+📄 [Backend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE)
+
+<br/>
 
 ---
 
