@@ -105,8 +105,8 @@ public class OutboundService {
         outbound.updateStatus(OutboundStatus.APPROVED);
 
         // 출고 작업 생성
-//        otfTaskFactory.createPickingTask(id);
-//        destroyOrDecreaseFromOutbound(id);
+        otfTaskFactory.createPickingTask(id);
+        destroyOrDecreaseFromOutbound(id);
 
     }
 
@@ -120,6 +120,7 @@ public class OutboundService {
         }
         outbound.updateStatus(OutboundStatus.CANCELLED);
         // TODO 재고 차감되었던만큼 증가
+
     }
 
     // TODO task가 작업 착수 -> 피킹중
