@@ -153,3 +153,15 @@
 
  [🔗swagger 링크](http://54.180.120.236:8080/swagger-ui/index.html)
 
+## 📂 프론트엔드 · DevOps 프로젝트 폴더 바로가기
+
+📄 [Frontend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)  
+
+<br/>
+
+📃 [DevOps](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/devops/README.md)
+
+
+<br/>
+
+https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/devops/README.md
