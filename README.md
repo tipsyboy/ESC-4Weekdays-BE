@@ -153,9 +153,104 @@
 
  [🔗swagger 링크](http://54.180.120.236:8080/swagger-ui/index.html)
 
+## 단위 테스트
+
+<details>
+<summary>asn</summary>
+
+![asn](./docs/unit_test/asn_api.png)
+![asn](./docs/unit_test/asn_admin.png)
+
+</details>
+
+<details>
+<summary>발주</summary>
+
+![발주](./docs/unit_test/puchise_order.png)
+
+</details>
+
+<details>
+<summary>입고</summary>
+
+![입고](./docs/unit_test/inbound.png)
+
+</details>
+
+<details>
+<summary>주문</summary>
+
+![주문](./docs/unit_test/order_api.png)
+![주문](./docs/unit_test/order_admin.png)
+
+</details>
+
+<details>
+<summary>출고</summary>
+
+![출고](./docs/unit_test/outbound.png)
+
+</details>
+
+<details>
+<summary>재고</summary>
+
+![재고](./docs/unit_test/inventory.png)
+
+</details>
+
+<details>
+<summary>상품</summary>
+
+![상품](./docs/unit_test/product.png)
+
+</details>
+
+<details>
+<summary>공급업체</summary>
+
+![공급업체](./docs/unit_test/vendor.png)
+
+</details>
+
+<details>
+<summary>가맹점</summary>
+
+![가맹점](./docs/unit_test/franchise.png)
+
+</details>
+
+<details>
+<summary>물류창고</summary>
+
+![물류창고](./docs/unit_test/warehouse.png)
+
+</details>
+
+<details>
+<summary>위치</summary>
+
+![위치](./docs/unit_test/location.png)
+
+</details>
+
+<details>
+<summary>사용자</summary>
+
+![사용자](./docs/unit_test/member.png)
+
+</details>
+
+<details>
+<summary>공지사항</summary>
+
+![공지사항](./docs/unit_test/announcement.png)
+
+</details>
+
 ## 📂 프론트엔드 · DevOps 프로젝트 폴더 바로가기
 
-📄 [Frontend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)  
+📄 [Frontend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)
 
 <br/>
 
