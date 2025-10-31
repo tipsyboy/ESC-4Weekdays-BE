@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Builder
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InboundProduct extends BaseEntity {
 
@@ -53,6 +55,17 @@ public class InboundProduct extends BaseEntity {
         this.lotNumber = lotNumber;
         this.locationCode = locationCode;
         this.description = description;
+    }
+
+    public static InboundProduct createInboundProduct(
+            Inbound inbound, Product product, PurchaseOrderProduct poItem, String description) {
+        return InboundProduct.builder()
+                .inbound(inbound)
+                .product(product)
+                .purchaseOrderProduct(poItem)
+                .receivedQuantity(0)
+                .description(description)
+                .build();
     }
 
     // ===== 연관관계 편의 메서드 ===== //
