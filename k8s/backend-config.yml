@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: fourweekdays-back
+data:
+  DB_URL: jdbc:mariadb://mariadb.fourweekdays-back.svc.cluster.local:3306/four_weekdays
+  DB_USERNAME: root
+  DB_PASSWORD: [DB PASSWORD] # Secret으로 설정하는 것이 나을것 같은데
+  # ... 추가 ... #
