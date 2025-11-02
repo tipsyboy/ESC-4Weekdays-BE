@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+  namespace: fourweekdays-back
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+    type: backend
+    ver: blue
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
