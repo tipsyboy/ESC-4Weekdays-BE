@@ -1,9 +1,9 @@
 <h1 align="center">🎟️ ESC</h1>
 
 <p align="center">
-  <img src="./docs/raw.png" width="400" alt="ESC 로고" />
+  <img src="./docs/raw.png" width="800" alt="ESC 로고" />
   
-<h3 align="center">2팀 - 4Weekdays</h3>
+<h3 align="center">ESC - 4Weekdays</h3>
 
 <br /><br />
   
@@ -143,7 +143,7 @@
 
 ## 🖥️ 시스템 아키텍쳐
 <table align="center">
-  <img src="./docs/시스템 아키텍쳐.png" width="400" alt="ESC 로고" />  
+  <img src="./docs/시스템 아키텍쳐.png" width="800" alt="ESC 로고" />  
   <tr>
 
   </tr>
@@ -166,7 +166,7 @@
 <details>
 <summary>발주</summary>
 
-![발주](./docs/unit_test/puchise_order.png)
+![발주](docs/unit_test/purchase-order.png)
 
 </details>
 
