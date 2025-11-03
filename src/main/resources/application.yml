@@ -20,3 +20,26 @@ spring:
         bucket: ${bucket}
       region:
         static: ap-northeast-2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /api/actuator
+  endpoint:
+    health:
+      show-details: always
+      group:
+        liveness:
+          include:
+            - ping
+            - diskSpace
+        readiness:
+          include:
+            - db
+            - diskSpace
+
+  metrics:
+    tags:
+      application: fourweekdays

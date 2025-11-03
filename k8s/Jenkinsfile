@@ -1,0 +1,291 @@
+pipeline {
+  agent {
+    kubernetes {
+      defaultContainer 'gradle'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: fourweekdays-jenkins
+spec:
+  restartPolicy: Never
+  containers:
+    - name: gradle
+      image: gradle:8.9-jdk17
+      command: ['cat']
+      tty: true
+      volumeMounts:
+        - name: gradle-cache
+          mountPath: /home/gradle/.gradle
+        - name: workspace
+          mountPath: /workspace
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
+      command: ['/busybox/sh','-c','sleep infinity']
+      tty: true
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+        - name: workspace
+          mountPath: /workspace
+  volumes:
+    - name: gradle-cache
+      emptyDir: {}
+    - name: workspace
+      emptyDir: {}
+    - name: docker-config
+      secret:
+        secretName: dockerhub-cred
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+"""
+    }
+  }
+
+  environment {
+    DOCKER_NAME = 'tipsyboy'
+    GITHUB_URL = 'https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE'
+    IMAGE_NAME = "${DOCKER_NAME}/backend"
+    IMAGE_TAG = "${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('GitHub Checkout') {
+      steps {
+        container('gradle') {
+          echo "Cloning Repository from release branch"
+          checkout([$class: 'GitSCM',
+            branches: [[name: '*/release']],
+            userRemoteConfigs: [[url: "${GITHUB_URL}"]]
+          ])
+          sh '''
+            echo "##### 성공적으로 Repository를 Clone #####"
+            ls -la ${WORKSPACE}
+          '''
+        }
+      }
+    }
+
+    stage('Gradle Build') {
+      steps {
+        echo "Gradle을 통해 Spring Boot 애플리케이션을 빌드한다."
+        container('gradle') {
+          sh '''
+            chmod +x ./gradlew || true
+            ./gradlew --no-daemon clean bootJar
+            echo "##### 빌드 결과 확인 #####"
+            ls -la build/libs/
+          '''
+        }
+      }
+    }
+
+    stage('Kaniko Build & Push') {
+      steps {
+        echo "Kaniko를 통해 Docker 이미지를 빌드하고 DockerHub로 Push한다."
+        container('kaniko') {
+          sh """
+            /kaniko/executor \
+              --context=${WORKSPACE} \
+              --dockerfile=${WORKSPACE}/Dockerfile \
+              --destination=${IMAGE_NAME}:${IMAGE_TAG} \
+              --destination=${IMAGE_NAME}:latest \
+              --cache=true
+          """
+        }
+      }
+    }
+
+    stage('Deploy to Kubernetes') {
+      steps {
+        echo "Blue-Green 배포 방식을 사용해서 K8s로 배포한다."
+        script {
+          sshPublisher(
+            publishers: [
+              sshPublisherDesc(
+                configName: 'K8S_MASTER',
+                verbose: true,
+                transfers: [
+                  sshTransfer(
+                    execCommand: """
+                      if kubectl get svc backend-svc -n fourweekdays-back -o wide | grep -q "green"; then
+                        CURRENT_VER="green"
+                        NEXT_VER="blue"
+                      else
+                        CURRENT_VER="blue"
+                        NEXT_VER="green"
+                      fi
+
+                      echo "=========================================="
+                      echo "현재 버전: \${CURRENT_VER}"
+                      echo "배포 버전: \${NEXT_VER}"
+                      echo "이미지: ${IMAGE_NAME}:${IMAGE_TAG}"
+                      echo "=========================================="
+
+                      cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-deployment-\${NEXT_VER}
+  namespace: fourweekdays-back
+spec:
+  selector:
+    matchLabels:
+      app: backend
+      type: backend
+      ver: \${NEXT_VER}
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: backend
+        type: backend
+        ver: \${NEXT_VER}
+    spec:
+      containers:
+      - name: container
+        image: ${IMAGE_NAME}:${IMAGE_TAG}
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        livenessProbe:
+          httpGet:
+            path: /api/actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 2
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      terminationGracePeriodSeconds: 30
+EOF
+
+                      echo "##### Deployment 생성 완료 #####"
+
+                      kubectl rollout status deployment/spring-deployment-\${NEXT_VER} -n fourweekdays-back --timeout=600s || exit 1
+
+                      echo "##### Rollout 완료 - 헬스체크 대기 중 #####"
+
+                      # ReadinessProbe 성공 확인
+                      for i in {1..6}; do
+                        READY=\$(kubectl get deployment spring-deployment-\${NEXT_VER} -n fourweekdays-back -o jsonpath='{.status.readyReplicas}')
+                        if [ "\${READY}" == "1" ]; then
+                          echo "##### 헬스체크 성공 #####"
+                          break
+                        fi
+                        echo "대기 중... (\$i/6)"
+                        sleep 5
+                      done
+
+                      if [ "\${READY}" != "1" ]; then
+                        echo "##### 헬스체크 실패 - 배포 중단 #####"
+                        exit 1
+                      fi
+
+                      kubectl patch service backend-svc -n fourweekdays-back -p '{"spec":{"selector":{"ver":"'\${NEXT_VER}'"}}}'
+
+                      echo "##### Service 전환 완료: \${CURRENT_VER} -> \${NEXT_VER} #####"
+
+                      # 30초 대기 후 이전 버전 스케일 다운
+                      sleep 30
+
+                      if kubectl get deployment spring-deployment-\${CURRENT_VER} -n fourweekdays-back 2>/dev/null; then
+                        kubectl scale deployment spring-deployment-\${CURRENT_VER} -n fourweekdays-back --replicas=0
+                        echo "##### 이전 버전(\${CURRENT_VER}) 스케일 0으로 변경함 #####"
+                      else
+                        echo "##### 첫 배포 - 이전 버전 없음 #####"
+                      fi
+
+                      echo "=========================================="
+                      echo "배포 완료: ${IMAGE_NAME}:${IMAGE_TAG}"
+                      echo "현재 버전: \${NEXT_VER}"
+                      echo "=========================================="
+                    """
+                  )
+                ]
+              )
+            ]
+          )
+        }
+      }
+    }
+
+    stage('Result') {
+      steps {
+        echo "===== 빌드 완료 ====="
+        echo "이미지: ${IMAGE_NAME}:${IMAGE_TAG}"
+        echo "빌드 번호: ${BUILD_NUMBER}"
+        echo "====================="
+      }
+    }
+  } // stages 블록 종료
+
+  post {
+    success {
+      echo "Jenkins 파이프라인 성공 - 배포 완료"
+      script {
+        sendDiscordNotification('SUCCESS')
+      }
+    }
+    failure {
+      echo "Jenkins 파이프라인 실패 - 배포가 중단되었습니다."
+      echo "실패한 스테이지: ${env.STAGE_NAME}"
+      script {
+        sendDiscordNotification('FAILURE')
+      }
+    }
+    always {
+      echo "빌드 번호: ${BUILD_NUMBER}, 결과: ${currentBuild.result}"
+    }
+  }
+} // pipeline 블록 종료
+
+def sendDiscordNotification(String status) {
+  def color = status == 'SUCCESS' ? '3066993' : '15158332'
+  def emoji = status == 'SUCCESS' ? '✅' : '❌'
+  def message = status == 'SUCCESS' ? '배포 성공' : '배포 실패'
+
+  def payload = """
+  {
+    "embeds": [{
+      "title": "${emoji} Backend CI/CD ${message}",
+      "description": "**빌드 번호:** ${BUILD_NUMBER}\\n**상태:** ${status}\\n**브랜치:** release",
+      "color": ${color},
+      "fields": [
+        {
+          "name": "이미지",
+          "value": "${IMAGE_NAME}:${IMAGE_TAG}",
+          "inline": false
+        }
+      ],
+      "timestamp": "${new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))}"
+    }]
+  }
+  """
+
+  withCredentials([string(credentialsId: 'discord-webhook-back', variable: 'WEBHOOK_URL')]) {
+    sh '''
+      curl -H "Content-Type: application/json" \
+           -d \'''' + payload + '''\' \
+           "${WEBHOOK_URL}"
+    '''
+  }
+}
