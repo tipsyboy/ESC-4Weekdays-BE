@@ -4,9 +4,11 @@ import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
+import com.fourweekdays.fourweekdays.tasks.model.entity.PickingTask;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import com.fourweekdays.fourweekdays.tasks.model.entity.TaskCategory;
 import com.fourweekdays.fourweekdays.tasks.model.entity.TaskStatus;
+import com.fourweekdays.fourweekdays.tasks.repository.PickingTaskRepository;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,13 +22,12 @@ public class OutboundTaskFactory {
 
     private final TaskRepository taskRepository;
     private final OutboundRepository outboundRepository;
+    private final PickingTaskRepository pickingTaskRepository;
 
     @Transactional
     public Long createPickingTask(Long outboundId) {
-        Outbound outbound = outboundRepository.findById(outboundId)
-                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
-
         Task task = createTask(TaskCategory.PICKING, outboundId);
+        createPickingTaskDetail(task, outboundId);
         return task.getId();
     }
 
@@ -55,5 +56,13 @@ public class OutboundTaskFactory {
                 .referenceId(outboundId)
                 .build();
         return taskRepository.save(task);
+    }
+
+    private PickingTask createPickingTaskDetail(Task task, Long outboundId) {
+        PickingTask pickingTask = PickingTask.builder()
+                .task(task)
+                .outboundId(outboundId)
+                .build();
+        return pickingTaskRepository.save(pickingTask);
     }
 }
