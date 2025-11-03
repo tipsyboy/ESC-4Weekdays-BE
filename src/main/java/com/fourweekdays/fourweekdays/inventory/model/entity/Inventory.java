@@ -33,9 +33,6 @@ public class Inventory extends BaseEntity {
     @JoinColumn(name = "inbound_id", insertable = false, updatable = false)
     private Inbound inbound;
 
-//    @Column(name = "inbound_id", insertable = false, updatable = false)
-//    private Long inboundId; // 입고 history 추적 때문에 넣음
-
     @Column(length = 50)
     private String lotNumber;
 
