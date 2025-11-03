@@ -2,13 +2,16 @@ package com.fourweekdays.fourweekdays.outbound.model.entity;
 
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,10 +37,16 @@ public class OutboundInventoryHistory {
     @JoinColumn(name = "location_id")
     private Location location;
 
+    private Long taskId;
+
     private String lotNumber;
 
     private int quantityChanged; // 변동량
 
     @Enumerated(EnumType.STRING)
     private OutboundInventoryHistoryStatus status;
+
+    public void cancel() {
+        this.status = OutboundInventoryHistoryStatus.CANCELLED;
+    }
 }

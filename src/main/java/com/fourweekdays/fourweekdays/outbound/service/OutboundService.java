@@ -4,7 +4,6 @@ import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
-import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
@@ -18,20 +17,26 @@ import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto
 import com.fourweekdays.fourweekdays.outbound.model.entity.*;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundInventoryHistoryRepository;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
+import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import com.fourweekdays.fourweekdays.tasks.factory.OutboundTaskFactory;
+import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
+import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INSUFFICIENT_INVENTORY;
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_CANNOT_APPROVED;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType.*;
+import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.OUTBOUND_HISTORY_ALREADY_PROCESSED;
+import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.TASK_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -45,54 +50,16 @@ public class OutboundService {
     private final CodeGenerator codeGenerator;
     private final OrderRepository orderRepository;
     private final OutboundTaskFactory otfTaskFactory;
-    private final LocationRepository locationRepository;
     private final InventoryRepository inventoryRepository;
     private final OutboundInventoryHistoryRepository outboundHistoryRepository;
-
-    // 재고 감소
-    @Transactional
-    public void destroyOrDecreaseFromOutbound(Long outboundId) {
-        List<OutboundInventoryHistory> allHistories = new ArrayList<>();
-
-        Outbound outbound = outboundRepository.findByIdWithItemsAndProduct(outboundId)
-                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
-
-        if (outbound.getItems().isEmpty()) {
-            throw new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND);
-        }
-        List<OutboundProductItem> items = outbound.getItems();
-
-        for (OutboundProductItem item : items) {
-            List<OutboundInventoryHistory> histories =
-                    decreaseInventoryByFIFO(
-                            item.getProduct().getId(),
-                            item.getOrderedQuantity(),
-                            outbound
-                    );
-            allHistories.addAll(histories);
-        }
-
-        if (!allHistories.isEmpty()) {
-            outboundHistoryRepository.saveAll(allHistories);
-        }
-    }
-
+    private final TaskRepository taskRepository;
 
     // 출고 생성
-// 주문과 완전 동일하게 생성되는 시나리오로 진행하겠음
     @Transactional
     public Long createOutbound(OutboundCreateDto dto) {
-
-        // member와 order 검증
         Order order = verification(dto);
-
-        // Outboun Entity 만들기
         Outbound outbound = createBaseOutbound(dto);
-
-        // order에 상품 목록으로 OutboundProductItems 만들기
         addItemsFromOrder(outbound, order);
-
-        // TODO addDirectItems x 일단 아이템을 추가로 받지 않게 하겠음
 
         return outboundRepository.save(outbound).getId();
     }
@@ -100,45 +67,48 @@ public class OutboundService {
     // 출고 승인
     @Transactional
     public void approveOutbound(Long id) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
         outbound.updateStatus(OutboundStatus.APPROVED);
-
-        // 출고 작업 생성
-        otfTaskFactory.createPickingTask(id);
-        destroyOrDecreaseFromOutbound(id);
+        Long taskId = otfTaskFactory.createPickingTask(id);
+        destroyOrDecreaseFromOutbound(id, taskId);
     }
 
-    // 출고 거절
+    // 출고 취소
     @Transactional
     public void cancelledOutbound(Long id) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
 
         if (outbound.getStatus() != OutboundStatus.APPROVED && outbound.getStatus() != OutboundStatus.REQUESTED) {
             throw new OutboundException(OUTBOUND_CANNOT_CANCEL);
         }
         outbound.updateStatus(OutboundStatus.CANCELLED);
-        // TODO 재고 차감되었던만큼 증가
 
+        List<OutboundInventoryHistory> histories =
+                outboundHistoryRepository.findAllByOutboundIdWithInventory(id);
+
+        validateAllHistoriesArePending(histories);
+
+        recoverInventoryFromOutboundHistory(histories);
     }
 
-    // TODO task가 작업 착수 -> 피킹중
+    // TODO task 작업 착수 -> 피킹중
     @Transactional
     public void updatePicking(Long id) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
         outbound.updateStatus(OutboundStatus.PICKING);
     }
 
     // TODO task가 피킹 완료 -> 검수중
     @Transactional
     public void updatePacking(Long id) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
         outbound.updateStatus(OutboundStatus.INSPECTION);
     }
 
     // 검수 완료 작업
     @Transactional
     public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
 
         if (outbound.getStatus() != OutboundStatus.INSPECTION) {
             throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
@@ -157,7 +127,7 @@ public class OutboundService {
     // TODO 패킹완료 -> 출하
     @Transactional
     public void updateShipped(Long id) {
-        Outbound outbound = chekOutbound(id);
+        Outbound outbound = checkOutbound(id);
         Order order = orderRepository.findById(outbound.getOrder().getOrderId())
                 .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
         order.updateShipped();
@@ -175,7 +145,35 @@ public class OutboundService {
     }
 
     // 재고 감소 로직
-    private List<OutboundInventoryHistory> decreaseInventoryByFIFO(Long productId, Integer requiredQuantity, Outbound outbound) {
+    private void destroyOrDecreaseFromOutbound(Long outboundId, Long taskId) {
+        List<OutboundInventoryHistory> allHistories = new ArrayList<>();
+
+        Outbound outbound = outboundRepository.findByIdWithItemsAndProduct(outboundId)
+                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
+
+        if (outbound.getItems().isEmpty()) {
+            throw new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND);
+        }
+        List<OutboundProductItem> items = outbound.getItems();
+
+        for (OutboundProductItem item : items) {
+            List<OutboundInventoryHistory> histories =
+                    decreaseInventoryByFIFO(
+                            item.getProduct().getId(),
+                            item.getOrderedQuantity(),
+                            outbound,
+                            taskId
+                    );
+            allHistories.addAll(histories);
+        }
+
+        if (!allHistories.isEmpty()) {
+            outboundHistoryRepository.saveAll(allHistories);
+        }
+    }
+
+    // 재고 감소 로직 내부
+    private List<OutboundInventoryHistory> decreaseInventoryByFIFO(Long productId, Integer requiredQuantity, Outbound outbound, Long taskId) {
         List<OutboundInventoryHistory> histories = new ArrayList<>();
         Integer remainingQuantity = requiredQuantity;
 
@@ -189,16 +187,13 @@ public class OutboundService {
             if (remainingQuantity <= 0) {
                 break;
             }
-            // 이미 재고가 0일 경우 (그렇다면 같은 상품에 대한 출고요청이 들어와있는 상태일것
-            // 1번 출고 -> 상품 30개 출고 중, 2번 출고 -> 40개 -> 남은 재고 0 2번이 먼저 출하작업 완료 재고 삭제 이러면 어떡함
-            // 소프트 딜리트하면 됨
+            // TODO 재고 소프트 딜리트 구현 -> 재고 0 = 소프트 딜리트
             Integer currentStock = inventory.getQuantity();
             if (currentStock <= 0) {
                 continue;
             }
             int decreaseAmount = Math.min(currentStock, remainingQuantity);
             inventory.decrease(decreaseAmount);
-
             OutboundInventoryHistory history = OutboundInventoryHistory.builder()
                     .outbound(outbound)
                     .inventory(inventory)
@@ -206,20 +201,51 @@ public class OutboundService {
                     .location(inventory.getLocation())
                     .quantityChanged(decreaseAmount)
                     .lotNumber(inventory.getLotNumber())
+                    .taskId(taskId)
+                    .status(OutboundInventoryHistoryStatus.PENDING)
                     .build();
-
             histories.add(history);
-
-            // 남은 수량 업데이트
             remainingQuantity -= decreaseAmount;
         }
 
-        // 재고가 부족한 경우
         if (remainingQuantity > 0) {
             throw new InventoryException(INVENTORY_NOT_FOUND);
         }
 
         return histories;
+    }
+
+    // 재고 증가 로직
+    private void recoverInventoryFromOutboundHistory(List<OutboundInventoryHistory> histories) {
+        if (!histories.isEmpty()) {
+            for (OutboundInventoryHistory history : histories) {
+                Inventory inventory = history.getInventory();
+                inventory.increase(history.getQuantityChanged());
+
+                history.cancel();
+            }
+
+            Long taskId = histories.get(0).getTaskId();
+            if (taskId != null) {
+                Task task = taskRepository.findById(taskId)
+                        .orElseThrow(() -> new TaskException(TASK_NOT_FOUND));
+                task.cancel("출고서 취소로 인한 작업 취소");
+            }
+        }
+    }
+
+    // 검증 로직들
+
+    private void validateAllHistoriesArePending(List<OutboundInventoryHistory> histories) {
+        if (histories.isEmpty()) {
+            return;
+        }
+        boolean hasNonPendingHistory = histories.stream()
+                .anyMatch(h -> h.getStatus() != OutboundInventoryHistoryStatus.PENDING);
+        if (hasNonPendingHistory) {
+            throw new OutboundException(OUTBOUND_HISTORY_ALREADY_PROCESSED);
+        }
+
     }
 
     private Order verification(OutboundCreateDto dto) {
@@ -259,7 +285,7 @@ public class OutboundService {
         });
     }
 
-    private Outbound chekOutbound(Long id) {
+    private Outbound checkOutbound(Long id) {
         return outboundRepository.findById(id)
                 .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
     }
