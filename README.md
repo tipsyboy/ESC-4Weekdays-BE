@@ -1,262 +1,188 @@
 <h1 align="center">🎟️ ESC</h1>
-
 <p align="center">
-  <img src="./docs/raw.png" width="800" alt="ESC 로고" />
-  
-<h3 align="center">ESC - 4Weekdays</h3>
+  <img src="../docs/raw.png" width="800" alt="ESC 로고" />
 
-<br /><br />
-  
-## 👨‍💻 팀원 구성
+# 👨‍💻 팀원 구성
 <div align="center">
   <table>
     <tr>
-      <td>
+      <td align="center">
         <a href="https://github.com/tipsyboy">
-          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+          <img src="https://github.com/tipsyboy.png" width="150" style="border-radius: 50%;">
         </a>
       </td>
-      <td>
+      <td align="center">
         <a href="https://github.com/seol-kang">
-          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+          <img src="https://github.com/seol-kang.png" width="150" style="border-radius: 50%;">
         </a>
       </td>
-      <td>
+      <td align="center">
         <a href="https://github.com/wonzzu">
-          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+          <img src="https://github.com/wonzzu.png" width="150" style="border-radius: 50%;">
         </a>
       </td>
-      <td>
+      <td align="center">
         <a href="https://github.com/why48382">
-          <img src="./docs/assets/avatar/" width="150" style="max-width: 100%;">
+          <img src="https://github.com/why48382.png" width="150" style="border-radius: 50%;">
         </a>
       </td>
     </tr>
     <tr>
       <td align="center">
-        <a href="https://github.com/tipsyboy">양형모</a>
+        <a href="https://github.com/tipsyboy"><b>양형모</b></a>
       </td>
       <td align="center">
-        <a href="https://github.com/seol-kang">강설</a>
+        <a href="https://github.com/seol-kang"><b>강설</b></a>
       </td>
       <td align="center">
-        <a href="https://github.com/wonzzu">김원중</a>
+        <a href="https://github.com/wonzzu"><b>김원중</b></a>
       </td>
       <td align="center">
-        <a href="https://github.com/why48382">이현식</a>
+        <a href="https://github.com/why48382"><b>이현식</b></a>
       </td>
     </tr>
   </table>
 </div>
 
-<br><br>
+# 📌 4WeekDays - 프로젝트 개요
 
-## 📘 프로젝트 기획서
+## 1. 📝 프로젝트 설명
+FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고관리 시스템(WMS)입니다.
+
+공급업체로부터의 상품 입고부터 출고, 재고, 작업까지 모든 물류 데이터를 단일 플랫폼에서 통합 관리할 수 있도록 설계되었습니다.
+
+실시간 데이터 연동을 통해 재고 정확도를 높이고, 업무 표준화 및 운영 효율성 극대화를 목표로합니다.
+> 공급업체로부터 상품을 입고받아 관리하는 입출고·재고·작업 관리를 통합하는 창고관리 시스템
+
+👥 대상 사용자
+- 관리자(Admin): 전체 시스템 관리 및 승인 업무
+- 매니저(Manager): 발주 관리, 입고 계획, 작업 배정
+- 작업자(Worker): 검수, 적치 등 현장 작업 수행
+- 공급업체(Vendor): ASN 전송, 납품 정보 제공
+- 출고처(Franchise): 창고로 주문 발송
+
+## 2. 🏪 배경 및 현황
+### 🏪 현황
+- 공급망 복잡도 증가: 다양한 공급업체로부터 동시다발적인 입고 발생
+- 입고 처리 효율성 요구: 제한된 인력으로 대량의 입고 물량 처리 필요
+- 실시간 재고 가시성: 입고 중인 상품과 보관 중인 재고의 실시간 추적 필요
+- 작업 배정 필요성: 검수·적치 및 진행 상황 모니터링
+
+### 💥 기존 창고관리의 한계
+- 입고 지연 및 로케이션 혼잡: 공급업체별 납품 일정 불일치로 입고 대기 및 적치 지연 발생
+- 재고 가시성 부족: 입고 진행 중인 상품의 실시간 상태 파악 어려움
+- 데이터 활용성 저하: 입고·재고 데이터가 단순 집계에만 활용되어 의사결정 지원 부족
+- 공급업체 협업 한계: 입고 예정 정보를 사전에 파악하기 어려워 사전 준비 불가
+
+### ✅ 목표
+- ASN 기반 입고 자동화: 공급업체가 전송한 ASN을 기반으로 입고 예정 정보 자동 등록 및 검수 작업 생성
+- 작업 배정 시스템: 작업자 배정을 시스템 상에서 파악하고 배정
+- 로케이션 최적화: 공급업체별, 상품 특성별 적치 위치 추천
+- 실시간 입고 현황 모니터링: 입고 진행률, 검수 상태, 적치 완료율 대시보드 제공
+- 데이터 기반 의사결정: 공급업체별 납품 실적, 작업자별 처리 효율 분석
+- 부분입고 지원: 발주 수량과 실제 입고 수량이 다를 수 있는 분할 입고 자동 처리
+
+# ✨ 주요 기능
+## 📦 공급업체 관리
+- 공급업체 등록 및 정보 관리
+- 공급업체별 상품 매핑
+- 공급업체별 전용 로케이션 할당
+
+## 📋 발주 관리 (Purchase Order)
+- 발주서 생성, 수정, 승인
+- 발주 상품 목록 관리
+- 발주 상태 관리 (발주 요청 → 승인 완료 → 납품 대기 → 배송 완료 → 취소)
+- 발주 진행률 조회 (입고 완료율)
+
+## 📨 ASN (사전 입고 통지) 관리
+- 공급업체 ASN 수신: 발주서에 대한 공급 업체의 ASN 수신
+- ASN 기반 입고서 자동 생성: ASN 수신 시 입고 예정 정보 자동 등록
+- ASN 내역 조회 및 추적
+## ASN 프로세스
+- 발주서 작성 -> 발주 승인 → 공급업체 ASN 수신 → 입고서 자동 생성 → 검수 작업 생성
+
+## 📥 입고 관리 (Inbound)
+- 입고 예정 관리: ASN 기반 입고 예정 정보 자동 등록
+- 입고 진행 상태 관리: 예정 → 검수 중 → 적치 중 → 완료
+- 입고 상품 관리: 상품별 예상 수량, 실제 검수 수량, LOT 번호 관리
+- 입고 이력 조회 및 추적
+
+## ✅ 작업(Task) 관리
+### 검수 작업(Inspection Task)
+- 입고서 생성 시 자동으로 검수 작업 생성
+- 작업자 배정
+- 검수 진행 및 완료 처리
+- 상품별 실제 수량 기록
+
+### 적치 작업(Putaway Task)
+- 검수 완료 시 자동으로 적치 작업 생성
+- 로케이션 자동 추천 또는 수동 지정
+- 작업자 배정
+- 적치 완료 처리 및 재고 반영
+- 작업자별 작업 현황 조회
+
+## 📍 로케이션 관리
+- 로케이션 등록 및 정보 관리
+- 공급업체별 전용 로케이션 지정
+- 로케이션별 용량 관리
+- 로케이션 사용률 조회
+
+## 📦 재고 관리 (Inventory)
+- 공급업체별 재고 현황: 공급업체별로 재고 수량 조회
+- 로케이션별 재고 현황: 어느 위치에 무엇이 있는지 실시간 조회
+- LOT 번호 기반 추적: 입고 시점의 LOT 번호로 재고 이력 추적
+- 입고 완료 시 재고 자동 증가: 적치 완료 시점에 재고 자동 반영
+- 재고 검색 및 필터링
+
+## 🔍 검색 기능
+- 상품/재고/입고/발주 내역 통합 검색 지원
+- 다양한 필터 제공 (공급업체, 상품, 재고 수량, 입고 상태, 날짜 등)
+- 정렬 옵션 (최신 입고 순, 재고 부족 우선 등)
+
+## 📊 데이터 시각화 및 알림
+
+
+
+# 🛠️ 기술 스택
+
+## Backend
+![Java](https://img.shields.io/badge/Java_17-007396?style=flat&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat&logo=springsecurity&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white)
+![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat&logo=spring&logoColor=white)
+![QueryDSL](https://img.shields.io/badge/QueryDSL-0769AD?style=flat&logo=&logoColor=white)
+
+## Frontend
+![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vuedotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white)
+
+## Database
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat&logo=mariadb&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white)
+
+## Infrastructure
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white)
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=flat&logo=jenkins&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=flat&logo=amazons3&logoColor=white)
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=flat&logo=amazonec2&logoColor=white)
+
+## Tools
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)
+
+# 🏗️ 시스템 아키텍처
 <table align="center">
-  <tr>
-  
-  [🔗프로젝트 기획서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/ESC_프로젝트_기획서V3_4Weekdays.pdf)
-
-<table align="center">
-  <tr>
-  
-  [🔗WBS](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4Weekdays_WBS.pdf)
-
-<table align="center">
-  <tr>
-  
-  [🔗ERD](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/tree/dev/docs/4WeekDaysERD.png)  
-
-# 1. 개요
-
-현대 유통·물류 산업은 단순한 재고 관리만으로는 경쟁력을 유지하기 어려우며, 특히 가맹점 중심의 소매 업계에서는 **상품 재고 부족이나 과잉으로 인한 손실**이 빈번하게 발생하며, 이는 가맹점 운영 효율 저하와 고객 신뢰도 하락, 더 나아가 기업 수익성에 직접적인 영향을 줍니다.
-
-따라서 **입고 → 출고 → 판매 → 실적**으로 이어지는 전 과정을 통합 관리하고, 데이터 기반으로 재고 흐름을 최적화하는 **영업관리 시스템**이 요구됩니다.
-
-본 프로젝트는 **자동 출고 추천 시스템**과 **판매 패턴 기반의 추천 기능**을 통해 재고 운영을 효율화하고, 가맹점과 본사 모두가 위의 문제를 사전에 예방하고 투명하게 운영할 수 있는 환경을 구축하는 것을 목표로 합니다.
-
-# 2. 현황 및 배경
-
-### **🏪** 현황
-
-- **가맹점 경쟁 심화**: 프랜차이즈 등 소매 업계 포화로 효율적인 물류 관리가 필수
-- **소비자 트렌드 변화**: 시즌·지역·시간대별 판매 패턴이 뚜렷해지고 변화 속도가 빨라짐
-- **데이터 활용 필요성 증가**: POS, 물류, 판매 데이터를 종합적으로 활용해야 함
-- **업무 효율성 요구**: 가맹점 관리 인력이 줄어드는 추세 → 시스템 자동화 및 알림 시스템 필요
-
-### 💥 기존 영업관리 시장의 한계
-
-- **재고 부족/과잉 문제**: 본사 일괄 출고 방식 → 가맹점 불만 발생, 운영 효율 저하
-- **데이터 활용성 저하**: 판매·재고 데이터가 매출 확인 등 단순 집계에 머무를 경우 전략적 활용 부족
-- **실시간 대응 한계**: 특정 상품 급속 소진 시 즉각적 알림 체계 미흡
-
-### **✅** 목표
-
-- **자동 출고 최적화**: 시스템이 제안하는 출고량을 가맹점이 승인/거부할 수 있는 프로세스로 가맹점의 재고 관리 리소스 최소화
-- **실적 분석 대시보드**: 가맹점·직원·상품 단위의 판매 실적과 성장률, 재고 회전율 분석
-- **실시간 알림/자동화**: 재고 급소진·이벤트성 판매 급증에 즉각 대응할 수 있는 알림 체계 구축
-- **기업 이미지 제고**: 데이터 기반의 합리적인 출고/재고 관리로 고객 친화적이고 신뢰성 높은 유통사 이미지 확보
-
-# 3. 주요 기능
-
-### **📁 제품/카테고리 관리**
-
-- 계층형(부모/자식) 카테고리 등록 가능
-- 제품 등록 시 카테고리 지정 필수
-- 거래처별 제품 등록/관리
-
-### **🏪** 재고 관리
-
-- 거래처/물류 창고/가맹점 별 재고 현황 관리
-- **권장 출고 → 가맹점 승인**
-    - 시스템이 추천 발주량을 제시 → 가맹점 승인 시 실제 출고 진행
-    - 특수 상황(인기상품 급증)에는 자동 출고 옵션 선택 가능
-- **출고 알림 + 대시보드**
-    - 출고 예정 시점에 가맹점 대시보드에 알림 발송
-    - 승인/거부 즉시 처리 가능 → 투명성 강화
-- 재고 이력 관리 (입고/출고/반품 로그 기록)
-- 동시성 제어를 통한 재고 할당 제어
-
-### **📁** 상품 관리
-
-- 상품 등록, 수정, 삭제(소프트 삭제), 상세 조회 및 전체 조회
-- 상품 속성 관리 (카테고리, 브랜드, 규격, 유통기한, 원가/판매가, 이미지 등)
-- 상품 상태 워크플로우 (입고→ 검수중→ 검수 완료→적치중→ 승인→ 중지/단종)
-- 프로모션/행사 상품 관리 (기간별 할인, 번들 상품 설정)
-
-### 🔍 검색 기능
-
-- 상품/재고/입고/출고 내역 통합 검색 지원
-- 다양한 필터 제공 (상품 카테고리, 재고 수량, 판매량, 유통기한, 출고 상태 등)
-- 정렬 옵션 (재고 부족 우선, 판매량 순, 최신 입고 순)
-- ElasticSearch 등을 통한 고속 검색 지원
-
-### **📊** 데이터 시각화 및 알림
-
-- 가맹점별/직원별/상품별 판매 실적 대시보드 제공
-- 판매 랭킹, 성장률, 재고 회전율 분석
-- 출고/판매 추세 그래프 및 예측 리포트 제공
-- 매출, 출고량, 재고 수준 등 KPI 지표 시각화
-- 리포트 자동 생성 및 다운로드 지원(PDF, Excel)
-- 작업 현황 실시간 알림
-  </tr>
-
-## 🖥️ 시스템 아키텍쳐
-<table align="center">
-  <img src="./docs/시스템 아키텍쳐.png" width="800" alt="ESC 로고" />  
-  <tr>
-
-  </tr>
-
-## API 명세서
- [🔗swagger 화면(PDF)](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/docs/4weekdays%20swagger.pdf)  
-
- [🔗swagger 링크](http://54.180.120.236:8080/swagger-ui/index.html)
-
-## 단위 테스트
-
-<details>
-<summary>asn</summary>
-
-![asn](./docs/unit_test/asn_api.png)
-![asn](./docs/unit_test/asn_admin.png)
-
-</details>
-
-<details>
-<summary>발주</summary>
-
-![발주](docs/unit_test/purchase-order.png)
-
-</details>
-
-<details>
-<summary>입고</summary>
-
-![입고](./docs/unit_test/inbound.png)
-
-</details>
-
-<details>
-<summary>주문</summary>
-
-![주문](./docs/unit_test/order_api.png)
-![주문](./docs/unit_test/order_admin.png)
-
-</details>
-
-<details>
-<summary>출고</summary>
-
-![출고](./docs/unit_test/outbound.png)
-
-</details>
-
-<details>
-<summary>재고</summary>
-
-![재고](./docs/unit_test/inventory.png)
-
-</details>
-
-<details>
-<summary>상품</summary>
-
-![상품](./docs/unit_test/product.png)
-
-</details>
-
-<details>
-<summary>공급업체</summary>
-
-![공급업체](./docs/unit_test/vendor.png)
-
-</details>
-
-<details>
-<summary>가맹점</summary>
-
-![가맹점](./docs/unit_test/franchise.png)
-
-</details>
-
-<details>
-<summary>물류창고</summary>
-
-![물류창고](./docs/unit_test/warehouse.png)
-
-</details>
-
-<details>
-<summary>위치</summary>
-
-![위치](./docs/unit_test/location.png)
-
-</details>
-
-<details>
-<summary>사용자</summary>
-
-![사용자](./docs/unit_test/member.png)
-
-</details>
-
-<details>
-<summary>공지사항</summary>
-
-![공지사항](./docs/unit_test/announcement.png)
-
-</details>
-
-## 📂 프론트엔드 · DevOps 프로젝트 폴더 바로가기
-
-📄 [Frontend](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE)
-
-<br/>
-
-📃 [DevOps](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/devops/README.md)
-
-
-<br/>
-
-https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/blob/dev/devops/README.md
+  <img src="../docs/시스템 아키텍쳐.png" width="800" alt="ESC 로고" />
+
+# 📚 문서
+- [📖 Wiki 바로가기](링크)
+- [📄 API 문서](Swagger 링크)
+- [🎨 Frontend Repository](링크)
+- [⚙️ DevOps Repository](링크)
