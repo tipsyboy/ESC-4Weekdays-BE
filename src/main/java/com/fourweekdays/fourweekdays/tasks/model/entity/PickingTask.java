@@ -2,7 +2,12 @@ package com.fourweekdays.fourweekdays.tasks.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Getter
+@NoArgsConstructor
 public class PickingTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
