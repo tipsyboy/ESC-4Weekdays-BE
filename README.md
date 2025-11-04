@@ -170,12 +170,17 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
   <img src="./docs/05%20시스템%20아키텍쳐.png" width="800" alt="ESC 로고" />
 
 # 📚 문서
-- [📖 Wiki 바로가기](링크)
-- [프로젝트 기획서](./docs/01%20프로젝트%20기획서%204Weekdays_v9.pdf)
-- [WBS](./docs/02%20WBS.pdf)
-- [ERD](./docs/03%20ERD.png)
-- [요구사항 정의서](./docs/04%20요구사항%20정의서.pdf)
-- [시스템 아키텍쳐](./docs/05%20시스템%20아키텍쳐.png)
+- [📖 Wiki 바로가기](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki)
+
+- [프로젝트 기획서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/ESC-%E2%80%90-4WeekDays-%E2%80%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D%EC%84%9C)
+- [WBS](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/WBS)
+- [ERD](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/ERD)
+- [요구사항 정의서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EB%AA%85%EC%84%B8%EC%84%9C)
+- [화면 설계 피그마 링크](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C-%ED%94%BC%EA%B7%B8%EB%A7%88-%EB%A7%81%ED%81%AC)
+- [시스템 아키텍쳐](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)
+
 - [스웨거 단위 테스트](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Swagger-API-%EB%8B%A8%EC%9C%84-%ED%85%8C%EC%8A%A4%ED%8A%B8)
-- [Github 가이드](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Team-ESC-%E2%80%90-Git-Branch-%EC%A0%84%EB%9E%B5-%EB%B0%8F-%EC%BB%A8%EB%B2%A4%EC%85%98-%EA%B0%80%EC%9D%B4%EB%93%9C)
+- [UI/UX 화면 테스트 결과서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/UI-UX-%ED%99%94%EB%A9%B4-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B2%B0%EA%B3%BC%EC%84%9C)
+
+- [Team ESC - Github 가이드](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Team-ESC-%E2%80%90-Git-Branch-%EC%A0%84%EB%9E%B5-%EB%B0%8F-%EC%BB%A8%EB%B2%A4%EC%85%98-%EA%B0%80%EC%9D%B4%EB%93%9C)
 - [Jenkins를 통한 CI/CD 파이프라인 구축](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Jenkins%EB%A5%BC-%ED%86%B5%ED%95%9C-CI-CD-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0)
