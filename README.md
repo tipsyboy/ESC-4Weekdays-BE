@@ -1,6 +1,6 @@
 <h1 align="center">🎟️ ESC</h1>
 <p align="center">
-  <img src="./docs/logo.png" width="800" alt="ESC 로고" />
+  <img src="./docs/logo.png" width="600" alt="ESC 로고" />
 
 # 👨‍💻 팀원 구성
 <div align="center">
@@ -131,8 +131,6 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 
 ## 📊 데이터 시각화 및 알림
 
-
-
 # 🛠️ 기술 스택
 
 ## Backend
@@ -178,3 +176,4 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 - [ERD](./docs/03%20ERD.png)
 - [요구사항 정의서](./docs/04%20요구사항%20정의서.pdf)
 - [시스템 아키텍쳐](./docs/05%20시스템%20아키텍쳐.png)
+- [스웨거 단위 테스트](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Swagger-API-%EB%8B%A8%EC%9C%84-%ED%85%8C%EC%8A%A4%ED%8A%B8)
