@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum OutboundStatus {
 
     REQUESTED("출고서 생성"),
-    APPROVED("출고 예정"),
+    APPROVED("출고 완료"),
     PICKING("피킹 완료"),
     INSPECTION("검수 완료"),
     PACKING("패킹 완료"),

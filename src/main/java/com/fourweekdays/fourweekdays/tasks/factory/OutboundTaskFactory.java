@@ -3,7 +3,6 @@ package com.fourweekdays.fourweekdays.tasks.factory;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
-import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import com.fourweekdays.fourweekdays.tasks.model.entity.PickingTask;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import com.fourweekdays.fourweekdays.tasks.model.entity.TaskCategory;

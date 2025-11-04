@@ -91,48 +91,48 @@ public class OutboundService {
         recoverInventoryFromOutboundHistory(histories);
     }
 
-    // TODO task 작업 착수 -> 피킹중
-    @Transactional
-    public void updatePicking(Long id) {
-        Outbound outbound = checkOutbound(id);
-        outbound.updateStatus(OutboundStatus.PICKING);
-    }
-
-    // TODO task가 피킹 완료 -> 검수중
-    @Transactional
-    public void updatePacking(Long id) {
-        Outbound outbound = checkOutbound(id);
-        outbound.updateStatus(OutboundStatus.INSPECTION);
-    }
-
-    // 검수 완료 작업
-    @Transactional
-    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
-        Outbound outbound = checkOutbound(id);
-
-        if (outbound.getStatus() != OutboundStatus.INSPECTION) {
-            throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
-        }
-
-        for (OutboundInspectionRequest request : requestList) {
-            OutboundProductItem item = outbound.findByItemId(request.getOutboundProductid())
-                    .orElseThrow(() -> new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND));
-            item.updateInspectionResult(request.getOrderedQuantity());
-        }
-
-        // 검수 완료 -> 패킹작업으로 변경
-        outbound.updateStatus(OutboundStatus.PACKING);
-    }
-
-    // TODO 패킹완료 -> 출하
-    @Transactional
-    public void updateShipped(Long id) {
-        Outbound outbound = checkOutbound(id);
-        Order order = orderRepository.findById(outbound.getOrder().getOrderId())
-                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
-        order.updateShipped();
-        outbound.updateStatus(OutboundStatus.SHIPPED);
-    }
+//    // TODO task 작업 착수 -> 피킹중
+//    @Transactional
+//    public void updatePicking(Long id) {
+//        Outbound outbound = checkOutbound(id);
+//        outbound.updateStatus(OutboundStatus.PICKING);
+//    }
+//
+//    // TODO task가 피킹 완료 -> 검수중
+//    @Transactional
+//    public void updatePacking(Long id) {
+//        Outbound outbound = checkOutbound(id);
+//        outbound.updateStatus(OutboundStatus.INSPECTION);
+//    }
+//
+//    // 검수 완료 작업
+//    @Transactional
+//    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
+//        Outbound outbound = checkOutbound(id);
+//
+//        if (outbound.getStatus() != OutboundStatus.INSPECTION) {
+//            throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
+//        }
+//
+//        for (OutboundInspectionRequest request : requestList) {
+//            OutboundProductItem item = outbound.findByItemId(request.getOutboundProductid())
+//                    .orElseThrow(() -> new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND));
+//            item.updateInspectionResult(request.getOrderedQuantity());
+//        }
+//
+//        // 검수 완료 -> 패킹작업으로 변경
+//        outbound.updateStatus(OutboundStatus.PACKING);
+//    }
+//
+//    // TODO 패킹완료 -> 출하
+//    @Transactional
+//    public void updateShipped(Long id) {
+//        Outbound outbound = checkOutbound(id);
+//        Order order = orderRepository.findById(outbound.getOrder().getOrderId())
+//                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
+//        order.updateShipped();
+//        outbound.updateStatus(OutboundStatus.SHIPPED);
+//    }
 
     // 출고 목록 조회
     public List<OutboundReadDto> getOutboundList() {
