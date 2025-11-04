@@ -1,6 +1,6 @@
 <h1 align="center">🎟️ ESC</h1>
 <p align="center">
-  <img src="../docs/raw.png" width="800" alt="ESC 로고" />
+  <img src="./docs/logo.png" width="800" alt="ESC 로고" />
 
 # 👨‍💻 팀원 구성
 <div align="center">
@@ -8,37 +8,27 @@
     <tr>
       <td align="center">
         <a href="https://github.com/tipsyboy">
-          <img src="https://github.com/tipsyboy.png" width="150" style="border-radius: 50%;">
+          <img src="https://github.com/tipsyboy.png" width="100">
         </a>
+        <br><b>양형모</b>
       </td>
       <td align="center">
         <a href="https://github.com/seol-kang">
-          <img src="https://github.com/seol-kang.png" width="150" style="border-radius: 50%;">
+          <img src="https://github.com/seol-kang.png" width="100">
         </a>
+        <br><b>강설</b>
       </td>
       <td align="center">
         <a href="https://github.com/wonzzu">
-          <img src="https://github.com/wonzzu.png" width="150" style="border-radius: 50%;">
+          <img src="https://github.com/wonzzu.png" width="100">
         </a>
+        <br><b>김원중</b>
       </td>
       <td align="center">
         <a href="https://github.com/why48382">
-          <img src="https://github.com/why48382.png" width="150" style="border-radius: 50%;">
+          <img src="https://github.com/why48382.png" width="100">
         </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/tipsyboy"><b>양형모</b></a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/seol-kang"><b>강설</b></a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/wonzzu"><b>김원중</b></a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/why48382"><b>이현식</b></a>
+        <br><b>이현식</b>
       </td>
     </tr>
   </table>
@@ -179,10 +169,12 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 
 # 🏗️ 시스템 아키텍처
 <table align="center">
-  <img src="../docs/시스템 아키텍쳐.png" width="800" alt="ESC 로고" />
+  <img src="./docs/05%20시스템%20아키텍쳐.png" width="800" alt="ESC 로고" />
 
 # 📚 문서
 - [📖 Wiki 바로가기](링크)
-- [📄 API 문서](Swagger 링크)
-- [🎨 Frontend Repository](링크)
-- [⚙️ DevOps Repository](링크)
+- [프로젝트 기획서](./docs/01%20프로젝트%20기획서%204Weekdays_v9.pdf)
+- [WBS](./docs/02%20WBS.pdf)
+- [ERD](./docs/03%20ERD.png)
+- [요구사항 정의서](./docs/04%20요구사항%20정의서.pdf)
+- [시스템 아키텍쳐](./docs/05%20시스템%20아키텍쳐.png)
