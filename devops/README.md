@@ -1,7 +1,7 @@
 <h1 align="center">🎟️ ESC</h1>
 
 <p align="center">
-  <img src="../docs/raw.png" width="400" alt="ESC 로고" />
+  <img src="../docs/logo.png" width="400" alt="ESC 로고" />
   
 <h3 align="center">2팀 - 4Weekdays</h3>
 
