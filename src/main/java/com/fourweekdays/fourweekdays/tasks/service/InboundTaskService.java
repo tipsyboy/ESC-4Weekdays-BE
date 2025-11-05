@@ -82,7 +82,7 @@ public class InboundTaskService {
         }
 
         Inbound inbound = inboundRepository.findById(putawayTask.getInboundId())
-                .orElseThrow(() -> new TaskException(PUTAWAY_TASK_NOT_FOUND));
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
 
         Long vendorId = inbound.getVendorId(); // vendorId
         int totalQuantity = inbound.getTotalReceivedQuantity(); // 총 수량
