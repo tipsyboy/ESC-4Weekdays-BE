@@ -10,6 +10,6 @@ public class CurlTestController {
 
     @GetMapping
     public String newVersionTest() {
-        return "blue";
+        return "green";
     }
 }
