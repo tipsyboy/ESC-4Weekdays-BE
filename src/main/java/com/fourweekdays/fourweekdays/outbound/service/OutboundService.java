@@ -12,7 +12,6 @@ import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
-import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.model.entity.*;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundInventoryHistoryRepository;
@@ -26,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
@@ -91,20 +88,21 @@ public class OutboundService {
         recoverInventoryFromOutboundHistory(histories);
     }
 
-//    // TODO task 작업 착수 -> 피킹중
-//    @Transactional
-//    public void updatePicking(Long id) {
-//        Outbound outbound = checkOutbound(id);
-//        outbound.updateStatus(OutboundStatus.PICKING);
-//    }
-//
-//    // TODO task가 피킹 완료 -> 검수중
-//    @Transactional
-//    public void updatePacking(Long id) {
-//        Outbound outbound = checkOutbound(id);
-//        outbound.updateStatus(OutboundStatus.INSPECTION);
-//    }
-//
+    // 피킹 완료
+    @Transactional
+    public void updatePicking(Long id) {
+        Outbound outbound = checkOutbound(id);
+        outbound.updateStatus(OutboundStatus.PICKING);
+    }
+
+    // 패킹 완료
+    @Transactional
+    public void updatePacking(Long id) {
+        Outbound outbound = checkOutbound(id);
+        outbound.updateStatus(OutboundStatus.PACKING);
+    }
+
+    //
 //    // 검수 완료 작업
 //    @Transactional
 //    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
@@ -124,15 +122,15 @@ public class OutboundService {
 //        outbound.updateStatus(OutboundStatus.PACKING);
 //    }
 //
-//    // TODO 패킹완료 -> 출하
-//    @Transactional
-//    public void updateShipped(Long id) {
-//        Outbound outbound = checkOutbound(id);
-//        Order order = orderRepository.findById(outbound.getOrder().getOrderId())
-//                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
-//        order.updateShipped();
-//        outbound.updateStatus(OutboundStatus.SHIPPED);
-//    }
+    // 출하 완료시 호출 메소드 Order에서 사용할 예정 아니면 상태 하나더 만들던가
+    @Transactional
+    public void updateShipped(Long id) {
+        Outbound outbound = checkOutbound(id);
+        Order order = orderRepository.findById(outbound.getOrder().getOrderId())
+                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
+        order.updateShipped();
+        outbound.updateStatus(OutboundStatus.SHIPPED);
+    }
 
     // 출고 목록 조회
     public List<OutboundReadDto> getOutboundList() {
