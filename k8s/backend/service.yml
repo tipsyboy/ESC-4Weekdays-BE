@@ -8,7 +8,7 @@ spec:
   selector:
     app: backend
     type: backend
-    ver: blue
+    ver: green
   ports:
     - protocol: TCP
       port: 8080
