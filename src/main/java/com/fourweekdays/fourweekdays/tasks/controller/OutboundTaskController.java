@@ -17,11 +17,11 @@ public class OutboundTaskController {
 
     private final OutboundTaskService outboundTaskService;
 
-    @PostMapping("/picking/{taskId}/assign-worker")
-    public ResponseEntity<BaseResponse<String>> assignWorker(@PathVariable Long taskId, @Valid @RequestBody TaskPickingWorderAssignRequest request) {
-        outboundTaskService.assignWorker(taskId, request);
-        return ResponseEntity.ok(BaseResponse.success("작업자 할당 완료"));
-    }
+//    @PostMapping("/picking/{taskId}/assign-worker")
+//    public ResponseEntity<BaseResponse<String>> assignWorker(@PathVariable Long taskId, @Valid @RequestBody TaskPickingWorderAssignRequest request) {
+//        outboundTaskService.assignWorker(taskId, request);
+//        return ResponseEntity.ok(BaseResponse.success("작업자 할당 완료"));
+//    }
 
     @PostMapping("/picking/{taskId}/complete")
     public ResponseEntity<BaseResponse<String>> completePicking(@PathVariable Long taskId, @Valid @RequestBody TaskPickingCompleteRequest request) {

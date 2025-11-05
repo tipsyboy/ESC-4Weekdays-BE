@@ -23,33 +23,32 @@ public class OutboundTaskService {
 
     private final TaskService taskService;
     private final PickingTaskRepository pickingTaskRepository;
-    private final OutboundRepository outboundRepository;
+//    private final OutboundRepository outboundRepository;
     private final OutboundService outboundService;
     private final OutboundTaskFactory outboundTaskFactory;
     private final PackingTaskRepository packingTaskRepository;
     private final ShipmentTaskRepository shipmentTaskRepository;
 
-    // 피킹 작업자 할당
-    @Transactional
-    public void assignWorker(Long taskId, TaskPickingWorderAssignRequest request) {
-        // TODO 동시성 이슈 해결
-        PickingTask pickingTask = pickingTaskRepository.findByTaskId(taskId)
-                .orElseThrow(() -> new TaskException(PICKING_TASK_NOT_FOUND));
-
-        Task task = pickingTask.getTask();
-        if (task.getStatus() != TaskStatus.PENDING) {
-            throw new TaskException(TASK_CANNOT_ASSIGN);
-        }
-
-        outboundRepository.findById(pickingTask.getOutboundId())
-                .orElseThrow(() -> new TaskException(PICKING_TASK_NOT_FOUND));
-
-        TaskAssignRequest assignRequest = new TaskAssignRequest(
-                request.worderId(),
-                request.note()
-        );
-        taskService.assignWorker(taskId, assignRequest);
-    }
+//    // 피킹 작업자 할당
+//    @Transactional
+//    public void assignWorker(Long taskId, TaskPickingWorderAssignRequest request) {
+//        PickingTask pickingTask = pickingTaskRepository.findByTaskId(taskId)
+//                .orElseThrow(() -> new TaskException(PICKING_TASK_NOT_FOUND));
+//
+//        Task task = pickingTask.getTask();
+//        if (task.getStatus() != TaskStatus.PENDING) {
+//            throw new TaskException(TASK_CANNOT_ASSIGN);
+//        }
+//
+//        outboundRepository.findById(pickingTask.getOutboundId())
+//                .orElseThrow(() -> new TaskException(PICKING_TASK_NOT_FOUND));
+//
+//        TaskAssignRequest assignRequest = new TaskAssignRequest(
+//                request.worderId(),
+//                request.note()
+//        );
+//        taskService.assignWorker(taskId, assignRequest);
+//    }
 
     // 피킹 완료
     @Transactional
@@ -97,10 +96,5 @@ public class OutboundTaskService {
 
         // 송하인 배정
         shipmentTask.assignShipper(request.shipper());
-
-        // 상세한 작업을 추가하기 좀 그렇다고 생각함 운송사 아님 차량에
-        // 어떻게 했다 명시적으로만 가능한 부분이라고 생각함
-        task.assignTo();
-        task.start();
     }
 }
