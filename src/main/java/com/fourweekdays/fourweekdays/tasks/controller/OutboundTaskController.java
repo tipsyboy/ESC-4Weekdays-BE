@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.tasks.controller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskPickingCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskPickingWorderAssignRequest;
+import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskShipmentAssignShipperRequest;
 import com.fourweekdays.fourweekdays.tasks.service.OutboundTaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,15 @@ public class OutboundTaskController {
     }
 
     @PostMapping("/packing/{taskId}/complete")
-    public ResponseEntity<BaseResponse<String>> completePacking(@PathVariable Long taskId, @RequestBody TaskPackingCompleteRequest request) {
+    public ResponseEntity<BaseResponse<String>> completePacking(@PathVariable Long taskId, @Valid @RequestBody TaskPackingCompleteRequest request) {
         outboundTaskService.completePacking(taskId, request);
         return ResponseEntity.ok(BaseResponse.success("패킹 완료"));
     }
+
+    @PostMapping("/shipment/{taskId}/assign-shipper")
+    public ResponseEntity<BaseResponse<String>> assignShipper(@PathVariable Long taskId, @Valid @RequestBody TaskShipmentAssignShipperRequest request) {
+        outboundTaskService.assignShipper(taskId, request);
+        return ResponseEntity.ok(BaseResponse.success("출하 송하인 배정완료"));
+    }
+
 }
