@@ -3,9 +3,7 @@ package com.fourweekdays.fourweekdays.outbound.comtroller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
-import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
-import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundStatusResponse;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,12 +51,12 @@ public class OutboundController {
         return ResponseEntity.ok(BaseResponse.success("출고 승인 완료"));
     }
 
-    // 검수 작업
-    @PatchMapping("/{id}/inspection")
-    public ResponseEntity<BaseResponse<String>> inspectionOutbound(@PathVariable Long id, @RequestBody List<OutboundInspectionRequest> requestList) {
-        outboundService.updateInspection(id, requestList);
-        return ResponseEntity.ok(BaseResponse.success("출고 검수 완료"));
-    }
+//    // 검수 작업
+//    @PatchMapping("/{id}/inspection")
+//    public ResponseEntity<BaseResponse<String>> inspectionOutbound(@PathVariable Long id, @RequestBody List<OutboundInspectionRequest> requestList) {
+//        outboundService.updateInspection(id, requestList);
+//        return ResponseEntity.ok(BaseResponse.success("출고 검수 완료"));
+//    }
 
     // 출고 거절
     @PatchMapping("/{id}/cancelled")

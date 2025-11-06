@@ -59,6 +59,14 @@ public class Task extends BaseEntity {
         this.assignedAt = LocalDateTime.now();
     }
 
+    public void assignTo() {
+        if (this.status != TaskStatus.PENDING) {
+            throw new TaskException(TASK_CANNOT_ASSIGN);
+        }
+        this.status = TaskStatus.ASSIGNED;
+        this.assignedAt = LocalDateTime.now();
+    }
+
     public void start() {
         if (this.status != TaskStatus.ASSIGNED) {
             throw new TaskException(TASK_CANNOT_START);
