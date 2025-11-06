@@ -22,7 +22,7 @@ public class OrderAdminController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<Page<OrderReadDto>>> orderList(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
+                                                                      @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(BaseResponse.success(orderAdminService.orderList(page, size)));
     }
 }

@@ -6,13 +6,22 @@ import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderProductDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderReceiveOrderDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderRejectDto;
+import com.fourweekdays.fourweekdays.order.model.dto.request.OrderShippedDto;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import com.fourweekdays.fourweekdays.order.model.entity.OrderProductItem;
 import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
+import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
+import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
+import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
+import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
+import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
+import com.fourweekdays.fourweekdays.tasks.model.entity.ShipmentTask;
+import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
+import com.fourweekdays.fourweekdays.tasks.repository.ShipmentTaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +30,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.*;
+import static com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType.OUTBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.SHIPMENT_TASK_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +41,11 @@ public class OrderFranchiseService {
     private static final String ORDER_CODE_PREFIX = "ORD";
 
     private final OrderRepository orderRepository;
+    private final OutboundRepository outboundRepository;
+    private final OutboundService outboundService;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
+    private final ShipmentTaskRepository shipmentTaskRepository;
 
     @Transactional
     public Long receiveCreateOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
@@ -51,6 +65,22 @@ public class OrderFranchiseService {
         }
 
         order.rejectByFranchise(dto.getDescription());
+    }
+
+    @Transactional
+    public void shippedOrder(OrderShippedDto dto) {
+        Outbound outbound = outboundRepository.findById(dto.getOutboundId())
+                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
+
+        // 출고 작업들 검증
+        ShipmentTask shipmentTask = shipmentTaskRepository.findByOutboundId(outbound.getId())
+                .orElseThrow(() -> new TaskException(SHIPMENT_TASK_NOT_FOUND));
+
+        Task task = shipmentTask.getTask();
+
+        task.complete("배송상품 도착으로 인한 작업 완료");
+
+        outboundService.updateShipped(outbound.getId());
     }
 
     private Order findValidateOrder(FranchiseStore franchiseStore, String orderCode) {
