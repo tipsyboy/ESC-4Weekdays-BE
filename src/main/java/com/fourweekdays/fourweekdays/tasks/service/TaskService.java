@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.tasks.service;
 
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
-import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
@@ -32,7 +31,6 @@ import java.util.List;
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -91,6 +89,7 @@ public class TaskService {
             case PUTAWAY -> putawayTaskDetail(task);
             case PICKING -> null;
             case PACKING -> null;
+            case SHIPMENT -> null;
         };
     }
 
@@ -135,7 +134,7 @@ public class TaskService {
                                     ? String.format("%s — %s 외 %d건", vendorName, firstProductName, products.size() - 1)
                                     : String.format("%s — %s", vendorName, firstProductName);
                         })
-                        .orElseThrow(() -> new InboundException(InboundExceptionType.INBOUND_NOT_FOUND));
+                        .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
             }
 
             return TaskListResponse.from(task, inboundSummary);

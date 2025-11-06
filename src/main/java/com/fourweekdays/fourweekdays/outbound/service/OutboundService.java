@@ -12,7 +12,6 @@ import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
-import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundInspectionRequest;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.model.entity.*;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundInventoryHistoryRepository;
@@ -26,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
@@ -91,40 +88,41 @@ public class OutboundService {
         recoverInventoryFromOutboundHistory(histories);
     }
 
-    // TODO task 작업 착수 -> 피킹중
+    // 피킹 완료
     @Transactional
     public void updatePicking(Long id) {
         Outbound outbound = checkOutbound(id);
         outbound.updateStatus(OutboundStatus.PICKING);
     }
 
-    // TODO task가 피킹 완료 -> 검수중
+    // 패킹 완료
     @Transactional
     public void updatePacking(Long id) {
         Outbound outbound = checkOutbound(id);
-        outbound.updateStatus(OutboundStatus.INSPECTION);
-    }
-
-    // 검수 완료 작업
-    @Transactional
-    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
-        Outbound outbound = checkOutbound(id);
-
-        if (outbound.getStatus() != OutboundStatus.INSPECTION) {
-            throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
-        }
-
-        for (OutboundInspectionRequest request : requestList) {
-            OutboundProductItem item = outbound.findByItemId(request.getOutboundProductid())
-                    .orElseThrow(() -> new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND));
-            item.updateInspectionResult(request.getOrderedQuantity());
-        }
-
-        // 검수 완료 -> 패킹작업으로 변경
         outbound.updateStatus(OutboundStatus.PACKING);
     }
 
-    // TODO 패킹완료 -> 출하
+    //
+//    // 검수 완료 작업
+//    @Transactional
+//    public void updateInspection(Long id, List<OutboundInspectionRequest> requestList) {
+//        Outbound outbound = checkOutbound(id);
+//
+//        if (outbound.getStatus() != OutboundStatus.INSPECTION) {
+//            throw new OutboundException(OUTBOUND_INVALID_STATUS_FOR_INSPECTION);
+//        }
+//
+//        for (OutboundInspectionRequest request : requestList) {
+//            OutboundProductItem item = outbound.findByItemId(request.getOutboundProductid())
+//                    .orElseThrow(() -> new OutboundException(OUTBOUND_PRODUCT_NOT_FOUND));
+//            item.updateInspectionResult(request.getOrderedQuantity());
+//        }
+//
+//        // 검수 완료 -> 패킹작업으로 변경
+//        outbound.updateStatus(OutboundStatus.PACKING);
+//    }
+//
+    // 출하 완료시 호출 메소드 Order에서 사용할 예정 아니면 상태 하나더 만들던가
     @Transactional
     public void updateShipped(Long id) {
         Outbound outbound = checkOutbound(id);

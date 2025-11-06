@@ -10,15 +10,17 @@ public enum TaskExceptionType implements ExceptionType {
     TASK_NOT_FOUND(NOT_FOUND, "작업을 찾을 수 없습니다"),
     INSPECTION_TASK_NOT_FOUND(NOT_FOUND, "검수 작업 상세를 찾을 수 없습니다"),
     PUTAWAY_TASK_NOT_FOUND(NOT_FOUND, "적치 작업 상세를 찾을 수 없습니다"),
+    PICKING_TASK_NOT_FOUND(NOT_FOUND, "피킹 작업 상세를 찾을 수 없습니다"),
+    PACKING_TASK_NOT_FOUND(NOT_FOUND, "패킹 작업 상세를 찾을 수 없습니다"),
+    SHIPMENT_TASK_NOT_FOUND(NOT_FOUND, "출하 작업 상세를 찾을 수 없습니다"),
 
     TASK_CANNOT_ASSIGN(BAD_REQUEST, "대기 중인 작업만 할당할 수 있습니다"),
     TASK_CANNOT_START(BAD_REQUEST, "할당된 작업만 시작할 수 있습니다"),
     TASK_CANNOT_COMPLETE(BAD_REQUEST, "진행 중인 작업만 완료할 수 있습니다"),
     TASK_CANNOT_CANCEL(BAD_REQUEST, "완료된 작업은 취소할 수 없습니다"),
-    OUTBOUND_HISTORY_ALREADY_PROCESSED(BAD_REQUEST,"출고 기록이 이미 처리되어 취소할 수 없습니다."),
+    OUTBOUND_HISTORY_ALREADY_PROCESSED(BAD_REQUEST, "출고 기록이 이미 처리되어 취소할 수 없습니다."),
 
-    PUTAWAY_LOCATION_ALREADY_ASSIGNED(CONFLICT, "이미 위치 할당된 적치 작업입니다.")
-    ;
+    PUTAWAY_LOCATION_ALREADY_ASSIGNED(CONFLICT, "이미 위치 할당된 적치 작업입니다.");
 
 
     private final HttpStatus status;
