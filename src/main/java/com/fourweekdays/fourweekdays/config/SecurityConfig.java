@@ -1,8 +1,10 @@
 package com.fourweekdays.fourweekdays.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
 import com.fourweekdays.fourweekdays.member.config.filter.JwtAuthFilter;
 import com.fourweekdays.fourweekdays.member.config.filter.LoginFilter;
+import com.fourweekdays.fourweekdays.member.config.handler.CustomLogoutSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +28,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String LOGIN_URL = "/api/login";
+    private static final String[] API_WHITE_LIST = {
+            "/api/ans/**",
+            "/api/member/**"
+    };
+
     private final AuthenticationConfiguration configuration;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -48,8 +57,7 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http, VendorApiKeyFilter vendorApiKeyFilter) throws Exception {
         http.authorizeHttpRequests(
                 (auth) -> auth
-                        .requestMatchers("/api/member/**").permitAll()
-                        .requestMatchers("/api/asn/**").permitAll()
+                        .requestMatchers(API_WHITE_LIST).permitAll()
                         .anyRequest().permitAll()
         );
 
@@ -61,18 +69,17 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
 
         http.logout(logout -> logout
-                .logoutUrl("/logout")
+                .logoutUrl("/api/logout")
                 .deleteCookies("4weekdays")
-                .logoutSuccessHandler((request, response, authentication) -> {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"message\":\"로그아웃에 성공하였습니다.\"}");
-                })
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler(objectMapper))
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new LoginFilter(configuration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(
+                new LoginFilter(configuration.getAuthenticationManager(), LOGIN_URL),
+                UsernamePasswordAuthenticationFilter.class
+        );
 
         return http.build();
     }
