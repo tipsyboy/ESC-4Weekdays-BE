@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.order.contorller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.order.anootation.AuthenticatedFranchise;
+import com.fourweekdays.fourweekdays.order.model.dto.request.OrderShippedDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderReceiveOrderDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderRejectDto;
 import com.fourweekdays.fourweekdays.order.service.OrderFranchiseService;
@@ -33,6 +34,14 @@ public class OrderApiController {
                                                             @RequestBody OrderRejectDto dto) {
         orderFranchiseService.rejectOrder(franchiseStore, dto);
         return ResponseEntity.ok(BaseResponse.success("주문 취소"));
+    }
+
+    // 배송 완료
+    @PostMapping("/shipped")
+    public ResponseEntity<BaseResponse<String>> shippedOrder (@AuthenticatedFranchise FranchiseStore franchiseStore,
+                                                              @RequestBody OrderShippedDto dto) {
+        orderFranchiseService.shippedOrder(dto);
+        return ResponseEntity.ok(BaseResponse.success("배송완료 처리 성공"));
     }
 
 }
