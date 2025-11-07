@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface OutboundRepository extends JpaRepository<Outbound, Long> {
+public interface OutboundRepository extends JpaRepository<Outbound, Long>, OutboundRepositoryCustom {
     boolean existsByOrder(Order order);
 
     @Query("SELECT o FROM Outbound o " +
