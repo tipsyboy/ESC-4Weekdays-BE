@@ -60,7 +60,7 @@ public class OrderFranchiseService {
     public void rejectOrder(FranchiseStore franchiseStore, OrderRejectDto dto) {
         Order order = findValidateOrder(franchiseStore, dto.getOrderCode());
 
-        if (order.getStatus() != OrderStatus.APPROVED) {
+        if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.DELIVERED) {
             throw new OrderException(ORDER_CANNOT_REJECT);
         }
 
