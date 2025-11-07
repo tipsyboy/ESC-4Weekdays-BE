@@ -21,6 +21,9 @@ import com.fourweekdays.fourweekdays.tasks.factory.OutboundTaskFactory;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,13 +136,17 @@ public class OutboundService {
     }
 
     // 출고 목록 조회
-    public List<OutboundReadDto> getOutboundList() {
-        return null;
+    public Page<OutboundReadDto> getOutboundList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Outbound> outbound = outboundRepository.findAllWithPaging(pageable);
+        return outbound.map(OutboundReadDto::from);
     }
 
     // 출고 상세 조회
     public OutboundReadDto getOutboundDetails(Long id) {
-        return null;
+        Outbound outbound = outboundRepository.findById(id)
+                .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
+        return OutboundReadDto.from(outbound) ;
     }
 
     // 재고 감소 로직
