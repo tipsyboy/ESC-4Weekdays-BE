@@ -53,6 +53,7 @@ public class PurchaseOrderService {
 
         PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, requestDto);
         createOrderProducts(requestDto.getItems(), purchaseOrder);
+        purchaseOrder.calculateTotalAmount();
 
         return purchaseOrderRepository.save(purchaseOrder).getId();
     }

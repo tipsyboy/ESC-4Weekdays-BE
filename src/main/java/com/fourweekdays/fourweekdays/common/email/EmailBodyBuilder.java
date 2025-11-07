@@ -47,7 +47,7 @@ public class EmailBodyBuilder {
                     </tr>
                     <tr>
                         <td style="border:1px solid #ccc; padding:8px;">총 금액</td>
-                        <td style="border:1px solid #ccc; padding:8px;">₩ %s</td>
+                        <td style="border:1px solid #ccc; padding:8px;">₩ %,d</td>
                     </tr>
                 </tbody>
             </table>

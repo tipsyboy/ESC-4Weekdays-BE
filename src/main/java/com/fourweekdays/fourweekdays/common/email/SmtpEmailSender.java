@@ -22,6 +22,5 @@ public class SmtpEmailSender implements EmailSender {
         helper.setSubject(subject);
         helper.setText(body, true);
         mailSender.send(mailMessage);
-
     }
 }
