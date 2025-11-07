@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.service;
 
+import com.fourweekdays.fourweekdays.common.email.EmailService;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
@@ -17,6 +18,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepos
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,7 +44,7 @@ public class PurchaseOrderService {
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
-    private final InboundService inboundService;
+    private final EmailService emailService;
 
     @Transactional
     public Long create(PurchaseOrderCreateDto requestDto) {
@@ -51,6 +53,7 @@ public class PurchaseOrderService {
 
         PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, requestDto);
         createOrderProducts(requestDto.getItems(), purchaseOrder);
+        purchaseOrder.calculateTotalAmount();
 
         return purchaseOrderRepository.save(purchaseOrder).getId();
     }
@@ -95,12 +98,13 @@ public class PurchaseOrderService {
 
     // 발주 승인
     @Transactional
-    public Long approve(Long id) {
+    public Long approve(Long id) throws MessagingException {
         PurchaseOrder purchaseOrder = findByIdOrThrow(id);
         purchaseOrder.approve(); // 상태 변경
-        // TODO: 이메일로 발주서가 갔다고 합시다.
-        return null;
-//        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
+
+        emailService.sendPurchaseOrderMail(purchaseOrder);
+
+        return id;
     }
 
     @Transactional

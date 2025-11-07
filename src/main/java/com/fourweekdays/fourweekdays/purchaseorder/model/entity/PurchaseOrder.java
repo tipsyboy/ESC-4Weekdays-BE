@@ -64,9 +64,11 @@ public class PurchaseOrder extends BaseEntity {
     }
 
     public Long calculateTotalAmount() {
-        return products.stream()
+        Long totalAmount = products.stream()
                 .mapToLong(PurchaseOrderProduct::calculateAmount)
                 .sum();
+        this.totalAmount = totalAmount;
+        return totalAmount;
     }
 
     private void recalculateTotalAmount() {

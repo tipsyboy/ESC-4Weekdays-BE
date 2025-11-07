@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrd
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,7 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) throws MessagingException {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.approve(id)));
     }
 
