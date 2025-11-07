@@ -64,6 +64,9 @@ dependencies {
 
     // spring actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

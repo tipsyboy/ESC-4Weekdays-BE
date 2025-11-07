@@ -98,9 +98,8 @@ public class PurchaseOrderService {
     public Long approve(Long id) {
         PurchaseOrder purchaseOrder = findByIdOrThrow(id);
         purchaseOrder.approve(); // 상태 변경
-        // TODO: 이메일로 발주서가 갔다고 합시다.
-        return null;
-//        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
+
+        // TODO: 이메일 보내기
     }
 
     @Transactional
