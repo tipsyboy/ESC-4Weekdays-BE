@@ -3,10 +3,7 @@ package com.fourweekdays.fourweekdays.inbound.service;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundProductDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.*;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
@@ -52,6 +49,7 @@ public class InboundService {
     private final InboundTaskFactory inboundTaskFactory;
 
     public Long createByPurchaseOrder(PurchaseOrder purchaseOrder) {
+
         /**
          * -> 발주 트리거에 의해 트랜잭션 전파 Transactional 어노테이션 없음.
          * TODO: 1. member 연결하고 담당자 배정해야함.
@@ -85,30 +83,23 @@ public class InboundService {
         return inboundRepository.save(inbound).getId();
     }
 
-    public List<InboundReadDto> searchInbounds(String inboundCode, String managerName,
-                                        String productName, List<Long> vendorIds) {
-        List<Inbound> inbounds = inboundRepository.searchInboundWithProduct(
-                inboundCode,
-                managerName,
-                productName,
-                vendorIds
+    public Page<InboundReadDto> searchInbounds(int page, int size, InboundSearchRequest request) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inbound> inboundPage = inboundRepository.searchInboundWithProduct(
+                pageable,
+                request.inboundCode(),
+                request.productName(),
+                request.managerName(),
+                request.vendorIds()
         );
 
-        return inbounds.stream()
-                .map(InboundReadDto::from)
-                .toList();
+        return inboundPage.map(InboundReadDto::from);
     }
 
     public InboundReadDto findById(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
         return InboundReadDto.from(inbound);
-    }
-
-    public Page<InboundReadDto> inboundList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Inbound> paging = inboundRepository.findAllWithPaging(pageable);
-        return paging.map(InboundReadDto::from);
     }
 
     @Transactional
