@@ -3,9 +3,9 @@ package com.fourweekdays.fourweekdays.inbound.controller;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundSearchRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,21 +41,11 @@ public class InboundController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<InboundReadDto>> searchInbounds(
-            @RequestParam(required = false) String inboundCode,
-            @RequestParam(required = false) String managerName,
-            @RequestParam(required = false) String productName,
-            @RequestParam(required = false) List<Long> vendorIds
-    ) {
-
-        return ResponseEntity.ok(inboundService.searchInbounds(inboundCode, managerName, productName, vendorIds));
-    }
-
-    @GetMapping
-    public ResponseEntity<BaseResponse<Page<InboundReadDto>>> listByPaging(@RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(BaseResponse.success(inboundService.inboundList(page, size)));
+    @PostMapping("/search")
+    public ResponseEntity<BaseResponse<Page<InboundReadDto>>> searchInboundWithProduct(@RequestParam(defaultValue = "0") int page,
+                                                                                       @RequestParam(defaultValue = "10") int size,
+                                                                                       @RequestBody InboundSearchRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.searchInbounds(page, size, request)));
     }
 
     @PatchMapping("/{id}/status")
