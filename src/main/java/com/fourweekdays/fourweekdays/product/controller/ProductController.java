@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.product.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
@@ -48,13 +49,10 @@ public class ProductController {
         return ResponseEntity.ok(BaseResponse.success("품절 상태로 변경"));
     }
 
-
-//    // 상품 상태 변경
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<BaseResponse<ProductStatusResponseDto>> updateStatus(@PathVariable Long id, 
-//                                                                               @RequestBody ProductStatusUpdateDto dto) {
-//        ProductStatusHistory history = productservice.updateProductStatus(id, dto);
-//        ProductStatusResponseDto response = ProductStatusResponseDto.from(history);
-//        return ResponseEntity.ok(BaseResponse.success(response));
-//    }
+    @GetMapping("/{search}")
+    public ResponseEntity<BaseResponse<Page<ProductReadDto>>> searchProducts(@RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size,
+                                                                             @RequestBody ProductSearchRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(productService.searchProduct(request, page, size)));
+    }
 }
