@@ -15,6 +15,10 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
+  elasticsearch:
+    uris: ${ELASTIC_URI}
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}
 
   cloud:
     aws:
@@ -39,6 +43,10 @@ spring:
             enable: true
 
 management:
+#  health:
+#    elasticsearch:
+#      enabled: false
+
   endpoints:
     web:
       exposure:
