@@ -1,6 +1,13 @@
 spring:
   application:
     name: foreweekdays
+
+  data:
+    redis:
+      host: 192.0.2.184
+      port: 6379
+      password: myStrongPassword
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
