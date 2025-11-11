@@ -2,8 +2,10 @@ package com.fourweekdays.fourweekdays.vendor.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
+import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorStatusUpdateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
+import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
 import jakarta.validation.Valid;
@@ -35,6 +37,14 @@ public class VendorController {
     public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@RequestParam(defaultValue = "0") Integer page,
                                                                          @RequestParam(defaultValue = "10") Integer size) {
         Page<VendorReadDto> result = vendorService.readAll(page, size);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @PostMapping ("/search")
+    public ResponseEntity<BaseResponse<Page<VendorProductResponse>>> searchVendors(@RequestBody VendorSearchRequest request,
+                                                                                   @RequestParam(defaultValue = "0") Integer page,
+                                                                                   @RequestParam(defaultValue = "10") Integer size) {
+        Page<VendorProductResponse> result = vendorService.searchVendorsWithProducts(page, size, request);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
