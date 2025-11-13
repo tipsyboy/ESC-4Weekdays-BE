@@ -2,7 +2,9 @@ package com.fourweekdays.fourweekdays.purchaseorder.service;
 
 import com.fourweekdays.fourweekdays.common.email.EmailService;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
-import com.fourweekdays.fourweekdays.inbound.service.InboundService;
+import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
@@ -45,13 +48,17 @@ public class PurchaseOrderService {
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
     private final EmailService emailService;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long create(PurchaseOrderCreateDto requestDto) {
+    public Long create(PurchaseOrderCreateDto requestDto, Long managerId) {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
-        PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, requestDto);
+        Member manager = memberRepository.findById(managerId)
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, manager, requestDto);
         createOrderProducts(requestDto.getItems(), purchaseOrder);
         purchaseOrder.calculateTotalAmount();
 
@@ -101,8 +108,7 @@ public class PurchaseOrderService {
     public Long approve(Long id) throws MessagingException {
         PurchaseOrder purchaseOrder = findByIdOrThrow(id);
         purchaseOrder.approve(); // 상태 변경
-
-        emailService.sendPurchaseOrderMail(purchaseOrder);
+        emailService.sendPurchaseOrderMail(purchaseOrder); // 외부 업체 담당자에게 Email 전송
 
         return id;
     }
@@ -132,9 +138,10 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
     }
 
-    private PurchaseOrder createPurchaseOrder(Vendor vendor, PurchaseOrderCreateDto dto) {
+    private PurchaseOrder createPurchaseOrder(Vendor vendor, Member manager, PurchaseOrderCreateDto dto) {
         return PurchaseOrder.builder()
                 .vendor(vendor)
+                .manager(manager)
                 .orderCode(codeGenerator.generate(PURCHASE_ORDER_CODE_PREFIX))
                 .orderDate(LocalDateTime.now())
                 .expectedDate(dto.getExpectedDate())
