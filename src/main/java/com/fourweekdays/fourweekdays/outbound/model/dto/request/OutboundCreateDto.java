@@ -22,9 +22,9 @@ public class OutboundCreateDto {
     private String description;
 //     private List<InboundProductDto> items; // 직접/추가
 
-    public Outbound toEntity(String outboundCode, OutboundStatus status) {
+    public Outbound toEntity(String outboundCode, OutboundStatus status, Member manager) {
         return Outbound.builder()
-                .outboundManager(Member.builder().id(memberId).build())
+                .outboundManager(manager)
                 .order(Order.builder().orderId(orderId).build())
                 .scheduledDate(scheduledDate)
                 .description(description)
