@@ -3,7 +3,9 @@ package com.fourweekdays.fourweekdays.vendor.service;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
+import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
+import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
@@ -73,4 +75,8 @@ public class VendorService {
         vendor.changeStatus(VendorStatus.SUSPENDED);
     }
 
+    public Page<VendorProductResponse> searchVendorsWithProducts(Integer page, Integer size, VendorSearchRequest request) {
+        Pageable pageable = PageRequest.of(page, size);
+        return vendorRepository.searchVendorByProduct(pageable, request);
+    }
 }

@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.order.model.dto.response;
 
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
+import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ public class OrderReadDto {
     private String franchiseName;
     private LocalDateTime dueDate;
     private String description;
+    private OrderStatus orderStatus;
 
     private List<OrderProductResponseDto> products;
 
@@ -22,8 +24,10 @@ public class OrderReadDto {
         return OrderReadDto.builder()
                 .id(entity.getOrderId())
                 .orderCode(entity.getOrderCode())
+                .franchiseName(entity.getFranchiseStore().getName())
                 .dueDate(entity.getDueDate())
                 .description(entity.getDescription())
+                .orderStatus(entity.getStatus())
                 .products(entity.getItems().stream()
                         .map(OrderProductResponseDto::from)
                         .toList())

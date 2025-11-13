@@ -22,7 +22,13 @@ public class OrderAdminController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<Page<OrderReadDto>>> orderList(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
+                                                                      @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(BaseResponse.success(orderAdminService.orderList(page, size)));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<String>> rejectOrder(@PathVariable Long id) {
+        orderAdminService.rejectOrder(id);
+        return ResponseEntity.ok(BaseResponse.success("주문 거절 성공"));
     }
 }

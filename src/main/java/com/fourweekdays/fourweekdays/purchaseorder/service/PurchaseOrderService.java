@@ -1,7 +1,10 @@
 package com.fourweekdays.fourweekdays.purchaseorder.service;
 
+import com.fourweekdays.fourweekdays.common.email.EmailService;
 import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
-import com.fourweekdays.fourweekdays.inbound.service.InboundService;
+import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
@@ -17,6 +20,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepos
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
@@ -42,15 +47,20 @@ public class PurchaseOrderService {
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
-    private final InboundService inboundService;
+    private final EmailService emailService;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long create(PurchaseOrderCreateDto requestDto) {
+    public Long create(PurchaseOrderCreateDto requestDto, Long managerId) {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
-        PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, requestDto);
+        Member manager = memberRepository.findById(managerId)
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, manager, requestDto);
         createOrderProducts(requestDto.getItems(), purchaseOrder);
+        purchaseOrder.calculateTotalAmount();
 
         return purchaseOrderRepository.save(purchaseOrder).getId();
     }
@@ -95,12 +105,12 @@ public class PurchaseOrderService {
 
     // 발주 승인
     @Transactional
-    public Long approve(Long id) {
+    public Long approve(Long id) throws MessagingException {
         PurchaseOrder purchaseOrder = findByIdOrThrow(id);
         purchaseOrder.approve(); // 상태 변경
-        // TODO: 이메일로 발주서가 갔다고 합시다.
-        return null;
-//        return inboundService.createByPurchaseOrder(order); // 입고 자동 생성
+        emailService.sendPurchaseOrderMail(purchaseOrder); // 외부 업체 담당자에게 Email 전송
+
+        return id;
     }
 
     @Transactional
@@ -128,9 +138,10 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
     }
 
-    private PurchaseOrder createPurchaseOrder(Vendor vendor, PurchaseOrderCreateDto dto) {
+    private PurchaseOrder createPurchaseOrder(Vendor vendor, Member manager, PurchaseOrderCreateDto dto) {
         return PurchaseOrder.builder()
                 .vendor(vendor)
+                .manager(manager)
                 .orderCode(codeGenerator.generate(PURCHASE_ORDER_CODE_PREFIX))
                 .orderDate(LocalDateTime.now())
                 .expectedDate(dto.getExpectedDate())

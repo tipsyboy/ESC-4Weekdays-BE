@@ -1,14 +1,17 @@
 package com.fourweekdays.fourweekdays.purchaseorder.controller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +24,9 @@ public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> purchaseRequest(@Valid @RequestBody PurchaseOrderCreateDto requestDto) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto)));
+    public ResponseEntity<BaseResponse<Long>> purchaseRequest(@Valid @RequestBody PurchaseOrderCreateDto requestDto,
+                                                              @AuthenticationPrincipal UserAuth manager) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto, manager.getId())));
     }
 
     @GetMapping("/{id}")
@@ -43,7 +47,7 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) throws MessagingException {
         return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.approve(id)));
     }
 

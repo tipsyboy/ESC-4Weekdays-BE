@@ -10,6 +10,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import static com.fourweekdays.fourweekdays.location.model.entity.QLocation.loca
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
 import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
+@Slf4j
 @RequiredArgsConstructor
 public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom {
 
@@ -131,11 +133,8 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
 
         // Total count
         Long total = queryFactory
-                .select(product.countDistinct())
-                .from(product)
-                .leftJoin(inventory).on(inventory.product.eq(product))
-                .leftJoin(inventory.location, location)
-                .leftJoin(inventory.inbound, inbound)
+                .select(product.id.countDistinct())
+                .from(inventory)
                 .where(
                         productCodeEq(request.productCode()),
                         productNameLike(request.productName()),
@@ -146,7 +145,6 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
                         inventory.quantity.gt(0)
                 )
                 .fetchOne();
-
         return new PageImpl<>(results, pageable, total != null ? total : 0L);
     }
 
@@ -196,7 +194,7 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
     }
 
     private BooleanExpression managerNameLike(String name) {
-        return StringUtils.hasText(name) ? inbound.managerName.contains(name) : null;
+        return StringUtils.hasText(name) ? inbound.manager.name.contains(name) : null;
     }
 
     private BooleanExpression inboundAtBetween(LocalDate from, LocalDate to) {
