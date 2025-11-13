@@ -16,7 +16,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @NoArgsConstructor @Getter
 @AllArgsConstructor @Builder
-//@Document(indexName = "products")
+@Document(indexName = "products")
 public class ProductDocument {
 
     @Id
