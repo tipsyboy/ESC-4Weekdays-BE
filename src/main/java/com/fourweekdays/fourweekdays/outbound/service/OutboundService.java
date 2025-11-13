@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
@@ -56,9 +57,12 @@ public class OutboundService {
 
     // 출고 생성
     @Transactional
-    public Long createOutbound(OutboundCreateDto dto) {
+    public Long createOutbound(OutboundCreateDto dto, Long managerId) {
+        Member manager = memberRepository.findById(managerId)
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
         Order order = verification(dto);
-        Outbound outbound = createBaseOutbound(dto);
+        Outbound outbound = createBaseOutbound(dto, manager);
         addItemsFromOrder(outbound, order);
 
         return outboundRepository.save(outbound).getId();
@@ -253,8 +257,8 @@ public class OutboundService {
 
     }
 
-    private Order verification(OutboundCreateDto dto) {
-        memberRepository.findById(dto.getMemberId())
+    private Order verification(OutboundCreateDto dto, Long memberId) {
+        Member manager = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         Order order = orderRepository.findById(dto.getOrderId())
@@ -270,11 +274,11 @@ public class OutboundService {
         return order;
     }
 
-    private Outbound createBaseOutbound(OutboundCreateDto dto) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
-        return dto.toEntity(OutboundCode, status);
+        return dto.toEntity(OutboundCode, status, manager);
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {
