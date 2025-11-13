@@ -49,7 +49,7 @@ public class ProductController {
         return ResponseEntity.ok(BaseResponse.success("품절 상태로 변경"));
     }
 
-    @GetMapping("/{search}")
+    @GetMapping("/search")
     public ResponseEntity<BaseResponse<Page<ProductReadDto>>> searchProducts(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestBody ProductSearchRequest request) {
