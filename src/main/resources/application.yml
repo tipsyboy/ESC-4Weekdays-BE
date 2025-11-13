@@ -1,6 +1,6 @@
 spring:
   application:
-    name: foreweekdays
+    name: four_weekdays
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
