@@ -21,8 +21,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import javax.net.ssl.SSLContext;
 import java.net.URI;
 
-@Configuration
-@EnableElasticsearchRepositories(basePackages = "com.fourweekdays.fourweekdays.search")
+//@Configuration
+//@EnableElasticsearchRepositories(basePackages = "com.fourweekdays.fourweekdays.search")
 public class ElasticsearchConfig {
 
     @Value("${spring.elasticsearch.uris}")
