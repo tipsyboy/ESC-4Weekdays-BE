@@ -46,9 +46,9 @@ spring:
             enable: true
 
 management:
-#  health:
-#    elasticsearch:
-#      enabled: false
+  health:
+    elasticsearch:
+      enabled: false
 
   endpoints:
     web:
