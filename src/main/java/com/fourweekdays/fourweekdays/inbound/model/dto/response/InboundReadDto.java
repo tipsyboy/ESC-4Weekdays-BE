@@ -50,7 +50,7 @@ public class InboundReadDto {
                 .id(inbound.getId())
                 .inboundNumber(inbound.getInboundCode())
                 .status(inbound.getStatus())
-                .managerName(inbound.getManagerName())
+                .managerName(inbound.getManager() != null ? inbound.getManager().getName() : "미지정")
                 .scheduledDate(inbound.getScheduledDate())
                 .order(InboundOrderDto.from(inbound.getPurchaseOrder()))
                 .items(inbound.getProducts().stream()

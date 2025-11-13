@@ -31,8 +31,8 @@ public class InboundRepositoryCustomImpl implements InboundRepositoryCustom {
         List<Inbound> results = queryFactory
                 .selectDistinct(inbound)
                 .from(inbound)
-                .leftJoin(inbound.products, inboundProduct).fetchJoin()
-                .leftJoin(inboundProduct.product, product).fetchJoin()
+                .leftJoin(inbound.products, inboundProduct)
+                .leftJoin(inboundProduct.product, product)
                 .leftJoin(inbound.purchaseOrder, purchaseOrder).fetchJoin()
                 .leftJoin(purchaseOrder.vendor, vendor).fetchJoin()
                 .where(
@@ -69,7 +69,7 @@ public class InboundRepositoryCustomImpl implements InboundRepositoryCustom {
     }
 
     private BooleanExpression managerNameLike(String managerName) {
-        return StringUtils.hasText(managerName) ? inbound.managerName.containsIgnoreCase(managerName) : null;
+        return StringUtils.hasText(managerName) ? inbound.manager.name.containsIgnoreCase(managerName) : null;
     }
 
     private BooleanExpression productNameLike(String name) {
