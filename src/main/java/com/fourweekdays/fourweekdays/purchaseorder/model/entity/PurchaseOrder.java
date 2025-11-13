@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,10 @@ public class PurchaseOrder extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member manager; // 발주서 담당자
 
     @Builder.Default
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
