@@ -196,7 +196,7 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
     }
 
     private BooleanExpression managerNameLike(String name) {
-        return StringUtils.hasText(name) ? inbound.managerName.contains(name) : null;
+        return StringUtils.hasText(name) ? inbound.manager.name.contains(name) : null;
     }
 
     private BooleanExpression inboundAtBetween(LocalDate from, LocalDate to) {

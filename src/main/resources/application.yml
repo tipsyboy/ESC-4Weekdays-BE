@@ -15,6 +15,9 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100 # XToMany 1+N
   elasticsearch:
     uris: ${ELASTIC_URI}
     username: ${ELASTIC_USERNAME}

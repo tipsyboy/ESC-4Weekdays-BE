@@ -2,8 +2,8 @@ package com.fourweekdays.fourweekdays.inbound.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,9 +31,9 @@ public class Inbound extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InboundStatus status;
 
-    // TODO: Member와 연관관계
-    private String managerName; // 입고 담당자
-    private String workerName; // 작업 담당자
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member manager; // 입고 담당자
 
     private LocalDateTime scheduledDate; // 입고 예정 일시
     //    private LocalDateTime receivedDate; // 실제 입고(도착) 일시
@@ -50,15 +50,9 @@ public class Inbound extends BaseEntity {
 
     private String description; // 비고
 
-    //    private String invoiceNumber; // 송장 번호
-//    private String receivedBy; // 입고 담당자
-//    private String driverName; // 배달 기사
-//    private String driverPhoneNumber;
-
-
     // ===== ===== //
-    public void updateData(String managerName, LocalDateTime scheduledDate, String description) {
-        this.managerName = managerName;
+    public void updateData(Member manager, LocalDateTime scheduledDate, String description) {
+        this.manager = manager;
         this.scheduledDate = scheduledDate;
         this.description = description;
     }
