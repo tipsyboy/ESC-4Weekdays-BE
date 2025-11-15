@@ -3,10 +3,7 @@ package com.fourweekdays.fourweekdays.inventory.repository;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
-import com.fourweekdays.fourweekdays.product.model.entity.QProduct;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -76,40 +74,56 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
 
     @Override
     public Page<ProductInventoryResponse> searchInventoryByProduct(Pageable pageable, InventorySearchRequest request) {
-
-        // Product 기준으로 페이징
-        List<Product> products = queryFactory
-                .selectFrom(product)
-                .distinct()
-                .leftJoin(inventory).on(inventory.product.eq(product))
+        // 1. Product ID 조회 (페이징)
+        List<Long> productIds = queryFactory
+                .select(product.id).distinct()
+                .from(product)
+                .innerJoin(inventory).on(inventory.product.eq(product))
                 .leftJoin(inventory.location, location)
                 .leftJoin(inventory.inbound, inbound)
                 .where(
                         productCodeEq(request.productCode()),
                         productNameLike(request.productName()),
+                        inventory.quantity.gt(0),
                         locationCodeEq(request.locationCode()),
                         inboundCodeEq(request.inboundCode()),
-                        managerNameLike(request.inboundManagerName()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo()),
-                        inventory.quantity.gt(0)
+                        inboundAtBetween(request.createdFrom(), request.createdTo())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(product.productCode.asc())
                 .fetch();
 
-        // 각 Product의 Inventory 목록 조회
-        List<Long> productIds = products.stream()
-                .map(Product::getId)
-                .toList();
+        // 2. Total Count (Product 개수)
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .innerJoin(inventory).on(inventory.product.eq(product))
+                .leftJoin(inventory.location, location)
+                .leftJoin(inventory.inbound, inbound)
+                .where(
+                        productCodeEq(request.productCode()),
+                        productNameLike(request.productName()),
+                        inventory.quantity.gt(0),
+                        locationCodeEq(request.locationCode()),
+                        inboundCodeEq(request.inboundCode()),
+                        inboundAtBetween(request.createdFrom(), request.createdTo())
+                )
+                .fetchOne();
 
+        if (productIds.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0L);
+        }
+
+        // 3. Inventory 조회 (Product도 fetchJoin으로 함께 조회)
         List<Inventory> inventories = queryFactory
                 .selectFrom(inventory)
-                .leftJoin(inventory.product, product).fetchJoin()
-                .leftJoin(inventory.location, location).fetchJoin()
+                .join(inventory.product, product).fetchJoin()
+                .join(inventory.location, location).fetchJoin()
                 .leftJoin(inventory.inbound, inbound).fetchJoin()
                 .where(
                         product.id.in(productIds),
+                        inventory.quantity.gt(0),
                         locationCodeEq(request.locationCode()),
                         inboundCodeEq(request.inboundCode()),
                         inboundAtBetween(request.createdFrom(), request.createdTo())
@@ -117,34 +131,21 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
                 .orderBy(inventory.createdAt.desc())
                 .fetch();
 
-        // Product별 Inventory 그룹
+        // 4. 그룹핑
         Map<Long, List<Inventory>> inventoryMap = inventories.stream()
-                .collect(Collectors.groupingBy(
-                        inv -> inv.getProduct().getId()
-                ));
+                .collect(Collectors.groupingBy(inv -> inv.getProduct().getId()));
 
-        // DTO 변환
-        List<ProductInventoryResponse> results = products.stream()
-                .map(p -> ProductInventoryResponse.from(
-                        p,
-                        inventoryMap.getOrDefault(p.getId(), List.of()))
-                )
+        // 5. Product 순서대로 결과 생성 (productIds 순서 유지)
+        List<ProductInventoryResponse> results = productIds.stream()
+                .map(productId -> {
+                    List<Inventory> invList = inventoryMap.getOrDefault(productId, List.of());
+                    // invList의 첫 번째 요소에서 Product를 가져옴 (fetchJoin으로 이미 로드됨)
+                    Product p = invList.isEmpty() ? null : invList.get(0).getProduct();
+                    return p != null ? ProductInventoryResponse.from(p, invList) : null;
+                })
+                .filter(Objects::nonNull)
                 .toList();
 
-        // Total count
-        Long total = queryFactory
-                .select(product.id.countDistinct())
-                .from(inventory)
-                .where(
-                        productCodeEq(request.productCode()),
-                        productNameLike(request.productName()),
-                        locationCodeEq(request.locationCode()),
-                        inboundCodeEq(request.inboundCode()),
-                        managerNameLike(request.inboundManagerName()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo()),
-                        inventory.quantity.gt(0)
-                )
-                .fetchOne();
         return new PageImpl<>(results, pageable, total != null ? total : 0L);
     }
 
