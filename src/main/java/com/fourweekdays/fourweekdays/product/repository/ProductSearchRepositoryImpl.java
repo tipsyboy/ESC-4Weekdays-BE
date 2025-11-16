@@ -67,7 +67,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepository {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                Sort.by(Sort.Order.desc("productCode"))
+                Sort.by(Sort.Order.desc("id"))
         );
         CriteriaQuery query = new CriteriaQuery(criteria, sortedPageable);
         SearchHits<ProductDocument> results = operations.search(query, ProductDocument.class);

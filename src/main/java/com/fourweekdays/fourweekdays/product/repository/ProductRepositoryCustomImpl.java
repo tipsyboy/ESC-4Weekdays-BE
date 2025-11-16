@@ -35,7 +35,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(product.productCode.desc())
+                .orderBy(product.id.desc())
                 .fetch();
 
         Long total = queryFactory
