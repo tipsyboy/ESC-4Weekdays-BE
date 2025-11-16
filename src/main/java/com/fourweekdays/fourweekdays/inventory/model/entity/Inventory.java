@@ -14,6 +14,19 @@ import lombok.NoArgsConstructor;
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INSUFFICIENT_INVENTORY;
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVALID_QUANTITY;
 
+@Table(
+        name = "inventory",
+        indexes = {
+                @Index(
+                        name = "idx_inv_prod_loc_inb_qty_created",
+                        columnList = "product_id, location_id, inbound_id, quantity, created_at"
+                ),
+                @Index(
+                        name = "idx_inv_prod_created",
+                        columnList = "product_id, created_at"
+                )
+        }
+)
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Inventory extends BaseEntity {
