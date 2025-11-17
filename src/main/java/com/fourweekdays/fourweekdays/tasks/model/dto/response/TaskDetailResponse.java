@@ -16,7 +16,8 @@ public record TaskDetailResponse(
         LocalDateTime completedAt,
 
         Long referenceId,
-        String referenceCode
+        String referenceCode,
+        String assignedLocationCode
 ) {
     public static TaskDetailResponse ofInspection(Task task, InspectionTask inspectionTask, Inbound inbound) {
         return new TaskDetailResponse(
@@ -29,7 +30,8 @@ public record TaskDetailResponse(
                 task.getStartedAt(),
                 task.getCompletedAt(),
                 inbound.getId(),
-                inbound.getInboundCode()
+                inbound.getInboundCode(),
+                null
         );
     }
 
@@ -44,7 +46,8 @@ public record TaskDetailResponse(
                 task.getStartedAt(),
                 task.getCompletedAt(),
                 inbound.getId(),
-                inbound.getInboundCode()
+                inbound.getInboundCode(),
+                putawayTask.getAssignedLocationCode()
         );
     }
 }

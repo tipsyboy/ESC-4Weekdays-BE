@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.announcement.service;
 
 import com.fourweekdays.fourweekdays.announcement.exception.AnnouncementException;
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementCreateDto;
+import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementSearchDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementUpdateDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.announcement.model.entity.Announcement;
@@ -35,6 +36,12 @@ public class AnnouncementService {
     public Page<AnnouncementReadDto> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Announcement> result = announcementRepository.findAllWithPaging(pageable);
+        return result.map(AnnouncementReadDto::from);
+    }
+
+    public Page<AnnouncementReadDto> searchAnnouncement(AnnouncementSearchDto announcementSearchDto, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Announcement> result = announcementRepository.searchAnnouncement(announcementSearchDto, pageable);
         return result.map(AnnouncementReadDto::from);
     }
 

@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.announcement.controller;
 
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementCreateDto;
+import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementSearchDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementUpdateDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.announcement.service.AnnouncementService;
@@ -39,6 +40,14 @@ public class AnnouncementController {
     public ResponseEntity<BaseResponse<Page<AnnouncementReadDto>>> announcementReads(@RequestParam(defaultValue = "0") Integer page,
                                                                                      @RequestParam(defaultValue = "10") Integer size) {
         Page<AnnouncementReadDto> result = announcementService.readAll(page, size);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<Page<AnnouncementReadDto>>> announcementSearch(@ModelAttribute AnnouncementSearchDto announcementSearchDto,
+                                                                                      @RequestParam(defaultValue = "0") Integer page,
+                                                                                      @RequestParam(defaultValue = "10") Integer size) {
+        Page<AnnouncementReadDto> result = announcementService.searchAnnouncement(announcementSearchDto, page, size);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
