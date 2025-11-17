@@ -13,19 +13,21 @@ import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
-import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.*;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
 
 @Transactional(readOnly = true)
@@ -37,6 +39,7 @@ public class InventoryService {
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
     private final InboundRepository inboundRepository;
+    private final RedissonClient redissonClient;
 
     @Transactional
     public void createInventoryFromInbound(Long inboundId, String locationCode) {
@@ -107,31 +110,68 @@ public class InventoryService {
     private void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,
                                            Integer quantity, Long inboundId) {
 
-        // 재고 조회
-        Optional<Inventory> existingInventory
-                = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
+        // Lock 키 생성
+        String inventoryLockKey = String.format("inventory:lock:%d:%d:%s", productId, locationId, lotNumber);
+        String locationLockKey = String.format("location:lock:%d", locationId);
 
-        if (existingInventory.isPresent()) {
-            // 기존 재고가 있으면 수량 증가
-            Inventory inventory = existingInventory.get();
-            inventory.increaseQuantity(quantity);
-        } else {
-            // 없으면 새로운 재고 생성
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
-            Location location = locationRepository.findById(locationId)
-                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+        RLock inventoryLock = redissonClient.getLock(inventoryLockKey);
+        RLock locationLock = redissonClient.getLock(locationLockKey);
 
-            location.increaseUsedCapacity(quantity); // Location 용량 증가
+        try {
+            // inventory Lock 획득
+            boolean inventoryLocked = inventoryLock.tryLock(10, 5, TimeUnit.SECONDS);
+            if (!inventoryLocked) {
+                throw new InventoryException(LOCK_ACQUISITION_FAILED);
+            }
 
-            Inventory newInventory = Inventory.builder()
-                    .product(product)
-                    .location(location)
-                    .lotNumber(lotNumber)
-                    .quantity(quantity)
-                    .build();
+            // location Lock 획득
+            boolean locationLocked = locationLock.tryLock(10, 5, TimeUnit.SECONDS);
+            if (!locationLocked) {
+                inventoryLock.unlock();
+                throw new InventoryException(LOCK_ACQUISITION_FAILED);
+            }
 
-            inventoryRepository.save(newInventory);
+            // 재고 조회
+            Optional<Inventory> existingInventory =
+                    inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
+
+            if (existingInventory.isPresent()) {
+                // 기존 재고가 있으면 수량 증가
+                Inventory inventory = existingInventory.get();
+                inventory.increaseQuantity(quantity);
+
+            } else {
+                // 없으면 새로운 재고 생성
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+
+                Location location = locationRepository.findById(locationId)
+                        .orElseThrow(() -> new InventoryException(LOCATION_NOT_FOUND));
+
+                // Location 용량 증가도 Location 락으로 보호됨
+                location.increaseUsedCapacity(quantity);
+
+                Inventory newInventory = Inventory.builder()
+                        .product(product)
+                        .location(location)
+                        .lotNumber(lotNumber)
+                        .quantity(quantity)
+                        .build();
+
+                inventoryRepository.save(newInventory);
+            }
+
+        } catch (InterruptedException e) {
+            throw new InventoryException(LOCK_INTERRUPTED);
+
+        } finally {
+            // 락 순서대로 해제 (location → inventory)
+            if (locationLock.isHeldByCurrentThread()) {
+                locationLock.unlock();
+            }
+            if (inventoryLock.isHeldByCurrentThread()) {
+                inventoryLock.unlock();
+            }
         }
     }
 }

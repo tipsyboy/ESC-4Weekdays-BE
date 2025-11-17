@@ -22,6 +22,8 @@ import com.fourweekdays.fourweekdays.tasks.factory.OutboundTaskFactory;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.*;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_CANNOT_APPROVED;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_NOT_FOUND;
@@ -54,6 +57,7 @@ public class OutboundService {
     private final InventoryRepository inventoryRepository;
     private final OutboundInventoryHistoryRepository outboundHistoryRepository;
     private final TaskRepository taskRepository;
+    private final RedissonClient redissonClient;
 
     // 출고 생성
     @Transactional
@@ -160,7 +164,7 @@ public class OutboundService {
     public OutboundReadDto getOutboundDetails(Long id) {
         Outbound outbound = outboundRepository.findById(id)
                 .orElseThrow(() -> new OutboundException(OUTBOUND_NOT_FOUND));
-        return OutboundReadDto.from(outbound) ;
+        return OutboundReadDto.from(outbound);
     }
 
     // 재고 감소 로직
@@ -175,15 +179,32 @@ public class OutboundService {
         }
         List<OutboundProductItem> items = outbound.getItems();
 
-        for (OutboundProductItem item : items) {
-            List<OutboundInventoryHistory> histories =
-                    decreaseInventoryByFIFO(
-                            item.getProduct().getId(),
-                            item.getOrderedQuantity(),
-                            outbound,
-                            taskId
-                    );
-            allHistories.addAll(histories);
+        for (OutboundProductItem item : outbound.getItems()) {
+            // 재고 감소전 product 단위 락 획득
+            String productLockKey = String.format("inventory:decrease:lock:%d", item.getProduct().getId());
+            RLock productLock = redissonClient.getLock(productLockKey);
+
+            try {
+                boolean locked = productLock.tryLock(10, 5, TimeUnit.SECONDS);
+                if (!locked) {
+                    throw new InventoryException(LOCK_ACQUISITION_FAILED);
+                }
+
+                List<OutboundInventoryHistory> histories =
+                        decreaseInventoryByFIFO(
+                                item.getProduct().getId(),
+                                item.getOrderedQuantity(),
+                                outbound,
+                                taskId
+                        );
+                allHistories.addAll(histories);
+            } catch (InterruptedException e) {
+                throw new InventoryException(LOCK_INTERRUPTED);
+            } finally {
+                if (productLock.isHeldByCurrentThread()) {
+                    productLock.unlock();
+                }
+            }
         }
 
         if (!allHistories.isEmpty()) {
@@ -196,6 +217,7 @@ public class OutboundService {
         List<OutboundInventoryHistory> histories = new ArrayList<>();
         Integer remainingQuantity = requiredQuantity;
 
+        // pessimistic_write로 row-level 보호
         List<Inventory> inventories = inventoryRepository
                 .findAllByProductIdOrderByLotNumberAsc(productId);
         if (inventories.isEmpty()) {
@@ -203,28 +225,64 @@ public class OutboundService {
         }
 
         for (Inventory inventory : inventories) {
-            if (remainingQuantity <= 0) {
-                break;
+            if (remainingQuantity <= 0) break;
+            if (inventory.getQuantity() <= 0) continue;
+
+            String locationLockKey = String.format("location:lock:%d", inventory.getLocation().getId());
+            RLock locationLock = redissonClient.getLock(locationLockKey);
+
+            // Location 단위 락 획득
+            try {
+                boolean locked = locationLock.tryLock(10, 5, TimeUnit.SECONDS);
+                if (!locked) {
+                    throw new InventoryException(LOCK_ACQUISITION_FAILED);
+                }
+
+                int decreaseAmount = Math.min(inventory.getQuantity(), remainingQuantity);
+
+                // 재고 감소
+                inventory.decrease(decreaseAmount);
+                // 용량 감소
+                inventory.getLocation().decreaseUsedCapacity(decreaseAmount);
+
+                histories.add(
+                        OutboundInventoryHistory.builder()
+                                .outbound(outbound)
+                                .inventory(inventory)
+                                .product(inventory.getProduct())
+                                .location(inventory.getLocation())
+                                .quantityChanged(decreaseAmount)
+                                .lotNumber(inventory.getLotNumber())
+                                .taskId(taskId)
+                                .status(OutboundInventoryHistoryStatus.PENDING)
+                                .build()
+                );
+
+                remainingQuantity -= decreaseAmount;
+
+            } catch (InterruptedException e) {
+                throw new InventoryException(LOCK_INTERRUPTED);
+            } finally {
+                if (locationLock.isHeldByCurrentThread()) {
+                    locationLock.unlock();
+                }
             }
-            // TODO 재고 소프트 딜리트 구현 -> 재고 0 = 소프트 딜리트
-            Integer currentStock = inventory.getQuantity();
-            if (currentStock <= 0) {
-                continue;
-            }
-            int decreaseAmount = Math.min(currentStock, remainingQuantity);
-            inventory.decrease(decreaseAmount);
-            OutboundInventoryHistory history = OutboundInventoryHistory.builder()
-                    .outbound(outbound)
-                    .inventory(inventory)
-                    .product(inventory.getProduct())
-                    .location(inventory.getLocation())
-                    .quantityChanged(decreaseAmount)
-                    .lotNumber(inventory.getLotNumber())
-                    .taskId(taskId)
-                    .status(OutboundInventoryHistoryStatus.PENDING)
-                    .build();
-            histories.add(history);
-            remainingQuantity -= decreaseAmount;
+//            // TODO 재고 소프트 딜리트 구현 -> 재고 0 = 소프트 딜리트
+//
+//            int decreaseAmount = Math.min(currentStock, remainingQuantity);
+//            inventory.decrease(decreaseAmount);
+//            OutboundInventoryHistory history = OutboundInventoryHistory.builder()
+//                    .outbound(outbound)
+//                    .inventory(inventory)
+//                    .product(inventory.getProduct())
+//                    .location(inventory.getLocation())
+//                    .quantityChanged(decreaseAmount)
+//                    .lotNumber(inventory.getLotNumber())
+//                    .taskId(taskId)
+//                    .status(OutboundInventoryHistoryStatus.PENDING)
+//                    .build();
+//            histories.add(history);
+//            remainingQuantity -= decreaseAmount;
         }
 
         if (remainingQuantity > 0) {
