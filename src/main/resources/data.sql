@@ -24,15 +24,15 @@ DROP TABLE IF EXISTS `announcement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `announcement` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `active` bit(1) NOT NULL,
-  `content` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `pinned` bit(1) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                `created_at` datetime(6) DEFAULT NULL,
+                                `updated_at` datetime(6) DEFAULT NULL,
+                                `active` bit(1) NOT NULL,
+                                `content` varchar(255) NOT NULL,
+                                `name` varchar(255) NOT NULL,
+                                `pinned` bit(1) NOT NULL,
+                                `title` varchar(255) NOT NULL,
+                                PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -44,21 +44,21 @@ DROP TABLE IF EXISTS `asn`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `asn` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `asn_code` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `expected_date` datetime(6) DEFAULT NULL,
-  `status` enum('ACCEPTED','REJECTED') DEFAULT NULL,
-  `purchase_order_id` bigint(20) DEFAULT NULL,
-  `vendor_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKie199rinybdox1bbnu6mcqfy4` (`asn_code`),
-  KEY `FKsvf6syj42hj8akht9309ewfup` (`purchase_order_id`),
-  KEY `FKaew56wf07r7vmulaeftrndm7i` (`vendor_id`),
-  CONSTRAINT `FKaew56wf07r7vmulaeftrndm7i` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
-  CONSTRAINT `FKsvf6syj42hj8akht9309ewfup` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`)
+                       `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                       `created_at` datetime(6) DEFAULT NULL,
+                       `updated_at` datetime(6) DEFAULT NULL,
+                       `asn_code` varchar(255) NOT NULL,
+                       `description` varchar(255) DEFAULT NULL,
+                       `expected_date` datetime(6) DEFAULT NULL,
+                       `status` enum('ACCEPTED','REJECTED') DEFAULT NULL,
+                       `purchase_order_id` bigint(20) DEFAULT NULL,
+                       `vendor_id` bigint(20) NOT NULL,
+                       PRIMARY KEY (`id`),
+                       UNIQUE KEY `UKie199rinybdox1bbnu6mcqfy4` (`asn_code`),
+                       KEY `FKsvf6syj42hj8akht9309ewfup` (`purchase_order_id`),
+                       KEY `FKaew56wf07r7vmulaeftrndm7i` (`vendor_id`),
+                       CONSTRAINT `FKaew56wf07r7vmulaeftrndm7i` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
+                       CONSTRAINT `FKsvf6syj42hj8akht9309ewfup` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -70,17 +70,17 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `active` bit(1) NOT NULL,
-  `code` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `parent_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK2y94svpmqttx80mshyny85wqr` (`parent_id`),
-  CONSTRAINT `FK2y94svpmqttx80mshyny85wqr` FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
+                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                            `created_at` datetime(6) DEFAULT NULL,
+                            `updated_at` datetime(6) DEFAULT NULL,
+                            `active` bit(1) NOT NULL,
+                            `code` varchar(255) DEFAULT NULL,
+                            `description` varchar(255) DEFAULT NULL,
+                            `name` varchar(255) DEFAULT NULL,
+                            `parent_id` bigint(20) DEFAULT NULL,
+                            PRIMARY KEY (`id`),
+                            KEY `FK2y94svpmqttx80mshyny85wqr` (`parent_id`),
+                            CONSTRAINT `FK2y94svpmqttx80mshyny85wqr` FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -92,24 +92,24 @@ DROP TABLE IF EXISTS `franchise_store`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `franchise_store` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `detail` varchar(255) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `zipcode` varchar(255) DEFAULT NULL,
-  `api_key` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `franchise_code` varchar(50) NOT NULL,
-  `name` varchar(200) NOT NULL,
-  `phone_number` varchar(20) DEFAULT NULL,
-  `status` enum('ACTIVE','INACTIVE','SUSPENDED') NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKaawnideifesyiurppmg91ukcu` (`franchise_code`),
-  UNIQUE KEY `UKg3qlemaumcvl2pdcweb3eiuik` (`api_key`)
+                                   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                   `created_at` datetime(6) DEFAULT NULL,
+                                   `updated_at` datetime(6) DEFAULT NULL,
+                                   `city` varchar(255) DEFAULT NULL,
+                                   `country` varchar(255) DEFAULT NULL,
+                                   `detail` varchar(255) DEFAULT NULL,
+                                   `street` varchar(255) DEFAULT NULL,
+                                   `zipcode` varchar(255) DEFAULT NULL,
+                                   `api_key` varchar(255) DEFAULT NULL,
+                                   `description` varchar(255) DEFAULT NULL,
+                                   `email` varchar(100) DEFAULT NULL,
+                                   `franchise_code` varchar(50) NOT NULL,
+                                   `name` varchar(200) NOT NULL,
+                                   `phone_number` varchar(20) DEFAULT NULL,
+                                   `status` enum('ACTIVE','INACTIVE','SUSPENDED') NOT NULL,
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `UKaawnideifesyiurppmg91ukcu` (`franchise_code`),
+                                   UNIQUE KEY `UKg3qlemaumcvl2pdcweb3eiuik` (`api_key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -121,12 +121,12 @@ DROP TABLE IF EXISTS `image`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `image` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) DEFAULT NULL,
-  `product_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKmm4cmvteo84wq24upfvucdy08` (`product_id`),
-  CONSTRAINT `FKgpextbyee3uk9u6o2381m7ft1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+                         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                         `file_name` varchar(255) DEFAULT NULL,
+                         `product_id` bigint(20) DEFAULT NULL,
+                         PRIMARY KEY (`id`),
+                         UNIQUE KEY `UKmm4cmvteo84wq24upfvucdy08` (`product_id`),
+                         CONSTRAINT `FKgpextbyee3uk9u6o2381m7ft1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -138,19 +138,19 @@ DROP TABLE IF EXISTS `inbound`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inbound` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `inbound_code` varchar(255) NOT NULL,
-  `manager_name` varchar(255) DEFAULT NULL,
-  `scheduled_date` datetime(6) DEFAULT NULL,
-  `status` enum('ARRIVED','CANCELLED','COMPLETED','CREATED','INSPECTING','PUTAWAY','SCHEDULED') DEFAULT NULL,
-  `worker_name` varchar(255) DEFAULT NULL,
-  `purchase_order_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKk006jhk5utmrtsv60kdmgmbhr` (`purchase_order_id`),
-  CONSTRAINT `FKsv2i1tb5oi6des029r7980gxp` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`)
+                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                           `created_at` datetime(6) DEFAULT NULL,
+                           `updated_at` datetime(6) DEFAULT NULL,
+                           `description` varchar(255) DEFAULT NULL,
+                           `inbound_code` varchar(255) NOT NULL,
+                           `manager_name` varchar(255) DEFAULT NULL,
+                           `scheduled_date` datetime(6) DEFAULT NULL,
+                           `status` enum('ARRIVED','CANCELLED','COMPLETED','CREATED','INSPECTING','PUTAWAY','SCHEDULED') DEFAULT NULL,
+                           `worker_name` varchar(255) DEFAULT NULL,
+                           `purchase_order_id` bigint(20) DEFAULT NULL,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `UKk006jhk5utmrtsv60kdmgmbhr` (`purchase_order_id`),
+                           CONSTRAINT `FKsv2i1tb5oi6des029r7980gxp` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,23 +162,23 @@ DROP TABLE IF EXISTS `inbound_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inbound_product` (
-  `inbound_product_item_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `location_code` varchar(255) DEFAULT NULL,
-  `lot_number` varchar(50) DEFAULT NULL,
-  `received_quantity` int(11) NOT NULL,
-  `inbound_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `purchase_order_product_item_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`inbound_product_item_id`),
-  KEY `FKi4wlj1ac383krg7lifevi57mp` (`inbound_id`),
-  KEY `FK9xyuidoew7x97o0h9oufswjql` (`product_id`),
-  KEY `FK3inkbc0bcokjeijjlufyg8opm` (`purchase_order_product_item_id`),
-  CONSTRAINT `FK3inkbc0bcokjeijjlufyg8opm` FOREIGN KEY (`purchase_order_product_item_id`) REFERENCES `purchase_order_product` (`id`),
-  CONSTRAINT `FK9xyuidoew7x97o0h9oufswjql` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
-  CONSTRAINT `FKi4wlj1ac383krg7lifevi57mp` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`)
+                                   `inbound_product_item_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                   `created_at` datetime(6) DEFAULT NULL,
+                                   `updated_at` datetime(6) DEFAULT NULL,
+                                   `description` varchar(1000) DEFAULT NULL,
+                                   `location_code` varchar(255) DEFAULT NULL,
+                                   `lot_number` varchar(50) DEFAULT NULL,
+                                   `received_quantity` int(11) NOT NULL,
+                                   `inbound_id` bigint(20) NOT NULL,
+                                   `product_id` bigint(20) NOT NULL,
+                                   `purchase_order_product_item_id` bigint(20) DEFAULT NULL,
+                                   PRIMARY KEY (`inbound_product_item_id`),
+                                   KEY `FKi4wlj1ac383krg7lifevi57mp` (`inbound_id`),
+                                   KEY `FK9xyuidoew7x97o0h9oufswjql` (`product_id`),
+                                   KEY `FK3inkbc0bcokjeijjlufyg8opm` (`purchase_order_product_item_id`),
+                                   CONSTRAINT `FK3inkbc0bcokjeijjlufyg8opm` FOREIGN KEY (`purchase_order_product_item_id`) REFERENCES `purchase_order_product` (`id`),
+                                   CONSTRAINT `FK9xyuidoew7x97o0h9oufswjql` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
+                                   CONSTRAINT `FKi4wlj1ac383krg7lifevi57mp` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -190,12 +190,12 @@ DROP TABLE IF EXISTS `inspection_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inspection_task` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `inbound_id` bigint(20) DEFAULT NULL,
-  `task_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKl1o73xmyvfldki5dbc0j6miny` (`task_id`),
-  CONSTRAINT `FK8srqw86dgls14ph8a6ap36ok2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
+                                   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                   `inbound_id` bigint(20) DEFAULT NULL,
+                                   `task_id` bigint(20) DEFAULT NULL,
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `UKl1o73xmyvfldki5dbc0j6miny` (`task_id`),
+                                   CONSTRAINT `FK8srqw86dgls14ph8a6ap36ok2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -207,22 +207,22 @@ DROP TABLE IF EXISTS `inventory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inventory` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `lot_number` varchar(50) DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
-  `inbound_id` bigint(20) DEFAULT NULL,
-  `location_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK92222pj555ybijoypeb9lfuri` (`inbound_id`),
-  KEY `FKq4qxohkbpt2t6anovkpmjkxh7` (`location_id`),
-  KEY `FKp7gj4l80fx8v0uap3b2crjwp5` (`product_id`),
-  CONSTRAINT `FK92222pj555ybijoypeb9lfuri` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`),
-  CONSTRAINT `FKp7gj4l80fx8v0uap3b2crjwp5` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
-  CONSTRAINT `FKq4qxohkbpt2t6anovkpmjkxh7` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`)
+                             `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                             `created_at` datetime(6) DEFAULT NULL,
+                             `updated_at` datetime(6) DEFAULT NULL,
+                             `description` varchar(1000) DEFAULT NULL,
+                             `lot_number` varchar(50) DEFAULT NULL,
+                             `quantity` int(11) NOT NULL,
+                             `inbound_id` bigint(20) DEFAULT NULL,
+                             `location_id` bigint(20) NOT NULL,
+                             `product_id` bigint(20) NOT NULL,
+                             PRIMARY KEY (`id`),
+                             KEY `FK92222pj555ybijoypeb9lfuri` (`inbound_id`),
+                             KEY `FKq4qxohkbpt2t6anovkpmjkxh7` (`location_id`),
+                             KEY `FKp7gj4l80fx8v0uap3b2crjwp5` (`product_id`),
+                             CONSTRAINT `FK92222pj555ybijoypeb9lfuri` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`),
+                             CONSTRAINT `FKp7gj4l80fx8v0uap3b2crjwp5` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
+                             CONSTRAINT `FKq4qxohkbpt2t6anovkpmjkxh7` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -234,19 +234,19 @@ DROP TABLE IF EXISTS `location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `location` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `capacity` int(11) NOT NULL,
-  `description` varchar(500) DEFAULT NULL,
-  `location_code` varchar(20) NOT NULL,
-  `section` varchar(10) NOT NULL,
-  `status` enum('AVAILABLE','CLOSED') NOT NULL,
-  `used_capacity` int(11) NOT NULL,
-  `vendor_id` bigint(20) DEFAULT NULL,
-  `zone` varchar(10) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKmar27svme9bekuv7b87jin6sv` (`location_code`)
+                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                            `created_at` datetime(6) DEFAULT NULL,
+                            `updated_at` datetime(6) DEFAULT NULL,
+                            `capacity` int(11) NOT NULL,
+                            `description` varchar(500) DEFAULT NULL,
+                            `location_code` varchar(20) NOT NULL,
+                            `section` varchar(10) NOT NULL,
+                            `status` enum('AVAILABLE','CLOSED') NOT NULL,
+                            `used_capacity` int(11) NOT NULL,
+                            `vendor_id` bigint(20) DEFAULT NULL,
+                            `zone` varchar(10) NOT NULL,
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `UKmar27svme9bekuv7b87jin6sv` (`location_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -258,17 +258,17 @@ DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `join_at` datetime(6) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(255) DEFAULT NULL,
-  `role` enum('ADMIN','MANAGER','WORKER') DEFAULT NULL,
-  `status` enum('ACTIVE','INACTIVE','LOCK') DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                          `created_at` datetime(6) DEFAULT NULL,
+                          `updated_at` datetime(6) DEFAULT NULL,
+                          `email` varchar(255) DEFAULT NULL,
+                          `join_at` datetime(6) DEFAULT NULL,
+                          `name` varchar(255) DEFAULT NULL,
+                          `password` varchar(255) DEFAULT NULL,
+                          `phone_number` varchar(255) DEFAULT NULL,
+                          `role` enum('ADMIN','MANAGER','WORKER') DEFAULT NULL,
+                          `status` enum('ACTIVE','INACTIVE','LOCK') DEFAULT NULL,
+                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -280,25 +280,25 @@ DROP TABLE IF EXISTS `notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notification` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `message` varchar(255) DEFAULT NULL,
-  `read_at` datetime(6) DEFAULT NULL,
-  `status` enum('READ','UNREAD') DEFAULT NULL,
-  `inbound_id` bigint(20) DEFAULT NULL,
-  `inventory_id` bigint(20) DEFAULT NULL,
-  `member_id` bigint(20) NOT NULL,
-  `outbound_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKk8oik2u6phgugp3gyx9f8expa` (`inbound_id`),
-  KEY `FKnlc54044rf1iof50w3xiioqrn` (`inventory_id`),
-  KEY `FK1xep8o2ge7if6diclyyx53v4q` (`member_id`),
-  KEY `FKgxfj3rvppknfyh50ecg03skpr` (`outbound_id`),
-  CONSTRAINT `FK1xep8o2ge7if6diclyyx53v4q` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`),
-  CONSTRAINT `FKgxfj3rvppknfyh50ecg03skpr` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
-  CONSTRAINT `FKk8oik2u6phgugp3gyx9f8expa` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`),
-  CONSTRAINT `FKnlc54044rf1iof50w3xiioqrn` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
+                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                `created_at` datetime(6) DEFAULT NULL,
+                                `updated_at` datetime(6) DEFAULT NULL,
+                                `message` varchar(255) DEFAULT NULL,
+                                `read_at` datetime(6) DEFAULT NULL,
+                                `status` enum('READ','UNREAD') DEFAULT NULL,
+                                `inbound_id` bigint(20) DEFAULT NULL,
+                                `inventory_id` bigint(20) DEFAULT NULL,
+                                `member_id` bigint(20) NOT NULL,
+                                `outbound_id` bigint(20) DEFAULT NULL,
+                                PRIMARY KEY (`id`),
+                                KEY `FKk8oik2u6phgugp3gyx9f8expa` (`inbound_id`),
+                                KEY `FKnlc54044rf1iof50w3xiioqrn` (`inventory_id`),
+                                KEY `FK1xep8o2ge7if6diclyyx53v4q` (`member_id`),
+                                KEY `FKgxfj3rvppknfyh50ecg03skpr` (`outbound_id`),
+                                CONSTRAINT `FK1xep8o2ge7if6diclyyx53v4q` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`),
+                                CONSTRAINT `FKgxfj3rvppknfyh50ecg03skpr` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
+                                CONSTRAINT `FKk8oik2u6phgugp3gyx9f8expa` FOREIGN KEY (`inbound_id`) REFERENCES `inbound` (`id`),
+                                CONSTRAINT `FKnlc54044rf1iof50w3xiioqrn` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -310,18 +310,18 @@ DROP TABLE IF EXISTS `order_product_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_product_item` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(500) DEFAULT NULL,
-  `ordered_quantity` int(11) NOT NULL,
-  `order_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKllifwnfboi40h11nvhq1fjumq` (`order_id`),
-  KEY `FK8n0wlqutvt5bhk9v2pd8ay04s` (`product_id`),
-  CONSTRAINT `FK8n0wlqutvt5bhk9v2pd8ay04s` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
-  CONSTRAINT `FKllifwnfboi40h11nvhq1fjumq` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
+                                      `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                      `created_at` datetime(6) DEFAULT NULL,
+                                      `updated_at` datetime(6) DEFAULT NULL,
+                                      `description` varchar(500) DEFAULT NULL,
+                                      `ordered_quantity` int(11) NOT NULL,
+                                      `order_id` bigint(20) NOT NULL,
+                                      `product_id` bigint(20) NOT NULL,
+                                      PRIMARY KEY (`id`),
+                                      KEY `FKllifwnfboi40h11nvhq1fjumq` (`order_id`),
+                                      KEY `FK8n0wlqutvt5bhk9v2pd8ay04s` (`product_id`),
+                                      CONSTRAINT `FK8n0wlqutvt5bhk9v2pd8ay04s` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`),
+                                      CONSTRAINT `FKllifwnfboi40h11nvhq1fjumq` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -333,20 +333,20 @@ DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
-  `order_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `due_date` datetime(6) NOT NULL,
-  `order_code` varchar(255) DEFAULT NULL,
-  `order_date` datetime(6) NOT NULL,
-  `rejected_at` datetime(6) DEFAULT NULL,
-  `rejected_reason` varchar(255) DEFAULT NULL,
-  `status` enum('APPROVED','CANCELLED','DELIVERED','REQUESTED','SHIPPED') DEFAULT NULL,
-  `franchise_store_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`order_id`),
-  KEY `FKovbnmwvyloecrxr9bxig1fc9f` (`franchise_store_id`),
-  CONSTRAINT `FKovbnmwvyloecrxr9bxig1fc9f` FOREIGN KEY (`franchise_store_id`) REFERENCES `franchise_store` (`id`)
+                          `order_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                          `created_at` datetime(6) DEFAULT NULL,
+                          `updated_at` datetime(6) DEFAULT NULL,
+                          `description` varchar(1000) DEFAULT NULL,
+                          `due_date` datetime(6) NOT NULL,
+                          `order_code` varchar(255) DEFAULT NULL,
+                          `order_date` datetime(6) NOT NULL,
+                          `rejected_at` datetime(6) DEFAULT NULL,
+                          `rejected_reason` varchar(255) DEFAULT NULL,
+                          `status` enum('APPROVED','CANCELLED','DELIVERED','REQUESTED','SHIPPED') DEFAULT NULL,
+                          `franchise_store_id` bigint(20) DEFAULT NULL,
+                          PRIMARY KEY (`order_id`),
+                          KEY `FKovbnmwvyloecrxr9bxig1fc9f` (`franchise_store_id`),
+                          CONSTRAINT `FKovbnmwvyloecrxr9bxig1fc9f` FOREIGN KEY (`franchise_store_id`) REFERENCES `franchise_store` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -358,21 +358,21 @@ DROP TABLE IF EXISTS `outbound`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `outbound` (
-  `outbound_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `outbound_code` varchar(255) NOT NULL,
-  `outbound_type` enum('RETURN','SALE','TRANSFER') DEFAULT NULL,
-  `scheduled_date` datetime(6) DEFAULT NULL,
-  `status` enum('APPROVED','CANCELLED','INSPECTION','PACKING','PICKING','REQUESTED','SHIPPED') DEFAULT NULL,
-  `order_id` bigint(20) DEFAULT NULL,
-  `member_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`outbound_id`),
-  KEY `FKbhhp60m4sesy2qfilvkrhdpfp` (`order_id`),
-  KEY `FKplcb3292ywh3vn47dqlbilo0x` (`member_id`),
-  CONSTRAINT `FKbhhp60m4sesy2qfilvkrhdpfp` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  CONSTRAINT `FKplcb3292ywh3vn47dqlbilo0x` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
+                            `outbound_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                            `created_at` datetime(6) DEFAULT NULL,
+                            `updated_at` datetime(6) DEFAULT NULL,
+                            `description` varchar(255) DEFAULT NULL,
+                            `outbound_code` varchar(255) NOT NULL,
+                            `outbound_type` enum('RETURN','SALE','TRANSFER') DEFAULT NULL,
+                            `scheduled_date` datetime(6) DEFAULT NULL,
+                            `status` enum('APPROVED','CANCELLED','INSPECTION','PACKING','PICKING','REQUESTED','SHIPPED') DEFAULT NULL,
+                            `order_id` bigint(20) DEFAULT NULL,
+                            `member_id` bigint(20) DEFAULT NULL,
+                            PRIMARY KEY (`outbound_id`),
+                            KEY `FKbhhp60m4sesy2qfilvkrhdpfp` (`order_id`),
+                            KEY `FKplcb3292ywh3vn47dqlbilo0x` (`member_id`),
+                            CONSTRAINT `FKbhhp60m4sesy2qfilvkrhdpfp` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+                            CONSTRAINT `FKplcb3292ywh3vn47dqlbilo0x` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -384,24 +384,24 @@ DROP TABLE IF EXISTS `outbound_inventory_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `outbound_inventory_history` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `lot_number` varchar(255) DEFAULT NULL,
-  `quantity_changed` int(11) NOT NULL,
-  `status` enum('CANCELLED','COMPLETED','PENDING') DEFAULT NULL,
-  `task_id` bigint(20) DEFAULT NULL,
-  `inventory_id` bigint(20) DEFAULT NULL,
-  `location_id` bigint(20) DEFAULT NULL,
-  `outbound_id` bigint(20) DEFAULT NULL,
-  `product_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKqqb9gw9gbjeiqit7mwkkewsd4` (`inventory_id`),
-  KEY `FK7g2h6d1kedca78cphn7j73jo0` (`location_id`),
-  KEY `FKbdbupgeehv4iwyekon3481nne` (`outbound_id`),
-  KEY `FKtmr55yrwfubbr5tur2retg6fo` (`product_id`),
-  CONSTRAINT `FK7g2h6d1kedca78cphn7j73jo0` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`),
-  CONSTRAINT `FKbdbupgeehv4iwyekon3481nne` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
-  CONSTRAINT `FKqqb9gw9gbjeiqit7mwkkewsd4` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`),
-  CONSTRAINT `FKtmr55yrwfubbr5tur2retg6fo` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+                                              `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                              `lot_number` varchar(255) DEFAULT NULL,
+                                              `quantity_changed` int(11) NOT NULL,
+                                              `status` enum('CANCELLED','COMPLETED','PENDING') DEFAULT NULL,
+                                              `task_id` bigint(20) DEFAULT NULL,
+                                              `inventory_id` bigint(20) DEFAULT NULL,
+                                              `location_id` bigint(20) DEFAULT NULL,
+                                              `outbound_id` bigint(20) DEFAULT NULL,
+                                              `product_id` bigint(20) DEFAULT NULL,
+                                              PRIMARY KEY (`id`),
+                                              KEY `FKqqb9gw9gbjeiqit7mwkkewsd4` (`inventory_id`),
+                                              KEY `FK7g2h6d1kedca78cphn7j73jo0` (`location_id`),
+                                              KEY `FKbdbupgeehv4iwyekon3481nne` (`outbound_id`),
+                                              KEY `FKtmr55yrwfubbr5tur2retg6fo` (`product_id`),
+                                              CONSTRAINT `FK7g2h6d1kedca78cphn7j73jo0` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`),
+                                              CONSTRAINT `FKbdbupgeehv4iwyekon3481nne` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
+                                              CONSTRAINT `FKqqb9gw9gbjeiqit7mwkkewsd4` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`),
+                                              CONSTRAINT `FKtmr55yrwfubbr5tur2retg6fo` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -413,20 +413,20 @@ DROP TABLE IF EXISTS `outbound_product_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `outbound_product_item` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `description` varchar(1000) DEFAULT NULL,
-  `location_code` varchar(255) DEFAULT NULL,
-  `ordered_quantity` int(11) NOT NULL,
-  `order_product_item_id` bigint(20) DEFAULT NULL,
-  `outbound_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKblo3nlqp90nl3ifopho861qgp` (`order_product_item_id`),
-  KEY `FK9e4e2dw0lv4rwsc586fxjaer5` (`outbound_id`),
-  KEY `FKcerqxjk4ppfi4iah5dca9tc1i` (`product_id`),
-  CONSTRAINT `FK9e4e2dw0lv4rwsc586fxjaer5` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
-  CONSTRAINT `FKblo3nlqp90nl3ifopho861qgp` FOREIGN KEY (`order_product_item_id`) REFERENCES `order_product_item` (`id`),
-  CONSTRAINT `FKcerqxjk4ppfi4iah5dca9tc1i` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+                                         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                         `description` varchar(1000) DEFAULT NULL,
+                                         `location_code` varchar(255) DEFAULT NULL,
+                                         `ordered_quantity` int(11) NOT NULL,
+                                         `order_product_item_id` bigint(20) DEFAULT NULL,
+                                         `outbound_id` bigint(20) NOT NULL,
+                                         `product_id` bigint(20) NOT NULL,
+                                         PRIMARY KEY (`id`),
+                                         KEY `FKblo3nlqp90nl3ifopho861qgp` (`order_product_item_id`),
+                                         KEY `FK9e4e2dw0lv4rwsc586fxjaer5` (`outbound_id`),
+                                         KEY `FKcerqxjk4ppfi4iah5dca9tc1i` (`product_id`),
+                                         CONSTRAINT `FK9e4e2dw0lv4rwsc586fxjaer5` FOREIGN KEY (`outbound_id`) REFERENCES `outbound` (`outbound_id`),
+                                         CONSTRAINT `FKblo3nlqp90nl3ifopho861qgp` FOREIGN KEY (`order_product_item_id`) REFERENCES `order_product_item` (`id`),
+                                         CONSTRAINT `FKcerqxjk4ppfi4iah5dca9tc1i` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -438,12 +438,12 @@ DROP TABLE IF EXISTS `picking_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `picking_task` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `outbound_id` bigint(20) DEFAULT NULL,
-  `task_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKgb796t3v3m4vpkgoe9tqv31gm` (`task_id`),
-  CONSTRAINT `FKb11rno5qaukuicc7mgkgmdenv` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
+                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                `outbound_id` bigint(20) DEFAULT NULL,
+                                `task_id` bigint(20) DEFAULT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UKgb796t3v3m4vpkgoe9tqv31gm` (`task_id`),
+                                CONSTRAINT `FKb11rno5qaukuicc7mgkgmdenv` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -455,20 +455,20 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `product_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `name` varchar(200) NOT NULL,
-  `product_code` varchar(50) NOT NULL,
-  `status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
-  `unit` varchar(50) DEFAULT NULL,
-  `unit_price` bigint(20) DEFAULT NULL,
-  `vendor_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`product_id`),
-  UNIQUE KEY `UKhcpr86kgtroqvxu1mxoyx4ahm` (`product_code`),
-  KEY `FK9tnjxr4w1dcvbo2qejikpxpfy` (`vendor_id`),
-  CONSTRAINT `FK9tnjxr4w1dcvbo2qejikpxpfy` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`)
+                           `product_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                           `created_at` datetime(6) DEFAULT NULL,
+                           `updated_at` datetime(6) DEFAULT NULL,
+                           `description` varchar(1000) DEFAULT NULL,
+                           `name` varchar(200) NOT NULL,
+                           `product_code` varchar(50) NOT NULL,
+                           `status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
+                           `unit` varchar(50) DEFAULT NULL,
+                           `unit_price` bigint(20) DEFAULT NULL,
+                           `vendor_id` bigint(20) DEFAULT NULL,
+                           PRIMARY KEY (`product_id`),
+                           UNIQUE KEY `UKhcpr86kgtroqvxu1mxoyx4ahm` (`product_code`),
+                           KEY `FK9tnjxr4w1dcvbo2qejikpxpfy` (`vendor_id`),
+                           CONSTRAINT `FK9tnjxr4w1dcvbo2qejikpxpfy` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -480,17 +480,17 @@ DROP TABLE IF EXISTS `product_status_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_status_history` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `changed_by` varchar(255) DEFAULT NULL,
-  `new_status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
-  `old_status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
-  `product_name` varchar(255) DEFAULT NULL,
-  `product_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKoilnrkjhl5yvk1298umaflgjo` (`product_id`),
-  CONSTRAINT `FKoilnrkjhl5yvk1298umaflgjo` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+                                          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                          `created_at` datetime(6) DEFAULT NULL,
+                                          `updated_at` datetime(6) DEFAULT NULL,
+                                          `changed_by` varchar(255) DEFAULT NULL,
+                                          `new_status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
+                                          `old_status` enum('ACTIVE','DISCONTINUED','INACTIVE') DEFAULT NULL,
+                                          `product_name` varchar(255) DEFAULT NULL,
+                                          `product_id` bigint(20) DEFAULT NULL,
+                                          PRIMARY KEY (`id`),
+                                          KEY `FKoilnrkjhl5yvk1298umaflgjo` (`product_id`),
+                                          CONSTRAINT `FKoilnrkjhl5yvk1298umaflgjo` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -502,22 +502,22 @@ DROP TABLE IF EXISTS `purchase_order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `purchase_order` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `expected_date` datetime(6) DEFAULT NULL,
-  `order_code` varchar(255) NOT NULL,
-  `order_date` datetime(6) DEFAULT NULL,
-  `rejected_at` datetime(6) DEFAULT NULL,
-  `rejected_reason` varchar(255) DEFAULT NULL,
-  `status` enum('APPROVED','AWAITING_DELIVERY','CANCELLED','COMPLETED','REQUESTED') NOT NULL,
-  `total_amount` bigint(20) DEFAULT NULL,
-  `vendor_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKiw2u5f5k3jbsrn1mf7bm3p5mt` (`order_code`),
-  KEY `FK20jcn7pw6hvx0uo0sh4y1d9xv` (`vendor_id`),
-  CONSTRAINT `FK20jcn7pw6hvx0uo0sh4y1d9xv` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`)
+                                  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                  `created_at` datetime(6) DEFAULT NULL,
+                                  `updated_at` datetime(6) DEFAULT NULL,
+                                  `description` varchar(1000) DEFAULT NULL,
+                                  `expected_date` datetime(6) DEFAULT NULL,
+                                  `order_code` varchar(255) NOT NULL,
+                                  `order_date` datetime(6) DEFAULT NULL,
+                                  `rejected_at` datetime(6) DEFAULT NULL,
+                                  `rejected_reason` varchar(255) DEFAULT NULL,
+                                  `status` enum('APPROVED','AWAITING_DELIVERY','CANCELLED','COMPLETED','REQUESTED') NOT NULL,
+                                  `total_amount` bigint(20) DEFAULT NULL,
+                                  `vendor_id` bigint(20) NOT NULL,
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `UKiw2u5f5k3jbsrn1mf7bm3p5mt` (`order_code`),
+                                  KEY `FK20jcn7pw6hvx0uo0sh4y1d9xv` (`vendor_id`),
+                                  CONSTRAINT `FK20jcn7pw6hvx0uo0sh4y1d9xv` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -529,18 +529,18 @@ DROP TABLE IF EXISTS `purchase_order_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `purchase_order_product` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `description` varchar(500) DEFAULT NULL,
-  `ordered_quantity` int(11) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `purchase_order_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK889ubw1t0walyty363ihoyxak` (`product_id`),
-  KEY `FK2sqvupap0ec75a1o2uavjdg1m` (`purchase_order_id`),
-  CONSTRAINT `FK2sqvupap0ec75a1o2uavjdg1m` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`),
-  CONSTRAINT `FK889ubw1t0walyty363ihoyxak` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+                                          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                          `created_at` datetime(6) DEFAULT NULL,
+                                          `updated_at` datetime(6) DEFAULT NULL,
+                                          `description` varchar(500) DEFAULT NULL,
+                                          `ordered_quantity` int(11) NOT NULL,
+                                          `product_id` bigint(20) NOT NULL,
+                                          `purchase_order_id` bigint(20) NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          KEY `FK889ubw1t0walyty363ihoyxak` (`product_id`),
+                                          KEY `FK2sqvupap0ec75a1o2uavjdg1m` (`purchase_order_id`),
+                                          CONSTRAINT `FK2sqvupap0ec75a1o2uavjdg1m` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_order` (`id`),
+                                          CONSTRAINT `FK889ubw1t0walyty363ihoyxak` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -552,13 +552,13 @@ DROP TABLE IF EXISTS `putaway_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `putaway_task` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `assigned_location_code` varchar(20) DEFAULT NULL,
-  `inbound_id` bigint(20) DEFAULT NULL,
-  `task_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK2s6xj4yhwjka0n3d2wrexpxal` (`task_id`),
-  CONSTRAINT `FKoqipxu0bpkuccf9uae27dkigo` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
+                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                `assigned_location_code` varchar(20) DEFAULT NULL,
+                                `inbound_id` bigint(20) DEFAULT NULL,
+                                `task_id` bigint(20) DEFAULT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UK2s6xj4yhwjka0n3d2wrexpxal` (`task_id`),
+                                CONSTRAINT `FKoqipxu0bpkuccf9uae27dkigo` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -570,20 +570,20 @@ DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `task` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `assigned_at` datetime(6) DEFAULT NULL,
-  `category` enum('INSPECTION','PACKING','PICKING','PUTAWAY') NOT NULL,
-  `completed_at` datetime(6) DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
-  `reference_id` bigint(20) DEFAULT NULL,
-  `started_at` datetime(6) DEFAULT NULL,
-  `status` enum('ASSIGNED','CANCELLED','COMPLETED','IN_PROGRESS','PENDING') NOT NULL,
-  `member_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKtisaouhsp1pjc613txc886xfh` (`member_id`),
-  CONSTRAINT `FKtisaouhsp1pjc613txc886xfh` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
+                        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                        `created_at` datetime(6) DEFAULT NULL,
+                        `updated_at` datetime(6) DEFAULT NULL,
+                        `assigned_at` datetime(6) DEFAULT NULL,
+                        `category` enum('INSPECTION','PACKING','PICKING','PUTAWAY') NOT NULL,
+                        `completed_at` datetime(6) DEFAULT NULL,
+                        `note` varchar(255) DEFAULT NULL,
+                        `reference_id` bigint(20) DEFAULT NULL,
+                        `started_at` datetime(6) DEFAULT NULL,
+                        `status` enum('ASSIGNED','CANCELLED','COMPLETED','IN_PROGRESS','PENDING') NOT NULL,
+                        `member_id` bigint(20) DEFAULT NULL,
+                        PRIMARY KEY (`id`),
+                        KEY `FKtisaouhsp1pjc613txc886xfh` (`member_id`),
+                        CONSTRAINT `FKtisaouhsp1pjc613txc886xfh` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -595,24 +595,24 @@ DROP TABLE IF EXISTS `vendor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vendor` (
-  `vendor_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `detail` varchar(255) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `zipcode` varchar(255) DEFAULT NULL,
-  `api_key` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `name` varchar(200) NOT NULL,
-  `phone_number` varchar(20) DEFAULT NULL,
-  `status` enum('ACTIVE','INACTIVE','SUSPENDED') NOT NULL,
-  `vendor_code` varchar(50) NOT NULL,
-  PRIMARY KEY (`vendor_id`),
-  UNIQUE KEY `UKabema2gvm8psw0jabn5wfd0gd` (`vendor_code`),
-  UNIQUE KEY `UK3ipb1dt1j0q4001jb0u6b9r8n` (`api_key`)
+                          `vendor_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                          `created_at` datetime(6) DEFAULT NULL,
+                          `updated_at` datetime(6) DEFAULT NULL,
+                          `city` varchar(255) DEFAULT NULL,
+                          `country` varchar(255) DEFAULT NULL,
+                          `detail` varchar(255) DEFAULT NULL,
+                          `street` varchar(255) DEFAULT NULL,
+                          `zipcode` varchar(255) DEFAULT NULL,
+                          `api_key` varchar(255) DEFAULT NULL,
+                          `description` varchar(255) DEFAULT NULL,
+                          `email` varchar(100) DEFAULT NULL,
+                          `name` varchar(200) NOT NULL,
+                          `phone_number` varchar(20) DEFAULT NULL,
+                          `status` enum('ACTIVE','INACTIVE','SUSPENDED') NOT NULL,
+                          `vendor_code` varchar(50) NOT NULL,
+                          PRIMARY KEY (`vendor_id`),
+                          UNIQUE KEY `UKabema2gvm8psw0jabn5wfd0gd` (`vendor_code`),
+                          UNIQUE KEY `UK3ipb1dt1j0q4001jb0u6b9r8n` (`api_key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -624,19 +624,19 @@ DROP TABLE IF EXISTS `warehouse`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `warehouse` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `active` bit(1) DEFAULT b'1',
-  `city` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `detail` varchar(255) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `zipcode` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                             `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                             `created_at` datetime(6) DEFAULT NULL,
+                             `updated_at` datetime(6) DEFAULT NULL,
+                             `active` bit(1) DEFAULT b'1',
+                             `city` varchar(255) DEFAULT NULL,
+                             `country` varchar(255) DEFAULT NULL,
+                             `detail` varchar(255) DEFAULT NULL,
+                             `street` varchar(255) DEFAULT NULL,
+                             `zipcode` varchar(255) DEFAULT NULL,
+                             `email` varchar(255) DEFAULT NULL,
+                             `name` varchar(255) DEFAULT NULL,
+                             `phone_number` varchar(255) DEFAULT NULL,
+                             PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
