@@ -68,9 +68,15 @@ dependencies {
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    // redis
     implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
+    // DB_LOCK
     implementation 'com.mysql:mysql-connector-j:8.3.0'
+    // h2
     testImplementation 'com.h2database:h2'
+    // Spring data Elastic search
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation 'co.elastic.clients:elasticsearch-java:8.15.2'
 }
 
 tasks.named('test') {

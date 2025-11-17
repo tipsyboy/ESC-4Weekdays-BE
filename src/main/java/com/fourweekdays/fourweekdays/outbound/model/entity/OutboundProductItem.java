@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.outbound.model.entity;
 
+import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.order.model.entity.OrderProductItem;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class OutboundProductItem {
+public class OutboundProductItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

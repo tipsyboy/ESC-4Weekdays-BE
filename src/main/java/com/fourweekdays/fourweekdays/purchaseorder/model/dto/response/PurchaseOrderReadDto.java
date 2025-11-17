@@ -18,6 +18,7 @@ public class PurchaseOrderReadDto {
     private final Long id;
     private final String orderNumber; // 발주번호
     private final String vendorName;
+    private final String managerName; // manager 이름
     private final LocalDateTime orderDate; // 발주일
     private final LocalDateTime expectedDate; // 입고예정일
     private final PurchaseOrderStatus status; // 상태
@@ -30,6 +31,7 @@ public class PurchaseOrderReadDto {
                 .id(entity.getId())
                 .orderNumber(entity.getOrderCode())
                 .vendorName(entity.getVendor().getName())
+                .managerName(entity.getManager() != null ? entity.getManager().getName() : "미지정")
                 .orderDate(entity.getOrderDate())
                 .expectedDate(entity.getExpectedDate())
                 .status(entity.getStatus())

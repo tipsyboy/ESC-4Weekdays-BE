@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.outbound.comtroller;
 
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
+import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
@@ -9,9 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +22,9 @@ public class OutboundController {
 
     // 출고 요청(출고서 등록)
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> require(@RequestBody OutboundCreateDto dto) {
-        Long saveId = outboundService.createOutbound(dto);
+    public ResponseEntity<BaseResponse<Long>> require(@RequestBody OutboundCreateDto dto,
+                                                      @AuthenticationPrincipal UserAuth manager) {
+        Long saveId = outboundService.createOutbound(dto, manager.getId());
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 

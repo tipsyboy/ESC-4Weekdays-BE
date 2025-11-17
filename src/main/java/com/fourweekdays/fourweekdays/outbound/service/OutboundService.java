@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
@@ -60,9 +61,22 @@ public class OutboundService {
 
     // 출고 생성
     @Transactional
-    public Long createOutbound(OutboundCreateDto dto) {
-        Order order = verification(dto);
-        Outbound outbound = createBaseOutbound(dto);
+    public Long createOutbound(OutboundCreateDto dto, Long managerId) {
+        Member manager = memberRepository.findById(managerId)
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+        Order order = orderRepository.findById(dto.getOrderId())
+                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
+
+        if (!order.getStatus().equals(OrderStatus.APPROVED)) {
+            throw new OrderException(ORDER_CANNOT_APPROVED);
+        }
+
+        if (outboundRepository.existsByOrder(order)) {
+            throw new OutboundException(OUTBOUND_ORDER_EXISTENCE);
+        }
+
+        Outbound outbound = createBaseOutbound(dto, manager);
         addItemsFromOrder(outbound, order);
 
         return outboundRepository.save(outbound).getId();
@@ -311,28 +325,11 @@ public class OutboundService {
 
     }
 
-    private Order verification(OutboundCreateDto dto) {
-        memberRepository.findById(dto.getMemberId())
-                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-        Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
-
-        if (!order.getStatus().equals(OrderStatus.APPROVED)) {
-            throw new OrderException(ORDER_CANNOT_APPROVED);
-        }
-
-        if (outboundRepository.existsByOrder(order)) {
-            throw new OutboundException(OUTBOUND_ORDER_EXISTENCE);
-        }
-        return order;
-    }
-
-    private Outbound createBaseOutbound(OutboundCreateDto dto) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
-        return dto.toEntity(OutboundCode, status);
+        return dto.toEntity(OutboundCode, status, manager);
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {

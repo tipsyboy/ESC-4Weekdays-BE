@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.member.model.entity;
 
 import com.fourweekdays.fourweekdays.common.BaseEntity;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "worker", fetch = FetchType.LAZY) //
     private List<Task> taskList;
+
+    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
+    private List<PurchaseOrder> purchaseOrders;
 
     // ===== 로직 ===== //
     public void update(String name, String phoneNumber, String password,
