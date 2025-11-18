@@ -14,13 +14,18 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
-@Getter @NoArgsConstructor
-@Builder @AllArgsConstructor
+@Getter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Document(indexName = "products")
 public class ProductDocument {
 
     @Id
-    private Long id;
+    private String id;
+
+    @Field(name = "product_id", type = FieldType.Long)
+    private Long productId;
 
     @Field(type = FieldType.Text, analyzer = "nori")
     private String name;
@@ -46,15 +51,23 @@ public class ProductDocument {
     @Field(name = "vendor_name", type = FieldType.Keyword)
     private String vendorName;
 
-    @Field(name = "created_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSXXX")
-    private LocalDateTime createdAt;
+//    @Field(name = "created_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
+//    private LocalDateTime createdAt;
+//
+//    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
+//    private LocalDateTime updatedAt;
 
-    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSXXX")
-    private LocalDateTime updatedAt;
+
+    @Field(name = "created_at", type = FieldType.Date)
+    private String createdAt;
+
+    @Field(name = "updated_at", type = FieldType.Date)
+    private String updatedAt;
+
 
     public static ProductDocument from(Product product) {
         return ProductDocument.builder()
-                .id(product.getId())
+                .productId(product.getId())
                 .name(product.getName())
                 .productCode(product.getProductCode())
                 .description(product.getDescription())
@@ -63,8 +76,8 @@ public class ProductDocument {
                 .status(product.getStatus())
                 .vendorId(product.getVendor() != null ? product.getVendor().getId() : null)
                 .vendorName(product.getVendor() != null ? product.getVendor().getName() : null)
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
+                .createdAt(String.valueOf(product.getCreatedAt()))
+                .updatedAt(String.valueOf(product.getUpdatedAt()))
                 .build();
     }
 
