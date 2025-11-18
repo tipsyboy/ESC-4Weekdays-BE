@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.*;
 
 
-@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Location extends BaseEntity {
 

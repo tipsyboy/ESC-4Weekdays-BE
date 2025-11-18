@@ -3,25 +3,29 @@ package com.fourweekdays.fourweekdays.common.generator.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "seq_generator")
 public class Sequence {
 
     @Id
-    private String prefix;       // 예: "ORD", "ASN" 등
-    private int currentValue;    // 현재 시퀀스 값
+    private String prefix;
 
-    public Sequence(String prefix, int currentValue) {
-        this.prefix = prefix;
-        this.currentValue = currentValue;
-    }
+    private int currentValue;
+
+    private String lastDate;
 
     public void increase() {
         this.currentValue++;
+    }
+
+    public void reset(String newDate) {
+        this.currentValue = 0;
+        this.lastDate = newDate;
     }
 }

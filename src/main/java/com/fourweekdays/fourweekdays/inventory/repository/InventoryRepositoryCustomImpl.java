@@ -24,53 +24,12 @@ import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inboun
 import static com.fourweekdays.fourweekdays.inventory.model.entity.QInventory.inventory;
 import static com.fourweekdays.fourweekdays.location.model.entity.QLocation.location;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
-import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @Slf4j
 @RequiredArgsConstructor
 public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public Page<Inventory> searchInventory(Pageable pageable, InventorySearchRequest request) {
-        List<Inventory> inventories = queryFactory
-                .selectFrom(inventory)
-                .leftJoin(inventory.product, product).fetchJoin()
-                .leftJoin(inventory.location, location).fetchJoin()
-                .leftJoin(inventory.inbound, inbound).fetchJoin()
-                .leftJoin(product.vendor, vendor).fetchJoin()
-                .where(
-                        inboundCodeEq(request.inboundCode()),
-                        managerNameLike(request.inboundManagerName()),
-                        productCodeEq(request.productCode()),
-                        productNameLike(request.productName()),
-                        locationCodeEq(request.locationCode()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo())
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(inventory.createdAt.desc())
-                .fetch();
-
-        Long total = queryFactory
-                .select(inventory.count())
-                .from(inventory)
-                .leftJoin(inventory.product, product)
-                .leftJoin(inventory.location, location)
-                .leftJoin(inventory.inbound, inbound)
-                .where(
-                        inboundCodeEq(request.inboundCode()),
-                        managerNameLike(request.inboundManagerName()),
-                        productCodeEq(request.productCode()),
-                        productNameLike(request.productName()),
-                        locationCodeEq(request.locationCode()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo())
-                )
-                .fetchOne();
-
-        return new PageImpl<>(inventories, pageable, total != null ? total : 0L);
-    }
 
     @Override
     public Page<ProductInventoryResponse> searchInventoryByProduct(Pageable pageable, InventorySearchRequest request) {
@@ -91,7 +50,7 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(product.productCode.asc())
+                .orderBy(product.id.asc())
                 .fetch();
 
         // 2. Total Count (Product 개수)
@@ -174,6 +133,48 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
 
         // 3. DTO 변환 (정적 팩토리 메서드 활용)
         return Optional.of(ProductInventoryResponse.from(findProduct, inventories));
+    }
+
+
+    @Override
+    public Page<Inventory> searchInventory(Pageable pageable, InventorySearchRequest request) {
+        return null;
+//        List<Inventory> inventories = queryFactory
+//                .selectFrom(inventory)
+//                .leftJoin(inventory.product, product).fetchJoin()
+//                .leftJoin(inventory.location, location).fetchJoin()
+//                .leftJoin(inventory.inbound, inbound).fetchJoin()
+//                .leftJoin(product.vendor, vendor).fetchJoin()
+//                .where(
+//                        inboundCodeEq(request.inboundCode()),
+//                        managerNameLike(request.inboundManagerName()),
+//                        productCodeEq(request.productCode()),
+//                        productNameLike(request.productName()),
+//                        locationCodeEq(request.locationCode()),
+//                        inboundAtBetween(request.createdFrom(), request.createdTo())
+//                )
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .orderBy(inventory.createdAt.desc())
+//                .fetch();
+//
+//        Long total = queryFactory
+//                .select(inventory.count())
+//                .from(inventory)
+//                .leftJoin(inventory.product, product)
+//                .leftJoin(inventory.location, location)
+//                .leftJoin(inventory.inbound, inbound)
+//                .where(
+//                        inboundCodeEq(request.inboundCode()),
+//                        managerNameLike(request.inboundManagerName()),
+//                        productCodeEq(request.productCode()),
+//                        productNameLike(request.productName()),
+//                        locationCodeEq(request.locationCode()),
+//                        inboundAtBetween(request.createdFrom(), request.createdTo())
+//                )
+//                .fetchOne();
+//
+//        return new PageImpl<>(inventories, pageable, total != null ? total : 0L);
     }
 
 

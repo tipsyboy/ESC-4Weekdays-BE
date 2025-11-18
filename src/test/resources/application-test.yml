@@ -1,19 +1,19 @@
 spring:
   datasource:
     hikari:
-      maximum-pool-size: 100
-      connection-timeout: 60000
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.220.100:3306/ESC
-    username: ks
-    password: qwer1234
+      maximum-pool-size: 50
+      minimum-idle: 10
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DB_URL}?connectTimeout=5000
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MariaDBDialect
     show-sql: true
 
   sql:
@@ -23,4 +23,9 @@ spring:
   autoconfigure:
     exclude:
       - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
-      - org.redisson.spring.starter.RedissonAutoConfigurationV2
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: qwer1234
