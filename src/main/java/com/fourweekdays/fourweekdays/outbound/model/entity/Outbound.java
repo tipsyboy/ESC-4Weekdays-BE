@@ -5,7 +5,6 @@ import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +18,7 @@ import static com.fourweekdays.fourweekdays.outbound.exception.OutboundException
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "outbound")
 public class Outbound extends BaseEntity {
     @Id
@@ -36,6 +33,7 @@ public class Outbound extends BaseEntity {
     private OutboundType outboundType; // 출고유형
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OutboundStatus status; // 출고상태
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,9 +48,33 @@ public class Outbound extends BaseEntity {
 
     private String description;
 
-    @Builder.Default
     @OneToMany(mappedBy = "outbound", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OutboundProductItem> items = new ArrayList<>();
+
+    @Builder
+    public Outbound(
+            String outboundCode,
+            OutboundType outboundType,
+            OutboundStatus status,
+            Order order,
+            Member outboundManager,
+            LocalDateTime scheduledDate,
+            String description,
+            List<OutboundProductItem> items
+    ) {
+        this.outboundCode = outboundCode;
+        this.outboundType = outboundType;
+        this.status = status;
+        this.order = order;
+        this.outboundManager = outboundManager;
+        this.scheduledDate = scheduledDate;
+        this.description = description;
+
+        // null 방지
+        if (items != null) {
+            this.items = items;
+        }
+    }
 
     // ===== 입고 상태 변경 메서드 ===== //
     public void updateStatus(OutboundStatus nextStatus) {

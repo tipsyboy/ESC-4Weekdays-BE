@@ -27,6 +27,8 @@ public class CodeGeneratorTestV2 {
 
         Set<String> codes = ConcurrentHashMap.newKeySet();
 
+        long start = System.currentTimeMillis();
+
         for (int i = 0; i < threadCount; i++) {
             executor.execute(() -> {
                 try {
@@ -48,11 +50,14 @@ public class CodeGeneratorTestV2 {
         startLatch.countDown();
         doneLatch.await();
 
+        long end = System.currentTimeMillis();
         executor.shutdown();
 
-        System.out.println("=== 생성된 코드 목록 ===");
-        codes.stream().sorted().forEach(System.out::println);
-        System.out.println("총 생성된 코드 수: " + codes.size());
+        System.out.println("\n\n================= V2(synchronized) 동시성 테스트 결과 =================");
+        System.out.println("생성한 코드 수              : " + codes.size());
+        System.out.println("스레드 수                   : " + threadCount);
+        System.out.println("중복 없이 잘 생성되었는지   : " + (codes.size() == threadCount));
+        System.out.println("총 소요 시간(ms)           : " + (end - start));
+        System.out.println("=================================================================\n");
     }
-
 }
