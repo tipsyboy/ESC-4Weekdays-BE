@@ -21,12 +21,22 @@ public class RedissonConfig {
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
+//    @Bean
+//    public RedissonClient redissonClient() {
+//        Config config = new Config();
+//        config.useSentinelServers()
+//                .setMasterName("mymaster")
+//                .addSentinelAddress("redis://" + redisHost + ":" + redisPort)
+//                .setPassword(redisPassword);
+//        return Redisson.create(config);
+//    }
+
+    // 로컬용
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSentinelServers()
-                .setMasterName("mymaster")
-                .addSentinelAddress("redis://" + redisHost + ":" + redisPort)
+        config.useSingleServer()
+                .setAddress("redis://" + redisHost + ":" + redisPort)
                 .setPassword(redisPassword);
         return Redisson.create(config);
     }

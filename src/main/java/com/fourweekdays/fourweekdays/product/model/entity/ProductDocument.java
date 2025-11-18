@@ -46,10 +46,10 @@ public class ProductDocument {
     @Field(name = "vendor_name", type = FieldType.Keyword)
     private String vendorName;
 
-    @Field(name = "created_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX")
+    @Field(name = "created_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSXXX")
     private LocalDateTime createdAt;
 
-    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX")
+    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSXXX")
     private LocalDateTime updatedAt;
 
     public static ProductDocument from(Product product) {
