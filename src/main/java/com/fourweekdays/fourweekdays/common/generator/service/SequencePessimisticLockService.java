@@ -18,27 +18,35 @@ public class SequencePessimisticLockService {
 
     @Transactional
     public String generate(String prefix) {
-        Sequence seq = getOrCreateSequence(prefix);
-        seq.increase();
-        return formatCode(prefix, seq.getCurrentValue());
-    }
 
-    private Sequence getOrCreateSequence(String prefix) {
-        return repository.findByPrefixForUpdate(prefix)
+        Sequence seq = repository.findByPrefixForUpdate(prefix)
                 .orElseGet(() -> createOrGetExisting(prefix));
+
+        seq.increase();
+
+        return formatCode(prefix, seq.getCurrentValue());
     }
 
     private Sequence createOrGetExisting(String prefix) {
         try {
-            return repository.save(new Sequence(prefix, 0));
+            return repository.saveAndFlush(
+                    Sequence.builder()
+                            .prefix(prefix)
+                            .currentValue(0)
+                            .lastDate(today())
+                            .build()
+            );
         } catch (DataIntegrityViolationException e) {
             return repository.findByPrefixForUpdate(prefix)
                     .orElseThrow(() -> new IllegalStateException("Sequence race condition 발생"));
         }
     }
 
+    private String today() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
+
     private String formatCode(String prefix, int value) {
-        String datePart = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        return String.format("%s-%s-%04d", prefix, datePart, value);
+        return String.format("%s-%s-%04d", prefix, today(), value);
     }
 }

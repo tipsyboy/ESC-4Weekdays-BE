@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.common.generator.Service;
+package com.fourweekdays.fourweekdays.common.generator.service;
 
 public class PessimisticLockService {
 }
