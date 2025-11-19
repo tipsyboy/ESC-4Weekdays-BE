@@ -57,7 +57,6 @@ public class ProductDocument {
 //    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
 //    private LocalDateTime updatedAt;
 
-
     @Field(name = "created_at", type = FieldType.Date)
     private String createdAt;
 
