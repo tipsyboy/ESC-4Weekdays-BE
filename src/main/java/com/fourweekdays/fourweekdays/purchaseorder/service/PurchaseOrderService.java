@@ -38,7 +38,7 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-//@Service
+@Service
 public class PurchaseOrderService {
 
     private static final String PURCHASE_ORDER_CODE_PREFIX = "PO";

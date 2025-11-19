@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +32,7 @@ public class ProductEsService {
                 .stream()
                 .map(SearchHit::getContent)
                 .map(doc -> ProductReadDto.builder()
-                        .id(doc.getId())
+                        .id(doc.getProductId())
                         .name(doc.getName())
                         .productCode(doc.getProductCode())
                         .unit(doc.getUnit())
@@ -40,9 +41,8 @@ public class ProductEsService {
                         .status(doc.getStatus())
                         .vendor(null)
                         .vendorName(doc.getVendorName())
-                        // 🔄 변경: Instant → LocalDateTime 변환 제거
-                        .createdAt(doc.getCreatedAt())
-                        .updatedAt(doc.getUpdatedAt())
+                        .createdAt(OffsetDateTime.parse(doc.getCreatedAt()).toLocalDateTime()) // TODO: 변환 로직 진짜 쓰레기다.
+                        .updatedAt(OffsetDateTime.parse(doc.getUpdatedAt()).toLocalDateTime())
                         .build())
                 .toList();
 
