@@ -169,6 +169,9 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 <table align="center">
   <img src="./docs/05%20시스템%20아키텍쳐.png" width="800" alt="ESC 로고" />
 
+# 스웨거 API
+[스웨거 URL](http://54.180.120.236:8080/swagger-ui/index.html)
+
 # 📚 문서
 - [📖 Wiki 바로가기](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki)
 
