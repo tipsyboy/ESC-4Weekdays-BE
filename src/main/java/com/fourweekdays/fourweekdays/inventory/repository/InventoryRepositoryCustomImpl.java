@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInvento
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,55 +34,72 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
 
     @Override
     public Page<ProductInventoryResponse> searchInventoryByProduct(Pageable pageable, InventorySearchRequest request) {
-        // 1. Product ID 조회 (페이징)
-        List<Long> productIds = queryFactory
-                .select(product.id).distinct()
-                .from(product)
-                .innerJoin(inventory).on(inventory.product.eq(product))
-                .leftJoin(inventory.location, location)
-                .leftJoin(inventory.inbound, inbound)
-                .where(
-                        productCodeEq(request.productCode()),
-                        productNameLike(request.productName()),
-                        inventory.quantity.gt(0),
-                        locationCodeEq(request.locationCode()),
-                        inboundCodeEq(request.inboundCode()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo())
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(product.id.asc())
-                .fetch();
-
-        // 2. Total Count (Product 개수)
-        Long total = queryFactory
-                .select(product.id.countDistinct())
-                .from(product)
-                .innerJoin(inventory).on(inventory.product.eq(product))
-                .leftJoin(inventory.location, location)
-                .leftJoin(inventory.inbound, inbound)
-                .where(
-                        productCodeEq(request.productCode()),
-                        productNameLike(request.productName()),
-                        inventory.quantity.gt(0),
-                        locationCodeEq(request.locationCode()),
-                        inboundCodeEq(request.inboundCode()),
-                        inboundAtBetween(request.createdFrom(), request.createdTo())
-                )
-                .fetchOne();
+        // 1. 조회 대상 Product ID 페이징 조회
+        List<Long> productIds = findProductIdsBySearchCondition(pageable, request);
 
         if (productIds.isEmpty()) {
             return new PageImpl<>(List.of(), pageable, 0L);
         }
 
-        // 3. Inventory 조회 (Product도 fetchJoin으로 함께 조회)
-        List<Inventory> inventories = queryFactory
+        // 2. 전체 Product 개수 조회
+        Long total = countProductsBySearchCondition(request);
+
+        // 3. Inventory + Product + Location + Inbound fetchJoin 조회
+        List<Inventory> inventories = findInventoriesByProductIds(productIds, request);
+
+        // 4. Product 기준 그룹핑
+        Map<Long, List<Inventory>> inventoryMap = groupInventoriesByProductId(inventories);
+
+        // 5. Product ID 순서를 유지하면서 응답 생성
+        List<ProductInventoryResponse> results = buildProductInventoryResponses(productIds, inventoryMap);
+
+        return new PageImpl<>(results, pageable, total != null ? total : 0L);
+    }
+
+    /**
+     * product 기준 페이징 ID 조회 (EXISTS 사용, DISTINCT 제거)
+     */
+    private List<Long> findProductIdsBySearchCondition(Pageable pageable, InventorySearchRequest request) {
+        return queryFactory
+                .select(product.id)
+                .from(product)
+                .where(
+                        productCodeEq(request.productCode()),
+                        productNameLike(request.productName()),
+                        existsInventoryBySearchCondition(request)
+                )
+                .orderBy(product.id.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    /**
+     * 조건에 맞는 product 총 개수
+     */
+    private Long countProductsBySearchCondition(InventorySearchRequest request) {
+        return queryFactory
+                .select(product.id.count())
+                .from(product)
+                .where(
+                        productCodeEq(request.productCode()),
+                        productNameLike(request.productName()),
+                        existsInventoryBySearchCondition(request)
+                )
+                .fetchOne();
+    }
+
+    /**
+     * 선택된 productIds에 대한 inventory + 연관 엔티티 fetchJoin
+     */
+    private List<Inventory> findInventoriesByProductIds(List<Long> productIds, InventorySearchRequest request) {
+        return queryFactory
                 .selectFrom(inventory)
                 .join(inventory.product, product).fetchJoin()
                 .join(inventory.location, location).fetchJoin()
                 .leftJoin(inventory.inbound, inbound).fetchJoin()
                 .where(
-                        product.id.in(productIds),
+                        inventory.product.id.in(productIds),
                         inventory.quantity.gt(0),
                         locationCodeEq(request.locationCode()),
                         inboundCodeEq(request.inboundCode()),
@@ -89,23 +107,51 @@ public class InventoryRepositoryCustomImpl implements InventoryRepositoryCustom 
                 )
                 .orderBy(inventory.createdAt.desc())
                 .fetch();
+    }
 
-        // 4. 그룹핑
-        Map<Long, List<Inventory>> inventoryMap = inventories.stream()
+    /**
+     * productId 기준으로 inventory 리스트 그룹핑
+     */
+    private Map<Long, List<Inventory>> groupInventoriesByProductId(List<Inventory> inventories) {
+        return inventories.stream()
                 .collect(Collectors.groupingBy(inv -> inv.getProduct().getId()));
+    }
 
-        // 5. Product 순서대로 결과 생성 (productIds 순서 유지)
-        List<ProductInventoryResponse> results = productIds.stream()
+    /**
+     * productIds 순서를 보존하면서 응답 DTO 생성
+     */
+    private List<ProductInventoryResponse> buildProductInventoryResponses(
+            List<Long> productIds,
+            Map<Long, List<Inventory>> inventoryMap
+    ) {
+        return productIds.stream()
                 .map(productId -> {
                     List<Inventory> invList = inventoryMap.getOrDefault(productId, List.of());
-                    // invList의 첫 번째 요소에서 Product를 가져옴 (fetchJoin으로 이미 로드됨)
                     Product p = invList.isEmpty() ? null : invList.get(0).getProduct();
                     return p != null ? ProductInventoryResponse.from(p, invList) : null;
                 })
                 .filter(Objects::nonNull)
                 .toList();
+    }
 
-        return new PageImpl<>(results, pageable, total != null ? total : 0L);
+    /**
+     * inventory 존재 여부를 이용한 EXISTS 서브쿼리
+     * (DISTINCT 없이 product 기준 필터링을 하기 위한 핵심)
+     */
+    private BooleanExpression existsInventoryBySearchCondition(InventorySearchRequest request) {
+        return JPAExpressions
+                .selectOne()
+                .from(inventory)
+                .leftJoin(inventory.location, location)
+                .leftJoin(inventory.inbound, inbound)
+                .where(
+                        inventory.product.eq(product),
+                        inventory.quantity.gt(0),
+                        locationCodeEq(request.locationCode()),
+                        inboundCodeEq(request.inboundCode()),
+                        inboundAtBetween(request.createdFrom(), request.createdTo())
+                )
+                .exists();
     }
 
 
