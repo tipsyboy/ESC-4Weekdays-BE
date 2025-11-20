@@ -10,6 +10,7 @@ import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
+import com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.List;
 
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_DUPLICATION;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
@@ -66,6 +69,15 @@ public class ProductService {
         Page<Product> products = productRepository.searchProducts(pageable, request);
 
         return products.map(ProductReadDto::from);
+    }
+
+    public List<ProductReadDto> getProductByVendor(Long vendorId) {
+        Vendor vendor = vendorRepository.findById(vendorId)
+                .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
+
+        return vendor.getProductList().stream()
+                .map(ProductReadDto::from)
+                .toList();
     }
 
     @Transactional

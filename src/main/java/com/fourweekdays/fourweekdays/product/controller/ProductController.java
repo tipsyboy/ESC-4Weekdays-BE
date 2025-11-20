@@ -8,11 +8,14 @@ import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.service.ProductEsService;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -42,6 +45,11 @@ public class ProductController {
                                                                                       @RequestBody ProductSearchRequest request) {
         log.info("[ES] page={}, size={}, request={}", page, size, request);
         return ResponseEntity.ok(BaseResponse.success(productEsService.searchProducts(request, page, size)));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<ProductReadDto>>> searchWithElasticsearch(@RequestParam Long vendorId) {
+        return ResponseEntity.ok(BaseResponse.success(productService.getProductByVendor(vendorId)));
     }
 
     @GetMapping("/{id}")
