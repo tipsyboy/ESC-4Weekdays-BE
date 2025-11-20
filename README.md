@@ -166,8 +166,7 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)
 
 # 🏗️ 시스템 아키텍처
-<table align="center">
-  <img src="./docs/05%20시스템%20아키텍쳐.png" width="800" alt="ESC 로고" />
+![시스템 아키텍처](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-FE/blob/dev/docs/fourweek_days%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
 
 # 스웨거 API
 [스웨거 URL](http://54.180.120.236:8080/swagger-ui/index.html)
@@ -186,4 +185,5 @@ FourWeekdays는 기업 물류 전 과정을 디지털화한 ERP형 통합 창고
 - [UI/UX 화면 테스트 결과서](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/UI-UX-%ED%99%94%EB%A9%B4-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B2%B0%EA%B3%BC%EC%84%9C)
 
 - [Team ESC - Github 가이드](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Team-ESC-%E2%80%90-Git-Branch-%EC%A0%84%EB%9E%B5-%EB%B0%8F-%EC%BB%A8%EB%B2%A4%EC%85%98-%EA%B0%80%EC%9D%B4%EB%93%9C)
+
 - [Jenkins를 통한 CI/CD 파이프라인 구축](https://github.com/beyond-sw-camp/be17-fin-ESC-4Weekdays-BE/wiki/Jenkins%EB%A5%BC-%ED%86%B5%ED%95%9C-CI-CD-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0)
