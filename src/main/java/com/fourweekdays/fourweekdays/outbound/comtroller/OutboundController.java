@@ -24,7 +24,7 @@ public class OutboundController {
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> require(@RequestBody OutboundCreateDto dto,
                                                       @AuthenticationPrincipal UserAuth manager) {
-        Long saveId = outboundService.createOutbound(dto, manager);
+        Long saveId = outboundService.createOutbound(dto, manager.getId());
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }
 
