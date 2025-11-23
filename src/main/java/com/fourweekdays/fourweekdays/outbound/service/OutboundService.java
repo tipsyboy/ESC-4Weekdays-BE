@@ -330,11 +330,11 @@ public class OutboundService {
 
     }
 
-    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager, Order order) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
-        return dto.toEntity(OutboundCode, status, manager);
+        return dto.toEntity(OutboundCode, status, manager, order);
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {
