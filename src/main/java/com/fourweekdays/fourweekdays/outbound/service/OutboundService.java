@@ -5,12 +5,14 @@ import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
+import com.fourweekdays.fourweekdays.order.service.OrderAdminService;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
@@ -52,6 +54,7 @@ public class OutboundService {
     private final MemberRepository memberRepository;
     private final OutboundRepository outboundRepository;
     private final CodeGenerator codeGenerator;
+    private final OrderAdminService orderAdminService;
     private final OrderRepository orderRepository;
     private final OutboundTaskFactory otfTaskFactory;
     private final InventoryRepository inventoryRepository;
@@ -61,14 +64,14 @@ public class OutboundService {
 
     // 출고 생성
     @Transactional
-    public Long createOutbound(OutboundCreateDto dto, Long managerId) {
-        Member manager = memberRepository.findById(managerId)
+    public Long createOutbound(OutboundCreateDto dto, UserAuth manager) {
+        Member member = memberRepository.findById(manager.getId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-        Order order = orderRepository.findById(dto.getOrderId())
+        Order order = orderRepository.findByOrderCode(dto.getOrderCode())
                 .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
 
-        if (!order.getStatus().equals(OrderStatus.APPROVED)) {
+        if (!order.getStatus().equals(OrderStatus.REQUESTED)) {
             throw new OrderException(ORDER_CANNOT_APPROVED);
         }
 
@@ -76,8 +79,10 @@ public class OutboundService {
             throw new OutboundException(OUTBOUND_ORDER_EXISTENCE);
         }
 
-        Outbound outbound = createBaseOutbound(dto, manager);
+        Outbound outbound = createBaseOutbound(dto, member, order);
         addItemsFromOrder(outbound, order);
+
+        orderAdminService.approveOrder(order.getOrderId());
 
         return outboundRepository.save(outbound).getId();
     }
@@ -240,25 +245,25 @@ public class OutboundService {
 
                 int decreaseAmount = Math.min(inventory.getQuantity(), remainingQuantity);
 
-                // 재고 감소
-                inventory.decrease(decreaseAmount);
-                // 용량 감소
-                inventory.getLocation().decreaseUsedCapacity(decreaseAmount);
+            // 재고 감소
+            inventory.decrease(decreaseAmount);
+            // 용량 감소
+            inventory.getLocation().decreaseUsedCapacity(decreaseAmount);
 
-                histories.add(
-                        OutboundInventoryHistory.builder()
-                                .outbound(outbound)
-                                .inventory(inventory)
-                                .product(inventory.getProduct())
-                                .location(inventory.getLocation())
-                                .quantityChanged(decreaseAmount)
-                                .lotNumber(inventory.getLotNumber())
-                                .taskId(taskId)
-                                .status(OutboundInventoryHistoryStatus.PENDING)
-                                .build()
-                );
+            histories.add(
+                    OutboundInventoryHistory.builder()
+                            .outbound(outbound)
+                            .inventory(inventory)
+                            .product(inventory.getProduct())
+                            .location(inventory.getLocation())
+                            .quantityChanged(decreaseAmount)
+                            .lotNumber(inventory.getLotNumber())
+                            .taskId(taskId)
+                            .status(OutboundInventoryHistoryStatus.PENDING)
+                            .build()
+            );
 
-                remainingQuantity -= decreaseAmount;
+            remainingQuantity -= decreaseAmount;
 
             } catch (InterruptedException e) {
                 throw new InventoryException(LOCK_INTERRUPTED);
@@ -325,11 +330,11 @@ public class OutboundService {
 
     }
 
-    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager, Order order) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
-        return dto.toEntity(OutboundCode, status, manager);
+        return dto.toEntity(OutboundCode, status, manager, order);
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {
