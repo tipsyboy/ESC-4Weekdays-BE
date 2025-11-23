@@ -5,12 +5,14 @@ import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import com.fourweekdays.fourweekdays.order.model.entity.OrderStatus;
 import com.fourweekdays.fourweekdays.order.repository.OrderRepository;
+import com.fourweekdays.fourweekdays.order.service.OrderAdminService;
 import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
@@ -22,8 +24,6 @@ import com.fourweekdays.fourweekdays.tasks.factory.OutboundTaskFactory;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import com.fourweekdays.fourweekdays.tasks.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.*;
+import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_CANNOT_APPROVED;
 import static com.fourweekdays.fourweekdays.order.exception.OrderExceptionType.ORDER_NOT_FOUND;
@@ -52,23 +51,23 @@ public class OutboundService {
     private final MemberRepository memberRepository;
     private final OutboundRepository outboundRepository;
     private final CodeGenerator codeGenerator;
+    private final OrderAdminService orderAdminService;
     private final OrderRepository orderRepository;
     private final OutboundTaskFactory otfTaskFactory;
     private final InventoryRepository inventoryRepository;
     private final OutboundInventoryHistoryRepository outboundHistoryRepository;
     private final TaskRepository taskRepository;
-    private final RedissonClient redissonClient;
 
     // 출고 생성
     @Transactional
-    public Long createOutbound(OutboundCreateDto dto, Long managerId) {
-        Member manager = memberRepository.findById(managerId)
+    public Long createOutbound(OutboundCreateDto dto, UserAuth manager) {
+        Member member = memberRepository.findById(manager.getId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-        Order order = orderRepository.findById(dto.getOrderId())
+        Order order = orderRepository.findByOrderCode(dto.getOrderCode())
                 .orElseThrow(() -> new OrderException(ORDER_NOT_FOUND));
 
-        if (!order.getStatus().equals(OrderStatus.APPROVED)) {
+        if (!order.getStatus().equals(OrderStatus.REQUESTED)) {
             throw new OrderException(ORDER_CANNOT_APPROVED);
         }
 
@@ -76,8 +75,10 @@ public class OutboundService {
             throw new OutboundException(OUTBOUND_ORDER_EXISTENCE);
         }
 
-        Outbound outbound = createBaseOutbound(dto, manager);
+        Outbound outbound = createBaseOutbound(dto, member, order);
         addItemsFromOrder(outbound, order);
+
+        orderAdminService.approveOrder(order.getOrderId());
 
         return outboundRepository.save(outbound).getId();
     }
@@ -228,45 +229,29 @@ public class OutboundService {
             if (remainingQuantity <= 0) break;
             if (inventory.getQuantity() <= 0) continue;
 
-            String locationLockKey = String.format("location:lock:%d", inventory.getLocation().getId());
-            RLock locationLock = redissonClient.getLock(locationLockKey);
+            int decreaseAmount = Math.min(inventory.getQuantity(), remainingQuantity);
 
-            // Location 단위 락 획득
-            try {
-                boolean locked = locationLock.tryLock(10, 5, TimeUnit.SECONDS);
-                if (!locked) {
-                    throw new InventoryException(LOCK_ACQUISITION_FAILED);
-                }
+            // 재고 감소
+            inventory.decrease(decreaseAmount);
+            // 용량 감소
+            inventory.getLocation().decreaseUsedCapacity(decreaseAmount);
 
-                int decreaseAmount = Math.min(inventory.getQuantity(), remainingQuantity);
+            histories.add(
+                    OutboundInventoryHistory.builder()
+                            .outbound(outbound)
+                            .inventory(inventory)
+                            .product(inventory.getProduct())
+                            .location(inventory.getLocation())
+                            .quantityChanged(decreaseAmount)
+                            .lotNumber(inventory.getLotNumber())
+                            .taskId(taskId)
+                            .status(OutboundInventoryHistoryStatus.PENDING)
+                            .build()
+            );
 
-                // 재고 감소
-                inventory.decrease(decreaseAmount);
-                // 용량 감소
-                inventory.getLocation().decreaseUsedCapacity(decreaseAmount);
+            remainingQuantity -= decreaseAmount;
 
-                histories.add(
-                        OutboundInventoryHistory.builder()
-                                .outbound(outbound)
-                                .inventory(inventory)
-                                .product(inventory.getProduct())
-                                .location(inventory.getLocation())
-                                .quantityChanged(decreaseAmount)
-                                .lotNumber(inventory.getLotNumber())
-                                .taskId(taskId)
-                                .status(OutboundInventoryHistoryStatus.PENDING)
-                                .build()
-                );
-
-                remainingQuantity -= decreaseAmount;
-
-            } catch (InterruptedException e) {
-                throw new InventoryException(LOCK_INTERRUPTED);
-            } finally {
-                if (locationLock.isHeldByCurrentThread()) {
-                    locationLock.unlock();
-                }
-            }
+        }
 //            // TODO 재고 소프트 딜리트 구현 -> 재고 0 = 소프트 딜리트
 //
 //            int decreaseAmount = Math.min(currentStock, remainingQuantity);
@@ -283,14 +268,10 @@ public class OutboundService {
 //                    .build();
 //            histories.add(history);
 //            remainingQuantity -= decreaseAmount;
-        }
-
-        if (remainingQuantity > 0) {
-            throw new InventoryException(INVENTORY_NOT_FOUND);
-        }
 
         return histories;
     }
+
 
     // 재고 증가 로직
     private void recoverInventoryFromOutboundHistory(List<OutboundInventoryHistory> histories) {
@@ -311,7 +292,7 @@ public class OutboundService {
         }
     }
 
-    // 검증 로직들
+// 검증 로직들
 
     private void validateAllHistoriesArePending(List<OutboundInventoryHistory> histories) {
         if (histories.isEmpty()) {
@@ -325,11 +306,11 @@ public class OutboundService {
 
     }
 
-    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager) {
+    private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager, Order order) {
         String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
-        return dto.toEntity(OutboundCode, status, manager);
+        return dto.toEntity(OutboundCode, status, manager, order);
     }
 
     private void addItemsFromOrder(Outbound outbound, Order order) {
