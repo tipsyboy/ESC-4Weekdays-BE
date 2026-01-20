@@ -28,6 +28,9 @@ dependencies {
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // db
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
@@ -45,9 +48,6 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    // security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 
@@ -56,9 +56,6 @@ dependencies {
     annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // aws 설정 추가
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
@@ -69,15 +66,17 @@ dependencies {
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    // redis
-    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
-    // DB_LOCK
-    implementation 'com.mysql:mysql-connector-j:8.3.0'
-    // h2
-    testImplementation 'com.h2database:h2'
     // Spring data Elastic search
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'co.elastic.clients:elasticsearch-java:8.15.2'
+
+    // redis
+//    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
+
+    // test
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

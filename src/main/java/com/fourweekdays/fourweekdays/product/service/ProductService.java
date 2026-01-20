@@ -42,7 +42,6 @@ public class ProductService {
     private final VendorRepository vendorRepository;
     private final CodeGenerator codeGenerator;
 
-
     @Transactional
     public Long createProduct(ProductCreateDto requestDto) {
         Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
