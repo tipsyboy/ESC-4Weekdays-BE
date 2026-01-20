@@ -1,87 +1,14 @@
 spring:
   application:
-    name: foreweekdays
+    name: fourweekdays
 
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
+  config:
+    import:
+      - optional:classpath:application-db.yml
+      - optional:classpath:application-infra.yml
+      - optional:classpath:application-management.yml
 
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-  sql:
-    init:
-      mode: never
-  jpa:
-#    show-sql: true
-    database-platform: org.hibernate.dialect.MariaDBDialect
-    defer-datasource-initialization: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        default_batch_fetch_size: 100 # XToMany 1+N
-  elasticsearch:
-    uris: ${ELASTIC_URI}
-    username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASSWORD}
-
-  cloud:
-    aws:
-      credentials:
-        access-key: ${access_key}
-        secret-key: ${secret_key}
-      s3:
-        bucket: ${bucket}
-      region:
-        static: ap-northeast-2
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-management:
-  health:
-    mail:
-      enabled: false
-    elasticsearch:
-      enabled: false
-
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-      base-path: /api/actuator
-  endpoint:
-    health:
-      show-details: always
-      group:
-        liveness:
-          include:
-            - ping
-            - diskSpace
-        readiness:
-          include:
-            - db
-            - diskSpace
-
-  metrics:
-    tags:
-      application: fourweekdays
-
-#logging:
-#  level:
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+# logging:
+#   level:
+#     org.hibernate.SQL: DEBUG
+#     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
