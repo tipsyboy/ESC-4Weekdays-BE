@@ -5,10 +5,8 @@ import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
-import com.fourweekdays.fourweekdays.product.service.ProductEsService;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +22,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductEsService productEsService;
 
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> register(@Valid @RequestBody ProductCreateDto dto) {
@@ -37,14 +34,6 @@ public class ProductController {
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestBody ProductSearchRequest request) {
         return ResponseEntity.ok(BaseResponse.success(productService.searchProduct(request, page, size)));
-    }
-
-    @PostMapping("/search/es")
-    public ResponseEntity<BaseResponse<Page<ProductReadDto>>> searchWithElasticsearch(@RequestParam(defaultValue = "0") int page,
-                                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                                      @RequestBody ProductSearchRequest request) {
-        log.info("[ES] page={}, size={}, request={}", page, size, request);
-        return ResponseEntity.ok(BaseResponse.success(productEsService.searchProducts(request, page, size)));
     }
 
     @GetMapping
