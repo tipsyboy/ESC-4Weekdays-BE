@@ -82,8 +82,8 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "https://www.4weekdays.kro.kr",
-                "https://4weekdays.kro.kr"
+                "https://4weekdays.kro.kr",
+                "https://www.4weekdays.kro.kr"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

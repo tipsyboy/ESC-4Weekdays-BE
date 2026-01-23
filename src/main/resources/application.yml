@@ -7,7 +7,8 @@ spring:
       - optional:classpath:application-db.yml
       - optional:classpath:application-infra.yml
       - optional:classpath:application-management.yml
-
+server:
+  forward-headers-strategy: native
 # logging:
 #   level:
 #     org.hibernate.SQL: DEBUG
