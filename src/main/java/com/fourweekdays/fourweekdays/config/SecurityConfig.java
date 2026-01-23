@@ -132,7 +132,7 @@ public class SecurityConfig {
                 .logoutSuccessHandler(new CustomLogoutSuccessHandler(objectMapper))
         );
 
-        http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(
                 new LoginFilter(configuration.getAuthenticationManager(), LOGIN_URL),
