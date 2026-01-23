@@ -8,8 +8,8 @@ spring:
       - optional:classpath:application-infra.yml
       - optional:classpath:application-management.yml
 
-logging:
-  level:
-    org.springframework.security: DEBUG
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
 #     org.hibernate.SQL: DEBUG
 #     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
