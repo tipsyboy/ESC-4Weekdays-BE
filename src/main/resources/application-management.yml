@@ -2,6 +2,8 @@ management:
   health:
     mail:
       enabled: false
+    elasticsearch:
+      enabled: false
 
   endpoints:
     web:
