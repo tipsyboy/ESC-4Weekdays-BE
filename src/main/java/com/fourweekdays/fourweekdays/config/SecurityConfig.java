@@ -2,9 +2,11 @@ package com.fourweekdays.fourweekdays.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
-import com.fourweekdays.fourweekdays.member.config.filter.JwtAuthFilter;
-import com.fourweekdays.fourweekdays.member.config.filter.LoginFilter;
-import com.fourweekdays.fourweekdays.member.config.handler.CustomLogoutSuccessHandler;
+import com.fourweekdays.fourweekdays.member.auth.handler.CustomLogoutSuccessHandler;
+import com.fourweekdays.fourweekdays.member.auth.filter.JwtAuthenticationFilter;
+import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
+import com.fourweekdays.fourweekdays.member.jwt.JwtTokenProvider;
+import com.fourweekdays.fourweekdays.member.auth.filter.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,8 +68,10 @@ public class SecurityConfig {
             "/api/vendor/asn/**", "/api/franchise/order/**"
     };
 
-    private final AuthenticationConfiguration configuration;
     private final ObjectMapper objectMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConfiguration configuration;
+    private final CookieUtil cookieUtil;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, VendorApiKeyFilter vendorApiKeyFilter) throws Exception {
@@ -108,9 +112,9 @@ public class SecurityConfig {
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(
-                new LoginFilter(configuration.getAuthenticationManager(), LOGIN_URL),
+                new LoginFilter(configuration.getAuthenticationManager(), objectMapper, jwtTokenProvider, cookieUtil),
                 UsernamePasswordAuthenticationFilter.class
         );
 
