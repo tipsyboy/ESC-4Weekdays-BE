@@ -4,8 +4,8 @@ import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
+import com.fourweekdays.fourweekdays.member.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
-import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
@@ -60,8 +60,8 @@ public class OutboundService {
 
     // 출고 생성
     @Transactional
-    public Long createOutbound(OutboundCreateDto dto, UserAuth manager) {
-        Member member = memberRepository.findById(manager.getId())
+    public Long createOutbound(OutboundCreateDto dto, LoginMember manager) {
+        Member member = memberRepository.findById(manager.getMember().getId())
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         Order order = orderRepository.findByOrderCode(dto.getOrderCode())
