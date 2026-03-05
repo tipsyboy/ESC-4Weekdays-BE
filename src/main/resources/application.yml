@@ -8,6 +8,9 @@ spring:
       - optional:classpath:application-infra.yml
       - optional:classpath:application-management.yml
 
+#  autoconfigure:
+#    exclude:
+#      - org.redisson.spring.starter.RedissonAutoConfigurationV2
 jwt:
   secretKey: ${JWT_SECRET_KEY}
   refreshKey: ${JWT_REFRESH_KEY}

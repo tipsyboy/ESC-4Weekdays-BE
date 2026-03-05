@@ -4,6 +4,8 @@ management:
       enabled: false
     elasticsearch:
       enabled: false
+#    redis:
+#      enabled: false
 
   endpoints:
     web:

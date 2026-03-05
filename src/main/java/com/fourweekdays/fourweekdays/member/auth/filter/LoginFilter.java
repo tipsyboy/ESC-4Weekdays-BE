@@ -77,8 +77,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 loginMember.getMember().getRole()
         );
 
-        // TODO: refresh token
-//        tokenProvider.saveRefreshToken(loginMember.getMember(), refreshToken);
+        tokenProvider.saveRefreshToken(loginMember.getMember(), refreshToken);
 
         ResponseCookie accessTokenCookie = cookieUtil.createCookie("AT_LOGIN", accessToken, 30 * 60);
         ResponseCookie refreshTokenCookie = cookieUtil.createCookie("RT_LOGIN", refreshToken, 7 * 24 * 60 * 60);

@@ -7,6 +7,7 @@ import com.fourweekdays.fourweekdays.member.auth.filter.JwtAuthenticationFilter;
 import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.member.jwt.JwtTokenProvider;
 import com.fourweekdays.fourweekdays.member.auth.filter.LoginFilter;
+import com.fourweekdays.fourweekdays.member.jwt.RefreshTokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +72,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConfiguration configuration;
+    private final RefreshTokenManager refreshTokenManager;
     private final CookieUtil cookieUtil;
 
     @Bean
@@ -108,7 +110,7 @@ public class SecurityConfig {
         http.logout(logout -> logout
                 .logoutUrl("/api/logout")
                 .deleteCookies("4weekdays")
-                .logoutSuccessHandler(new CustomLogoutSuccessHandler(objectMapper))
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler(objectMapper, cookieUtil, refreshTokenManager))
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);

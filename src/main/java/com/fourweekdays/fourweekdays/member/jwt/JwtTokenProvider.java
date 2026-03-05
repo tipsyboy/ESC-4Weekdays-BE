@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.member.jwt;
 
 
 
+import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
 import com.fourweekdays.fourweekdays.member.auth.service.MemberDetailsService;
 import io.jsonwebtoken.Claims;
@@ -32,13 +33,14 @@ public class JwtTokenProvider {
     private final String accessSecretKey;
     private final String refreshSecretKey;
     private final MemberDetailsService memberDetailsService;
+    private final RefreshTokenManager refreshTokenManager;
 
-    public JwtTokenProvider(@Value("${jwt.secretKey}") String accessSecretKey,
-                            @Value("${jwt.refreshKey}") String refreshSecretKey,
-                            MemberDetailsService memberDetailsService) {
+    public JwtTokenProvider(@Value("${jwt.secretKey}") String accessSecretKey, @Value("${jwt.refreshKey}") String refreshSecretKey,
+                            MemberDetailsService memberDetailsService, RefreshTokenManager refreshTokenManager) {
         this.accessSecretKey = accessSecretKey;
         this.refreshSecretKey = refreshSecretKey;
         this.memberDetailsService = memberDetailsService;
+        this.refreshTokenManager = refreshTokenManager;
     }
 
     public String createAccessToken(String username, MemberRole role) {
@@ -57,14 +59,6 @@ public class JwtTokenProvider {
         return isValidToken(token, refreshSecretKey);
     }
 
-    public String getUsernameFromToken(String token) {
-        return parseClaims(token, accessSecretKey).getSubject();
-    }
-
-    public String getRoleFromToken(String token) {
-        return parseClaims(token, accessSecretKey).get("role", String.class);
-    }
-
     public Authentication getAuthentication(String token) {
         // 토큰과 시크릿 키를 사용해서 토큰 해석
         Claims claims = parseClaims(token, accessSecretKey);
@@ -77,6 +71,10 @@ public class JwtTokenProvider {
         // TODO: 이후에 프로젝트 내부에서 사용하는 UserDetails 객체로 구조 변경?
         UserDetails userDetails = memberDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+    }
+
+    public void saveRefreshToken(Member member, String refreshToken) {
+        refreshTokenManager.saveRefreshToken(member, refreshToken);
     }
 
     private String createToken(String username, MemberRole role, Long expiredTime, String secretKey) {

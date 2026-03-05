@@ -71,6 +71,7 @@ dependencies {
     implementation 'co.elastic.clients:elasticsearch-java:8.15.2'
 
     // redis
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
 
     // test
