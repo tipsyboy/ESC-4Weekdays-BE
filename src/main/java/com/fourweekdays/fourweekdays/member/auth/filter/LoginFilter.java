@@ -42,6 +42,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         setFilterProcessesUrl(LOGIN_URI);
     }
 
+    // 로그인 시도
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
@@ -76,11 +77,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 loginMember.getUsername(),
                 loginMember.getMember().getRole()
         );
-
         tokenProvider.saveRefreshToken(loginMember.getMember(), refreshToken);
 
-        ResponseCookie accessTokenCookie = cookieUtil.createCookie("AT_LOGIN", accessToken, 30 * 60);
-        ResponseCookie refreshTokenCookie = cookieUtil.createCookie("RT_LOGIN", refreshToken, 7 * 24 * 60 * 60);
+        ResponseCookie accessTokenCookie = cookieUtil.createCookie(
+                CookieUtil.AT_COOKIE_NAME,
+                accessToken,
+                30 * 60
+        );
+        ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
+                CookieUtil.RT_COOKIE_NAME,
+                refreshToken,
+                7 * 24 * 60 * 60
+        );
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

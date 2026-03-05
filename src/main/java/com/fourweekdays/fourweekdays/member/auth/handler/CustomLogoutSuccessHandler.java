@@ -35,8 +35,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             refreshTokenManager.revokeRefreshToken(refreshToken);
         }
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie("AT_LOGIN", "", 0).toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie("RT_LOGIN", "", 0).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, "", 0).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, "", 0).toString());
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json; charset=UTF-8");

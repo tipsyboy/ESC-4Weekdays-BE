@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.member.auth.filter;
 
 
+import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.member.jwt.JwtExceptionType;
 import com.fourweekdays.fourweekdays.member.jwt.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -24,8 +25,6 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    public static final String ACCESS_TOKEN_COOKIE_NAME = "AT_LOGIN";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -66,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // TODO: jwt 허용된 토큰만 찾는 메서드로 분리?
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                if (CookieUtil.AT_COOKIE_NAME.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }

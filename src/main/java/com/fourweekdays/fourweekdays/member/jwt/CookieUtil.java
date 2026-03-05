@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieUtil {
 
+    public static final String AT_COOKIE_NAME = "4weekdays_AT";
+    public static final String RT_COOKIE_NAME = "4weekdays_RT";
+
     @Value("${cookie.secure}")
     private boolean isSecure;
 
