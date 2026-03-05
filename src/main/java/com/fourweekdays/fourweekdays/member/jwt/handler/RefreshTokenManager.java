@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.member.jwt;
+package com.fourweekdays.fourweekdays.member.jwt.handler;
 
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 

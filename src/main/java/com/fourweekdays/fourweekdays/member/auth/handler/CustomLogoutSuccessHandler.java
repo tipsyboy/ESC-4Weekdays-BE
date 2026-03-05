@@ -4,7 +4,7 @@ package com.fourweekdays.fourweekdays.member.auth.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
-import com.fourweekdays.fourweekdays.member.jwt.RefreshTokenManager;
+import com.fourweekdays.fourweekdays.member.jwt.handler.RefreshTokenManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

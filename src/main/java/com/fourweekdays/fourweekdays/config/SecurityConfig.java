@@ -7,7 +7,7 @@ import com.fourweekdays.fourweekdays.member.auth.filter.JwtAuthenticationFilter;
 import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.member.jwt.JwtTokenProvider;
 import com.fourweekdays.fourweekdays.member.auth.filter.LoginFilter;
-import com.fourweekdays.fourweekdays.member.jwt.RefreshTokenManager;
+import com.fourweekdays.fourweekdays.member.jwt.handler.RefreshTokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
