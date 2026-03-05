@@ -114,7 +114,7 @@ public class SecurityConfig {
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, cookieUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(
                 new LoginFilter(configuration.getAuthenticationManager(), objectMapper, jwtTokenProvider, cookieUtil),
                 UsernamePasswordAuthenticationFilter.class

@@ -27,11 +27,13 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CookieUtil cookieUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = resolveToken(request);
+        String token = cookieUtil.getCookieValue(request, CookieUtil.AT_COOKIE_NAME);
+
         try {
             if (StringUtils.hasText(token) && jwtTokenProvider.isValidAccessToken(token)) {
                 // 토큰이 있는 경우에 토큰을 통해서 인증 정보 객체인 Authentication 객체를 만든다.
@@ -57,20 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        // TODO: jwt 허용된 토큰만 찾는 메서드로 분리?
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (CookieUtil.AT_COOKIE_NAME.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
     }
 }
 

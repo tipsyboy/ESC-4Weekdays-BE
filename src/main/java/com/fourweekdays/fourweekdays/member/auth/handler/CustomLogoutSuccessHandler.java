@@ -30,7 +30,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
                                 Authentication authentication) throws IOException, ServletException {
 
-        String refreshToken = resolveToken(request);
+        String refreshToken = cookieUtil.getCookieValue(request, CookieUtil.RT_COOKIE_NAME);
+
         if (refreshToken != null) {
             refreshTokenManager.revokeRefreshToken(refreshToken);
         }
@@ -46,17 +47,5 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         ));
 
         objectMapper.writeValue(response.getWriter(), logout);
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("RT_LOGIN".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
     }
 }
