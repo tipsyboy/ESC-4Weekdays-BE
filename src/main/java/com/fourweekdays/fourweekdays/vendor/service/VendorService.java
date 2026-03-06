@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.service;
 
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;

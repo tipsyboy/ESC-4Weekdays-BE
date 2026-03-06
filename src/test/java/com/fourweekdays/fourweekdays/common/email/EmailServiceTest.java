@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.common.email;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 

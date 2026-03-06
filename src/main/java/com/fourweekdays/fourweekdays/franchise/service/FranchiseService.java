@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.franchise.service;
 
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;

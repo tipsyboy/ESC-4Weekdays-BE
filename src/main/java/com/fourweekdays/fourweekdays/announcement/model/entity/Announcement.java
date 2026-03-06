@@ -1,10 +1,8 @@
 package com.fourweekdays.fourweekdays.announcement.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
 
 
 @Entity

@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.outbound.comtroller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.common.BaseResponseStatus;
-import com.fourweekdays.fourweekdays.member.model.UserAuth;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponseStatus;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
@@ -23,7 +23,7 @@ public class OutboundController {
     // 출고 요청(출고서 등록)
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> require(@RequestBody OutboundCreateDto dto,
-                                                      @AuthenticationPrincipal UserAuth manager) {
+                                                      @AuthenticationPrincipal LoginMember manager) {
         Long saveId = outboundService.createOutbound(dto, manager);
         return ResponseEntity.ok(BaseResponse.success(saveId));
     }

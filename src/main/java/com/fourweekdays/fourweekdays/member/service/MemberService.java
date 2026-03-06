@@ -2,7 +2,6 @@ package com.fourweekdays.fourweekdays.member.service;
 
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
-import com.fourweekdays.fourweekdays.member.model.UserAuth;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSearchDto;
 import com.fourweekdays.fourweekdays.member.model.dto.MemberSignUpDto;
@@ -13,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -66,21 +62,6 @@ public class MemberService implements UserDetailsService {
                 dto.getRole(), dto.getStatus());
 
         return member.getId();
-    }
-
-    //회원 조회
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일입니다. : " + email));
-
-        return UserAuth.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .name(member.getName())
-                .role(member.getRole())
-                .build();
     }
 
     //페이징 처리 조회

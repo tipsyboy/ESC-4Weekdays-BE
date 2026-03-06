@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.warehouse.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

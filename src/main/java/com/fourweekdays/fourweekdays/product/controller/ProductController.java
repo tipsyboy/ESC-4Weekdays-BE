@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.product.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;

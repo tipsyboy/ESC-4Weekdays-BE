@@ -1,11 +1,8 @@
 package com.fourweekdays.fourweekdays.vendor.model.dto.request;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
-import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;

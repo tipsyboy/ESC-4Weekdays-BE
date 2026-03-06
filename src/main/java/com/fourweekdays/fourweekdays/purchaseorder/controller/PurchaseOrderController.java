@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.model.UserAuth;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
@@ -23,8 +23,8 @@ public class PurchaseOrderController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> purchaseRequest(@Valid @RequestBody PurchaseOrderCreateDto requestDto,
-                                                              @AuthenticationPrincipal UserAuth manager) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto, manager.getId())));
+                                                              @AuthenticationPrincipal LoginMember manager) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto, manager.getMember().getId())));
     }
 
     @GetMapping("/{id}")

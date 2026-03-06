@@ -5,14 +5,12 @@ import com.fourweekdays.fourweekdays.announcement.model.dto.request.Announcement
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementUpdateDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.announcement.service.AnnouncementService;
-import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.model.UserAuth;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +22,8 @@ public class AnnouncementController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> announcementCreate(@RequestBody AnnouncementCreateDto dto,
-                                                                 @AuthenticationPrincipal UserAuth userAuth) {
-        String name = userAuth.getName();
+                                                                 @AuthenticationPrincipal LoginMember loginMember) {
+        String name = loginMember.getMember().getName();
         Long result = announcementService.create(dto, name);
         return ResponseEntity.ok(BaseResponse.success(result));
     }

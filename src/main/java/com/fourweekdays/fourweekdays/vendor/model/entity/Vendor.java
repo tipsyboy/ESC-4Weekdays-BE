@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.vendor.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

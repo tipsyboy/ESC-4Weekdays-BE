@@ -1,11 +1,10 @@
 package com.fourweekdays.fourweekdays.tasks.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.PutawayCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.PutawayLocationAssignRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskCompleteRequest;
 import com.fourweekdays.fourweekdays.tasks.service.InboundTaskService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

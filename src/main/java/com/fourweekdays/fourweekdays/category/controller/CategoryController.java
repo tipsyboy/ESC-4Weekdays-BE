@@ -3,7 +3,7 @@
 //import com.fourweekdays.fourweekdays.category.dto.request.CategoryCreateDto;
 //import com.fourweekdays.fourweekdays.category.dto.response.CategoryReadDto;
 //import com.fourweekdays.fourweekdays.category.service.CategoryService;
-//import com.fourweekdays.fourweekdays.common.BaseResponse;
+//import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.*;
