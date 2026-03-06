@@ -11,6 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +26,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
-    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L; // 30분
+    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000L; // 30분
     private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     private final String accessSecretKey;
@@ -76,6 +78,14 @@ public class JwtTokenProvider {
 
     public void saveRefreshToken(Member member, String refreshToken) {
         refreshTokenManager.saveRefreshToken(member, refreshToken);
+    }
+
+    public String getUsernameFromRefreshToken(String token) {
+        return parseClaims(token, refreshSecretKey).getSubject();
+    }
+
+    public String getRoleFromRefreshToken(String token) {
+        return parseClaims(token, refreshSecretKey).get("role", String.class);
     }
 
     private String createToken(String username, MemberRole role, Long expiredTime, String secretKey) {

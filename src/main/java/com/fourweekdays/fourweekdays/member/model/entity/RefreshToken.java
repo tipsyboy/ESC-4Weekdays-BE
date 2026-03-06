@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-//@Table(indexes = @Index(name = "idx_token", columnList = "token"))
+@Table(name = "refresh_token", indexes = {
+        @Index(name = "idx_token", columnList = "token"), // 토큰으로 조회
+        @Index(name = "idx_member_id", columnList = "member_id") // 유저별 조회
+})
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class RefreshToken {
@@ -16,8 +19,8 @@ public class RefreshToken {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
     @Column(nullable = false)

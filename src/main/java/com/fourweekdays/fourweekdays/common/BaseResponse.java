@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ public class BaseResponse<T> {
         return new BaseResponse<>(status.isSuccess(), status.getCode(), status.getMessage(), null);
     }
 
-    public static <T> BaseResponse<T> error(BaseResponseStatus status, T results) {
-        return new BaseResponse<>(status.isSuccess(), status.getCode(), status.getMessage(), results);
+    public static <T> BaseResponse<T> fail(HttpStatus httpStatus, String message) {
+        return new BaseResponse<>(false, httpStatus.value(), message, null);
     }
 }

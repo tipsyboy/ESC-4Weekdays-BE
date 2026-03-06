@@ -6,7 +6,6 @@ import com.fourweekdays.fourweekdays.common.BaseResponse;
 import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.member.jwt.handler.RefreshTokenManager;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
