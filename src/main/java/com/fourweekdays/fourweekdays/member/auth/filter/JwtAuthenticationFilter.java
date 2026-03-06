@@ -1,6 +1,8 @@
 package com.fourweekdays.fourweekdays.member.auth.filter;
 
 
+import com.fourweekdays.fourweekdays.member.auth.controller.AuthService;
+import com.fourweekdays.fourweekdays.member.auth.controller.TokenDto;
 import com.fourweekdays.fourweekdays.member.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.member.jwt.JwtExceptionType;
 import com.fourweekdays.fourweekdays.member.jwt.JwtTokenProvider;
@@ -10,11 +12,12 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -28,37 +31,75 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieUtil cookieUtil;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        String token = cookieUtil.getCookieValue(request, CookieUtil.AT_COOKIE_NAME);
-
+        String accessToken = cookieUtil.getCookieValue(request, CookieUtil.AT_COOKIE_NAME);
         try {
-            if (StringUtils.hasText(token) && jwtTokenProvider.isValidAccessToken(token)) {
-                // 토큰이 있는 경우에 토큰을 통해서 인증 정보 객체인 Authentication 객체를 만든다.
-                // 이때 getAuthentication()에서 토큰을 파싱하는 부분이 있는데, 토큰에 문제가 있는 경우 예외가 발생한다.
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (StringUtils.hasText(accessToken) && jwtTokenProvider.isValidAccessToken(accessToken)) {
+                setAuthentication(accessToken);
             }
-        } catch (SecurityException e) {
-            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
-            log.error("잘못된 JWT 서명입니다. SecurityException={}", token); // io.jsonwebtoken.security.SecurityException 여기 Exception 을 잘 모르겠다.
-        } catch (MalformedJwtException e) {
-            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
-            log.error("잘못된 JWT 서명입니다. MalformedJwtException={}", token);
         } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", JwtExceptionType.EXPIRED_TOKEN.getCode());
-            log.error("이미 만료된 토큰입니다. ExpiredJwtException={}", token);
-        } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", JwtExceptionType.UNSUPPORTED_TOKEN.getCode());
-            log.error("지원하지 않는 토큰입니다. UnsupportedJwtException={}", token);
-        } catch (IllegalArgumentException e) {
-            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
-            log.error("토큰이 잘못되었습니다. IllegalArgumentException={}", token);
+            log.info("Access Token 만료됨. 재발급 시도 중...");
+            handleReissue(request, response);
+        }
+        catch (Exception e) {
+            handleJwtException(request, e, accessToken, "AT");
         }
 
         filterChain.doFilter(request, response);
     }
-}
 
+    private void handleReissue(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieUtil.getCookieValue(request, CookieUtil.RT_COOKIE_NAME);
+
+        if (StringUtils.hasText(refreshToken)) {
+            try {
+                TokenDto tokenDto = authService.reissue(refreshToken);
+                ResponseCookie accessTokenCookie = cookieUtil.createCookie(
+                        CookieUtil.AT_COOKIE_NAME,
+                        tokenDto.getAccessToken(),
+                        30 * 60
+                );
+                ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
+                        CookieUtil.RT_COOKIE_NAME,
+                        tokenDto.getRefreshToken(),
+                        7 * 24 * 60 * 60
+                );
+                response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+                response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+                setAuthentication(tokenDto.getAccessToken());
+            } catch (Exception e) {
+                log.error("RefreshToken 재발급 실패 - 쿠키 삭제 처리");
+                response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, "", 0).toString());
+                response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, "", 0).toString());
+                handleJwtException(request, e, refreshToken, "RT");
+            }
+        }
+    }
+
+    private void setAuthentication(String token) {
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void handleJwtException(HttpServletRequest request, Exception e, String token, String tokenType) {
+        if (e instanceof SecurityException || e instanceof MalformedJwtException) {
+            log.error("[{}] 잘못된 JWT 서명입니다. token={}", tokenType, token);
+            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
+        } else if (e instanceof UnsupportedJwtException) {
+            log.error("[{}] 지원하지 않는 토큰입니다. token={}", tokenType, token);
+            request.setAttribute("exception", JwtExceptionType.UNSUPPORTED_TOKEN.getCode());
+        } else if (e instanceof IllegalArgumentException) {
+            log.error("[{}] 토큰이 잘못되었습니다. token={}", tokenType, token);
+            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
+        } else if (e instanceof ExpiredJwtException) {
+            log.error("[{}] 토큰이 만료되었습니다. token={}", tokenType, token);
+            request.setAttribute("exception", JwtExceptionType.EXPIRED_TOKEN.getCode());
+        } else { // 기타 정의되지 않은 예외
+            log.error("[{}] 인증 처리 중 오류 발생: {}", tokenType, e.getMessage());
+            request.setAttribute("exception", JwtExceptionType.INVALID_TOKEN.getCode());
+        }
+    }
+}

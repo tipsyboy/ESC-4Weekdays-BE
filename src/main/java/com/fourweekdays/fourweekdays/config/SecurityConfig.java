@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
 import com.fourweekdays.fourweekdays.config.constant.SecurityConstants;
+import com.fourweekdays.fourweekdays.member.auth.controller.AuthService;
 import com.fourweekdays.fourweekdays.member.auth.filter.JwtAuthenticationFilter;
 import com.fourweekdays.fourweekdays.member.auth.filter.LoginFilter;
 import com.fourweekdays.fourweekdays.member.auth.handler.CustomLogoutSuccessHandler;
@@ -31,6 +32,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration configuration;
     private final RefreshTokenManager refreshTokenManager;
     private final CookieUtil cookieUtil;
+    private final AuthService authService;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, VendorApiKeyFilter vendorApiKeyFilter) throws Exception {
@@ -71,7 +73,7 @@ public class SecurityConfig {
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, cookieUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, cookieUtil, authService), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(
                 new LoginFilter(configuration.getAuthenticationManager(), objectMapper, jwtTokenProvider, cookieUtil),
                 UsernamePasswordAuthenticationFilter.class
