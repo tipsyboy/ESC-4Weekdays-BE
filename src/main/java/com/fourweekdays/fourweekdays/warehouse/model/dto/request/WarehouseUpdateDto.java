@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.warehouse.model.dto.request;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import lombok.Getter;
 
 @Getter

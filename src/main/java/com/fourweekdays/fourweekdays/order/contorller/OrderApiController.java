@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.order.contorller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.order.anootation.AuthenticatedFranchise;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderShippedDto;

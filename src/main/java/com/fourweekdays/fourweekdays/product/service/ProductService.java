@@ -1,19 +1,16 @@
 package com.fourweekdays.fourweekdays.product.service;
 
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductUpdateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
-import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,8 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 

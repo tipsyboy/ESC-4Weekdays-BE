@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inventory.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.service.InventoryService;

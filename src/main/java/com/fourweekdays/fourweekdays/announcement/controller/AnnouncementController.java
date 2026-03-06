@@ -5,8 +5,8 @@ import com.fourweekdays.fourweekdays.announcement.model.dto.request.Announcement
 import com.fourweekdays.fourweekdays.announcement.model.dto.request.AnnouncementUpdateDto;
 import com.fourweekdays.fourweekdays.announcement.model.dto.response.AnnouncementReadDto;
 import com.fourweekdays.fourweekdays.announcement.service.AnnouncementService;
-import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.auth.principal.LoginMember;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

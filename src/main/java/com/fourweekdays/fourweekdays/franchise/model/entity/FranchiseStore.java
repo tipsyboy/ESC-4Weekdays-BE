@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.franchise.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import jakarta.persistence.*;
 import lombok.*;

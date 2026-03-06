@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.*;

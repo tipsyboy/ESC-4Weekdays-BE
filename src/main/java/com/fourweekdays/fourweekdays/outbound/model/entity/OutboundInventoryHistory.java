@@ -1,9 +1,8 @@
 package com.fourweekdays.fourweekdays.outbound.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.location.model.entity.Location;
-import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

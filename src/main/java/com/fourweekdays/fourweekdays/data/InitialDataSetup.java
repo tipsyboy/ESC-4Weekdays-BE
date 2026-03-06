@@ -1,6 +1,6 @@
 //package com.fourweekdays.fourweekdays.data;
 //
-//import com.fourweekdays.fourweekdays.common.vo.Address;
+//import com.fourweekdays.fourweekdays.global.vo.Address;
 //import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
 //import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
 //import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;

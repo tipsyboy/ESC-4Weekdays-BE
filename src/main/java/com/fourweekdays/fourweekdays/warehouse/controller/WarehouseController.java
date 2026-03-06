@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.warehouse.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.warehouse.model.dto.request.WarehouseCreateDto;
 import com.fourweekdays.fourweekdays.warehouse.model.dto.request.WarehouseUpdateDto;
 import com.fourweekdays.fourweekdays.warehouse.model.dto.response.WarehouseReadDto;

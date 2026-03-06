@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.member.model.dto;
 
-import com.fourweekdays.fourweekdays.member.auth.principal.LoginMember;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.franchise.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.response.FranchiseReadDto;

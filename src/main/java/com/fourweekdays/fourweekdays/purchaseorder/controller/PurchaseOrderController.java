@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
-import com.fourweekdays.fourweekdays.member.auth.principal.LoginMember;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
