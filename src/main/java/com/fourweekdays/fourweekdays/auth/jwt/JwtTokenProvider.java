@@ -30,7 +30,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000L; // 30분
+    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L; // 30분
     private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     private final String accessSecretKey;
