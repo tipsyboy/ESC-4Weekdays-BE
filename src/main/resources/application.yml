@@ -8,8 +8,16 @@ spring:
       - optional:classpath:application-infra.yml
       - optional:classpath:application-management.yml
 
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
+#  autoconfigure:
+#    exclude:
+#      - org.redisson.spring.starter.RedissonAutoConfigurationV2
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  refreshKey: ${JWT_REFRESH_KEY}
+cookie:
+  secure: ${COOKIE_SECURE:false}
+
+# logging:
+#   level:
 #     org.hibernate.SQL: DEBUG
 #     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

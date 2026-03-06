@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorStatusUpdateDto;

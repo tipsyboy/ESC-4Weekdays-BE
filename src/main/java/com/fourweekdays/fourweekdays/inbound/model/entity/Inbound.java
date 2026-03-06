@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.model.entity;
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
-import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import jakarta.persistence.*;
@@ -12,8 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_STATUS_TRANSITION_NOT_ALLOWED;
 
 @Slf4j
 @Entity

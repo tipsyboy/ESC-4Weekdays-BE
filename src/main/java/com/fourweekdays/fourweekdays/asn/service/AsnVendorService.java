@@ -7,7 +7,7 @@ import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
 import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
 import com.fourweekdays.fourweekdays.asn.model.entity.AsnStatus;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;

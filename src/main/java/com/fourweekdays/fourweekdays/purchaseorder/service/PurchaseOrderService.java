@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.service;
 
-import com.fourweekdays.fourweekdays.common.email.EmailService;
-import com.fourweekdays.fourweekdays.common.generator.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.email.EmailService;
+import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;

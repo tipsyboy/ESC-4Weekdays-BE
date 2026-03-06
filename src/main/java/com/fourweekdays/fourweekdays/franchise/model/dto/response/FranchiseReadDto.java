@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.franchise.model.dto.response;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import lombok.*;
 

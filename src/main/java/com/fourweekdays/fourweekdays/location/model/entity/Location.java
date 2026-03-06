@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.location.model.entity;
 
 
-import com.fourweekdays.fourweekdays.common.BaseEntity;
+import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

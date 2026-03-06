@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundSearchRequest;

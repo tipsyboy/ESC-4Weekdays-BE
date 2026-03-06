@@ -1,8 +1,7 @@
 package com.fourweekdays.fourweekdays.tasks.controller;
 
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskPickingCompleteRequest;
-import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskPickingWorderAssignRequest;
 import com.fourweekdays.fourweekdays.tasks.model.dto.request.TaskShipmentAssignShipperRequest;
 import com.fourweekdays.fourweekdays.tasks.service.OutboundTaskService;
 import jakarta.validation.Valid;

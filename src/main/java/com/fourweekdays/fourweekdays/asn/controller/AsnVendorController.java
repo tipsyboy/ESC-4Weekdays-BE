@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.asn.annotation.AuthenticatedVendor;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
 import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
 import com.fourweekdays.fourweekdays.asn.service.AsnVendorService;
-import com.fourweekdays.fourweekdays.common.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

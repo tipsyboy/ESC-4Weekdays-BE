@@ -1,14 +1,10 @@
 package com.fourweekdays.fourweekdays.vendor.model.dto.response;
 
-import com.fourweekdays.fourweekdays.common.vo.Address;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder
