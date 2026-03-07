@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.order.resolver;
 
-import com.fourweekdays.fourweekdays.asn.annotation.AuthenticatedVendor;
-import com.fourweekdays.fourweekdays.order.anootation.AuthenticatedFranchise;
+import com.fourweekdays.fourweekdays.order.annotation.AuthenticatedFranchise;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

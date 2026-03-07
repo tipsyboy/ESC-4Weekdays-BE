@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.outbound.comtroller;
+package com.fourweekdays.fourweekdays.outbound.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.global.response.BaseResponseStatus;
