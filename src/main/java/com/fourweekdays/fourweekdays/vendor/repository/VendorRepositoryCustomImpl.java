@@ -2,6 +2,8 @@ package com.fourweekdays.fourweekdays.vendor.repository;
 
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
+import com.fourweekdays.fourweekdays.vendor.model.dto.response.QVendorReadDto;
+import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,6 +41,39 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+
+    @Override
+    public Page<VendorReadDto> findAllReadDtoWithPaging(Pageable pageable) {
+        List<VendorReadDto> content = queryFactory
+                .select(new QVendorReadDto(
+                        vendor.id,
+                        vendor.vendorCode,
+                        vendor.name,
+                        vendor.phoneNumber,
+                        vendor.email,
+                        vendor.description,
+                        vendor.status,
+                        vendor.address,
+                        product.countDistinct().intValue(),
+                        vendor.createdAt,
+                        vendor.updatedAt
+                ))
+                .from(vendor)
+                .leftJoin(product).on(product.vendor.eq(vendor))
+                .groupBy(vendor.id)
+                .orderBy(vendor.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(vendor.count())
+                .from(vendor)
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.vendor.model.dto.response;
 import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,9 +11,23 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 public class VendorReadDto {
+
+    @QueryProjection
+    public VendorReadDto(Long id, String vendorCode, String name, String phoneNumber, String email, String description, VendorStatus status, Address address, Integer productCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.vendorCode = vendorCode;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.description = description;
+        this.status = status;
+        this.address = address;
+        this.productCount = productCount;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     private Long id;
     private String vendorCode;

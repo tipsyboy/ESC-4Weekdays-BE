@@ -44,8 +44,7 @@ public class VendorService {
 
     public Page<VendorReadDto> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Vendor> vendors = vendorRepository.findAllWithPaging(pageable);
-        return vendors.map(VendorReadDto::from);
+        return vendorRepository.findAllReadDtoWithPaging(pageable);
     }
 
     // 내용 수정
