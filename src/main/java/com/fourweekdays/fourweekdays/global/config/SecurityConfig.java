@@ -2,6 +2,8 @@ package com.fourweekdays.fourweekdays.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
+import com.fourweekdays.fourweekdays.auth.handler.JwtAccessDeniedHandler;
+import com.fourweekdays.fourweekdays.auth.handler.JwtAuthenticationEntryPoint;
 import com.fourweekdays.fourweekdays.global.config.constant.SecurityConstants;
 import com.fourweekdays.fourweekdays.auth.service.AuthService;
 import com.fourweekdays.fourweekdays.auth.filter.JwtAuthenticationFilter;
@@ -70,6 +72,11 @@ public class SecurityConfig {
                 .logoutUrl("/api/logout")
                 .deleteCookies("4weekdays")
                 .logoutSuccessHandler(new CustomLogoutSuccessHandler(objectMapper, cookieUtil, refreshTokenManager))
+        );
+
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+                .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper))
         );
 
         http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);

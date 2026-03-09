@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.order.anootation;
+package com.fourweekdays.fourweekdays.order.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

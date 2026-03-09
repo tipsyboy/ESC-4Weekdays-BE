@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.order.contorller;
+package com.fourweekdays.fourweekdays.order.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.order.model.dto.response.OrderReadDto;
