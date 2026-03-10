@@ -52,7 +52,6 @@ public class PurchaseOrder extends BaseEntity {
 
     // ===== 연관관계 편의 메서드 ===== //
     public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
-        this.products.add(purchaseOrderProduct);
         purchaseOrderProduct.mappingPurchaseOrder(this);
     }
 
