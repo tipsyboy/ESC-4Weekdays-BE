@@ -53,9 +53,6 @@ public class InboundReadDto {
                 .managerName(inbound.getManager() != null ? inbound.getManager().getName() : "미지정")
                 .scheduledDate(inbound.getScheduledDate())
                 .order(InboundOrderDto.from(inbound.getPurchaseOrder()))
-                .items(inbound.getProducts().stream()
-                        .map(InboundProductResponseDto::from)
-                        .toList())
                 .purchaseOrder(inbound.getPurchaseOrder() != null ?
                         PurchaseOrderSummary.builder()
                                 .id(inbound.getPurchaseOrder().getId())
