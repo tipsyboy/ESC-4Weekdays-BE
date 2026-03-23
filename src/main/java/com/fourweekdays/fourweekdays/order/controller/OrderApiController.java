@@ -1,8 +1,8 @@
-package com.fourweekdays.fourweekdays.order.contorller;
+package com.fourweekdays.fourweekdays.order.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
-import com.fourweekdays.fourweekdays.order.anootation.AuthenticatedFranchise;
+import com.fourweekdays.fourweekdays.order.annotation.AuthenticatedFranchise;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderShippedDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderReceiveOrderDto;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderRejectDto;
