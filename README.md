@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="../docs/4weekdays.jpg" width="180" alt="4weekdays-logo" />
+  <img src="./docs/4weekdays.jpg" width="180" alt="4weekdays-logo" />
 </div>
 
 # 📌 4Weekdays
@@ -14,7 +14,7 @@
 
 ## 시스템 아키텍처
 <div align="center">
-  <img src="./docs/architecture.png" width="1000" alt="system-architecture" />
+  <img src="./docs/architecture.png" width="900" alt="system-architecture" />
 </div>
 
 ## 👨‍💻 ESC 팀원 구성
@@ -81,7 +81,7 @@
 ### 1️⃣ Kubernetes 기반 배포 인프라 구축 및 CI/CD 자동화
 
 <div align="center">
-  <img src="./docs/pipline.png" width="1000" alt="ci-cd-pipline" />
+  <img src="./docs/pipline.png" width="700" alt="ci-cd-pipline" />
 </div>
 
 - Kubernetes 클러스터 구축 및 서비스 운영 환경 마련
@@ -117,7 +117,7 @@
 ### 4️⃣ Elasticsearch 검색 엔진 도입
 
 <div align="center">
-  <img src="./docs/elk.png" width="800" alt="elk" />
+  <img src="./docs/elk.png" width="700" alt="elk" />
 </div>
 
 - Elasticsearch를 도입해 역색인 기반 검색 구조 구성
