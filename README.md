@@ -1,14 +1,16 @@
 <div align="center">
-  <img src="./docs/4weekdays.jpg" width="180" alt="4weekdays-logo" />
+  <img src="./docs/4weekdays.jpg" width="200" alt="4weekdays-logo" />
 </div>
+
+---
 
 # 📌 4Weekdays
 
-> 공급업체의 납품부터 발주, ASN, 입고, 작업, 재고, 출고까지 이어지는 흐름을 하나의 데이터 체계로 관리하기 위해 만든 창고 관리 플랫폼입니다.
+> 공급업체의 납품부터 발주, ASN, 입고, 작업, 재고, 출고까지 이어지는 흐름을 하나의 데이터 체계로 관리하기 위해 만든 창고 관리 플랫폼
 
 - 기간: 2025.09 ~ 2025.11
 - 구성: 4인 팀 프로젝트 / 팀장
-- [4Weekdays 링크](https://www.4weekdays.kro.kr)
+- [4Weekdays 서비스 링크](https://www.4weekdays.kro.kr)
 - [프론트엔드 Repository](https://github.com/tipsyboy/ESC-4Weekdays-FE)
 - [백엔드 Repository](https://github.com/tipsyboy/ESC-4Weekdays-BE)
 
@@ -17,7 +19,7 @@
   <img src="./docs/architecture.png" width="900" alt="system-architecture" />
 </div>
 
-## 👨‍💻 ESC 팀원 구성
+## 👨‍💻 팀원 구성
 
 <div align="center">
   <img src="./docs/logo.png" width="150" alt="ESC 로고" />
@@ -87,7 +89,7 @@
 - Kubernetes 클러스터 구축 및 서비스 운영 환경 마련
 - GitHub Webhook과 Jenkins를 연동해 CI/CD 파이프라인 구성
 
-#### 결과
+#### ✔ 결과
 - 수동 빌드·배포 과정의 반복과 실수 가능성을 파이프라인 자동화로 완화
 - Grafana 기준 한 달간 서버 가동률 98.1% 달성
 
@@ -99,7 +101,7 @@
 - 서버 필터에서 Refresh Token 자동 재발급 처리로 인증 요청 구조 단순화
 - SSL 인증서 발급 및 HTTPS 환경 구축
 
-#### 결과
+#### ✔ 결과
 - Kubernetes 다중 노드 환경에서 세션 상태 공유 문제를 무상태 구조로 전환해 해소
 - 토큰 재발급 네트워크 왕복 3 → 1 단축
 
@@ -109,7 +111,7 @@
 - BooleanExpression 모듈화를 통한 동적 필터링 로직 구현
 - 연관관계 유형별 N+1 해결 전략 비교 및 최적안 적용
 
-#### 결과
+#### ✔ 결과
 - 문자열 기반 쿼리 작성 방식에서 발생하던 유지보수성 문제를 개선
 - 연관관계가 많은 조회 API에서 발생하던 N+1 문제를 완화
 - 검색 조건 확장과 조회 성능 개선을 함께 고려할 수 있는 구조로 개선
@@ -124,7 +126,7 @@
 - Logstash JDBC 플러그인 기반 MariaDB-ES 간 데이터 동기화 파이프라인 구축
 - 제한된 서버 자원 안에서 운영 가능하도록 리소스와 JVM 메모리 튜닝
 
-#### 결과
+#### ✔ 결과
 - `%LIKE%` 기반 검색의 구조적 성능 한계를 역색인 기반 검색으로 개선
 - 상품 검색 응답 속도와 검색 경험을 함께 개선할 수 있는 기반 마련
 - 제한된 서버 자원 내에서도 운영 가능한 검색 인프라 구성
