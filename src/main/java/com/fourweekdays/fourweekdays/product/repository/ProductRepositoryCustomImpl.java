@@ -55,6 +55,15 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results, pageable, total != null ? total : 0);
     }
 
+    @Override
+    public List<Product> findAllProductsForIndexing() {
+        return queryFactory
+                .selectFrom(product)
+                .leftJoin(product.vendor).fetchJoin()
+                .orderBy(product.id.asc())
+                .fetch();
+    }
+
     private BooleanExpression productCodeEq(String productCode) {
         return StringUtils.hasText(productCode) ? product.productCode.eq(productCode) : null;
     }
