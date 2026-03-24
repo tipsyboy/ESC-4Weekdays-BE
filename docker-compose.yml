@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: infra/elasticsearch/Dockerfile
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node # local 환경 싱글 노드
+      - xpack.security.enabled=false # local 환경 보안 해제
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.2
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge
