@@ -7,7 +7,9 @@ public final class SecurityConstants {
     public static final String LOGIN_URL = "/api/login";
 
     public static final String[] API_WHITE_LIST = {
-            "/api/asn/**", "/api/vendor/asn/**", "/api/actuator/**", "/api/auth/reissue", "/api/products/search/reindex"
+            "/api/asn/**", "/api/vendor/asn/**", "/api/actuator/**", "/api/auth/reissue",
+            "/api/products/search/reindex",
+            "/api/products/search/es"
     };
 
     public static final String[] ADMIN_POST_LIST = {
