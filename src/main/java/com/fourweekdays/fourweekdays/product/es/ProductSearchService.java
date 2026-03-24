@@ -1,7 +1,5 @@
-package com.fourweekdays.fourweekdays.product.service;
+package com.fourweekdays.fourweekdays.product.es;
 
-import com.fourweekdays.fourweekdays.product.es.ProductDocument;
-import com.fourweekdays.fourweekdays.product.es.ProductSearchRepository;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ public class ProductSearchService {
     private final ProductRepository productRepository;
     private final ProductSearchRepository productSearchRepository;
 
+    @Transactional
     public int reindexProducts() {
         List<Product> products = productRepository.findAllProductsForIndexing();
         List<ProductDocument> documents = products.stream()

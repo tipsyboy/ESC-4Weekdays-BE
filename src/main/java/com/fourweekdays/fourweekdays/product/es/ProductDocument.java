@@ -50,6 +50,7 @@ public class ProductDocument {
 
     public static ProductDocument from(Product product) {
         return ProductDocument.builder()
+                .id(String.valueOf(product.getId()))
                 .productId(product.getId())
                 .name(product.getName())
                 .productCode(product.getProductCode())
