@@ -1,23 +1,20 @@
-package com.fourweekdays.fourweekdays.product.model.entity;
+package com.fourweekdays.fourweekdays.product.es;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@Builder
 @Document(indexName = "products")
 public class ProductDocument {
 
@@ -51,18 +48,11 @@ public class ProductDocument {
     @Field(name = "vendor_name", type = FieldType.Keyword)
     private String vendorName;
 
-//    @Field(name = "created_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
-//    private LocalDateTime createdAt;
-//
-//    @Field(name = "updated_at", type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
-//    private LocalDateTime updatedAt;
-
     @Field(name = "created_at", type = FieldType.Date)
     private String createdAt;
 
     @Field(name = "updated_at", type = FieldType.Date)
     private String updatedAt;
-
 
     public static ProductDocument from(Product product) {
         return ProductDocument.builder()
@@ -79,5 +69,4 @@ public class ProductDocument {
                 .updatedAt(String.valueOf(product.getUpdatedAt()))
                 .build();
     }
-
 }
