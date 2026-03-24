@@ -30,12 +30,6 @@ public class ProductDocument {
     @Field(name = "product_code", type = FieldType.Keyword)
     private String productCode;
 
-    @Field(type = FieldType.Text)
-    private String description;
-
-    @Field(type = FieldType.Keyword)
-    private String unit;
-
     @Field(name = "unit_price", type = FieldType.Long)
     private Long unitPrice;
 
@@ -59,8 +53,6 @@ public class ProductDocument {
                 .productId(product.getId())
                 .name(product.getName())
                 .productCode(product.getProductCode())
-                .description(product.getDescription())
-                .unit(product.getUnit())
                 .unitPrice(product.getUnitPrice())
                 .status(product.getStatus())
                 .vendorId(product.getVendor() != null ? product.getVendor().getId() : null)
