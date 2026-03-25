@@ -39,7 +39,7 @@ public class ProductDocument {
     @Field(name = "vendor_id", type = FieldType.Long)
     private Long vendorId;
 
-    @Field(name = "vendor_name", type = FieldType.Keyword)
+    @Field(name = "vendor_name", type = FieldType.Text, analyzer = "nori")
     private String vendorName;
 
     @Field(name = "created_at", type = FieldType.Date)

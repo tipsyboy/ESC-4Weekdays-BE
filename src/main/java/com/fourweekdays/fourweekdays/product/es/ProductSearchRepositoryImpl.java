@@ -32,9 +32,12 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
                     if (request.status() != null) {
                         b.filter(term(t -> t.field("status").value(request.status().name())));
                     }
+                    if (StringUtils.hasText(request.vendorName())) {
+                        b.must(match(m -> m.field("vendor_name").query(request.vendorName())));
+                    }
                     return b;
                 }))
-                .withPageable(PageRequest.of(0, 100))
+                .withPageable(PageRequest.of(0, 100)) // TODO: 이후 pageable을 받아서 처리
                 .build();
 
         return elasticsearchOperations.search(query, ProductDocument.class)

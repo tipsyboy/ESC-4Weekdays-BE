@@ -37,7 +37,10 @@ public class ProductSearchService {
     public List<ProductSearchResponse> searchProducts(ProductSearchRequest request) {
         // 검색 조건이 없으면 전체 조회로 확장하지 않고 빈 결과만 반환한다.
         // TODO: dto로 빈 값 검색 판단 이동
-        if (!StringUtils.hasText(request.productName()) && !StringUtils.hasText(request.productCode()) && request.status() == null) {
+        if (!StringUtils.hasText(request.productName())
+                && !StringUtils.hasText(request.productCode())
+                && request.status() == null
+                && !StringUtils.hasText(request.vendorName())) {
             return List.of();
         }
 
