@@ -35,6 +35,18 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
                     if (StringUtils.hasText(request.vendorName())) {
                         b.must(match(m -> m.field("vendor_name").query(request.vendorName())));
                     }
+                    if (request.minPrice() != null || request.maxPrice() != null) {
+                        b.filter(q -> q.range(r -> r.number(n -> {
+                            n.field("unit_price");
+                            if (request.minPrice() != null) {
+                                n.gte(request.minPrice().doubleValue());
+                            }
+                            if (request.maxPrice() != null) {
+                                n.lte(request.maxPrice().doubleValue());
+                            }
+                            return n;
+                        })));
+                    }
                     return b;
                 }))
                 .withPageable(PageRequest.of(0, 100)) // TODO: 이후 pageable을 받아서 처리

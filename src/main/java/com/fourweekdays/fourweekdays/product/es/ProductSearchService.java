@@ -40,7 +40,9 @@ public class ProductSearchService {
         if (!StringUtils.hasText(request.productName())
                 && !StringUtils.hasText(request.productCode())
                 && request.status() == null
-                && !StringUtils.hasText(request.vendorName())) {
+                && !StringUtils.hasText(request.vendorName())
+                && request.minPrice() == null
+                && request.maxPrice() == null) {
             return List.of();
         }
 
