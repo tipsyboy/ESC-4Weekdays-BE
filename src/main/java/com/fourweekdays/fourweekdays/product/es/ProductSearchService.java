@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -35,14 +34,7 @@ public class ProductSearchService {
     }
 
     public List<ProductSearchResponse> searchProducts(ProductSearchRequest request) {
-        // 검색 조건이 없으면 전체 조회로 확장하지 않고 빈 결과만 반환한다.
-        // TODO: dto로 빈 값 검색 판단 이동
-        if (!StringUtils.hasText(request.productName())
-                && !StringUtils.hasText(request.productCode())
-                && request.status() == null
-                && !StringUtils.hasText(request.vendorName())
-                && request.minPrice() == null
-                && request.maxPrice() == null) {
+        if (!request.hasSearchCondition()) {
             return List.of();
         }
 
