@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.product.es;
 
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -23,30 +24,11 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
     public List<ProductDocument> search(ProductSearchRequest request) {
         NativeQuery query = NativeQuery.builder()
                 .withQuery(bool(b -> {
-                    if (StringUtils.hasText(request.productName())) {
-                        b.must(match(m -> m.field("name").query(request.productName())));
-                    }
-                    if (StringUtils.hasText(request.productCode())) {
-                        b.filter(term(t -> t.field("product_code").value(request.productCode())));
-                    }
-                    if (request.status() != null) {
-                        b.filter(term(t -> t.field("status").value(request.status().name())));
-                    }
-                    if (StringUtils.hasText(request.vendorName())) {
-                        b.must(match(m -> m.field("vendor_name").query(request.vendorName())));
-                    }
-                    if (request.minPrice() != null || request.maxPrice() != null) {
-                        b.filter(q -> q.range(r -> r.number(n -> {
-                            n.field("unit_price");
-                            if (request.minPrice() != null) {
-                                n.gte(request.minPrice().doubleValue());
-                            }
-                            if (request.maxPrice() != null) {
-                                n.lte(request.maxPrice().doubleValue());
-                            }
-                            return n;
-                        })));
-                    }
+                    productNameMatch(b, request);
+                    productCodeTerm(b, request);
+                    statusTerm(b, request);
+                    vendorNameMatch(b, request);
+                    unitPriceRange(b, request);
                     return b;
                 }))
                 .withPageable(PageRequest.of(0, 100)) // TODO: 이후 pageable을 받아서 처리
@@ -56,5 +38,49 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
                 .stream()
                 .map(SearchHit::getContent)
                 .toList();
+    }
+
+    private void productNameMatch(BoolQuery.Builder builder, ProductSearchRequest request) {
+        if (!StringUtils.hasText(request.productName())) {
+            return;
+        }
+        builder.must(match(m -> m.field("name").query(request.productName())));
+    }
+
+    private void productCodeTerm(BoolQuery.Builder builder, ProductSearchRequest request) {
+        if (!StringUtils.hasText(request.productCode())) {
+            return;
+        }
+        builder.filter(term(t -> t.field("product_code").value(request.productCode())));
+    }
+
+    private void statusTerm(BoolQuery.Builder builder, ProductSearchRequest request) {
+        if (request.status() == null) {
+            return;
+        }
+        builder.filter(term(t -> t.field("status").value(request.status().name())));
+    }
+
+    private void vendorNameMatch(BoolQuery.Builder builder, ProductSearchRequest request) {
+        if (!StringUtils.hasText(request.vendorName())) {
+            return;
+        }
+        builder.must(match(m -> m.field("vendor_name").query(request.vendorName())));
+    }
+
+    private void unitPriceRange(BoolQuery.Builder builder, ProductSearchRequest request) {
+        if (request.minPrice() == null && request.maxPrice() == null) {
+            return;
+        }
+        builder.filter(q -> q.range(r -> r.number(n -> {
+            n.field("unit_price");
+            if (request.minPrice() != null) {
+                n.gte(request.minPrice().doubleValue());
+            }
+            if (request.maxPrice() != null) {
+                n.lte(request.maxPrice().doubleValue());
+            }
+            return n;
+        })));
     }
 }
