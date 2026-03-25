@@ -1,14 +1,18 @@
 package com.fourweekdays.fourweekdays.product.es;
 
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.match;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.term;
 
 @RequiredArgsConstructor
 public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCustom {
@@ -16,9 +20,20 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public List<ProductDocument> searchByName(String keyword) {
+    public List<ProductDocument> search(ProductSearchRequest request) {
         NativeQuery query = NativeQuery.builder()
-                .withQuery(match(m -> m.field("name").query(keyword)))
+                .withQuery(bool(b -> {
+                    if (StringUtils.hasText(request.productName())) {
+                        b.must(match(m -> m.field("name").query(request.productName())));
+                    }
+                    if (StringUtils.hasText(request.productCode())) {
+                        b.filter(term(t -> t.field("product_code").value(request.productCode())));
+                    }
+                    if (request.status() != null) {
+                        b.filter(term(t -> t.field("status").value(request.status().name())));
+                    }
+                    return b;
+                }))
                 .withPageable(PageRequest.of(0, 100))
                 .build();
 

@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.product.es;
 
 import com.fourweekdays.fourweekdays.product.es.dto.ProductSearchResponse;
+import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,14 @@ public class ProductSearchService {
         return documents.size();
     }
 
-    public List<ProductSearchResponse> searchProductsByName(String keyword) {
-        // 검색어가 없으면 전체 조회로 확장하지 않고 빈 결과만 반환한다.
-        if (!StringUtils.hasText(keyword)) {
+    public List<ProductSearchResponse> searchProducts(ProductSearchRequest request) {
+        // 검색 조건이 없으면 전체 조회로 확장하지 않고 빈 결과만 반환한다.
+        // TODO: dto로 빈 값 검색 판단 이동
+        if (!StringUtils.hasText(request.productName()) && !StringUtils.hasText(request.productCode()) && request.status() == null) {
             return List.of();
         }
 
-        return productSearchRepository.searchByName(keyword).stream()
+        return productSearchRepository.search(request).stream()
                 .map(ProductSearchResponse::from)
                 .toList();
     }
