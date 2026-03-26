@@ -34,11 +34,13 @@ public class ProductSearchService {
     }
 
     public List<ProductSearchResponse> searchProducts(ProductSearchRequest request) {
-        if (!request.hasSearchCondition()) {
+        ProductSearchRequest normalizedRequest = request.normalized();
+
+        if (!normalizedRequest.hasSearchCondition()) {
             return List.of();
         }
 
-        return productSearchRepository.search(request).stream()
+        return productSearchRepository.search(normalizedRequest).stream()
                 .map(ProductSearchResponse::from)
                 .toList();
     }
