@@ -1,0 +1,17 @@
+# Logstash 내부 HTTP API를 모든 인터페이스에서 받도록 연다.
+# 컨테이너 밖에서 9600 포트로 상태 확인할 때 필요하다.
+http.host: "0.0.0.0"
+
+# Elastic Stack 모니터링 수집 기능을 끈다.
+# 지금은 학습/로컬 환경이라 별도 모니터링 수집까지는 필요 없다.
+# 켜면 추가 설정이 필요할 수 있어서 초반엔 끄는 편이 단순하다.
+xpack.monitoring.enabled: false
+
+# Logstash가 읽을 pipeline 설정 파일 위치다.
+# product-pipeline.conf를 이 디렉터리 아래에 두면 자동으로 읽는다.
+path.config: /usr/share/logstash/pipeline
+
+# 로그 레벨.
+# debug는 너무 시끄러우니 처음엔 info 정도가 보기 편하다.
+log.level: info
+

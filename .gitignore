@@ -42,3 +42,6 @@ out/
 
 # for mac
 .DS_Store
+
+# JDBC Driver
+infra/elk/logstash/drivers/*.jar
