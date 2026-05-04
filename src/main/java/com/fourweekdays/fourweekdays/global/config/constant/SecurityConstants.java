@@ -8,8 +8,9 @@ public final class SecurityConstants {
 
     public static final String[] API_WHITE_LIST = {
             "/api/asn/**", "/api/vendor/asn/**", "/api/actuator/**", "/api/auth/reissue",
-            "/api/products/search/reindex",
-            "/api/products/search/es"
+
+            "/api/products/search/**",
+            "/api/products/search"
     };
 
     public static final String[] ADMIN_POST_LIST = {

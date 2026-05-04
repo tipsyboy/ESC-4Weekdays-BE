@@ -45,3 +45,6 @@ out/
 
 # JDBC Driver
 infra/elk/logstash/drivers/*.jar
+
+# Memo
+command/

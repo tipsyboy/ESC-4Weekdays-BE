@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.product.es;
 
 import com.fourweekdays.fourweekdays.product.es.dto.ProductSearchResponse;
+import com.fourweekdays.fourweekdays.product.es.dto.ProductSearchPageResponse;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
@@ -34,14 +35,40 @@ public class ProductSearchService {
     }
 
     public List<ProductSearchResponse> searchProducts(ProductSearchRequest request) {
+        return searchProducts(request, 0, 100);
+    }
+
+    public List<ProductSearchResponse> searchProducts(ProductSearchRequest request, int page, int size) {
         ProductSearchRequest normalizedRequest = request.normalized();
 
         if (!normalizedRequest.hasSearchCondition()) {
             return List.of();
         }
 
-        return productSearchRepository.search(normalizedRequest).stream()
+        return productSearchRepository.search(normalizedRequest, page, size).stream()
                 .map(ProductSearchResponse::from)
                 .toList();
+    }
+
+    public ProductSearchPageResponse searchProductsPage(ProductSearchRequest request, int page, int size) {
+        ProductSearchRequest normalizedRequest = request.normalized();
+
+        if (!normalizedRequest.hasSearchCondition()) {
+            return new ProductSearchPageResponse(
+                    List.of(),
+                    new ProductSearchPageResponse.PageInfo(size, page, 0, 0)
+            );
+        }
+
+        var searchHits = productSearchRepository.searchHits(normalizedRequest, page, size);
+        long totalElements = searchHits.getTotalHits();
+        int totalPages = size == 0 ? 0 : (int) Math.ceil((double) totalElements / size);
+
+        return new ProductSearchPageResponse(
+                searchHits.stream()
+                        .map(hit -> ProductSearchResponse.from(hit.getContent()))
+                        .toList(),
+                new ProductSearchPageResponse.PageInfo(size, page, totalElements, totalPages)
+        );
     }
 }

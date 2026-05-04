@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -21,7 +22,14 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public List<ProductDocument> search(ProductSearchRequest request) {
+    public List<ProductDocument> search(ProductSearchRequest request, int page, int size) {
+        return searchHits(request, page, size).stream()
+                .map(SearchHit::getContent)
+                .toList();
+    }
+
+    @Override
+    public SearchHits<ProductDocument> searchHits(ProductSearchRequest request, int page, int size) {
         NativeQuery query = NativeQuery.builder()
                 .withQuery(bool(b -> {
                     productNameMatch(b, request);
@@ -31,13 +39,11 @@ public class ProductSearchRepositoryImpl implements ProductSearchRepositoryCusto
                     unitPriceRange(b, request);
                     return b;
                 }))
-                .withPageable(PageRequest.of(0, 100)) // TODO: 이후 pageable을 받아서 처리
+                .withPageable(PageRequest.of(page, size))
+                .withTrackTotalHits(true)
                 .build();
 
-        return elasticsearchOperations.search(query, ProductDocument.class)
-                .stream()
-                .map(SearchHit::getContent)
-                .toList();
+        return elasticsearchOperations.search(query, ProductDocument.class);
     }
 
     private void productNameMatch(BoolQuery.Builder builder, ProductSearchRequest request) {
