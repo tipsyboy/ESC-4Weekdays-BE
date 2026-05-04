@@ -19,9 +19,14 @@ public class CookieUtil {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(isSecure)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
+    }
+
+    public ResponseCookie expireCookie(String name) {
+        return createCookie(name, "", 0);
     }
 
     public String getCookieValue(HttpServletRequest request, String cookieName) {

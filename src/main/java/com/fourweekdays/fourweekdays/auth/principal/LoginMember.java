@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.auth.principal;
 
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
+import org.springframework.util.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +19,7 @@ public class LoginMember implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return StringUtils.hasText(member.getLoginId()) ? member.getLoginId() : member.getEmail();
     }
 
     @Override

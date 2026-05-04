@@ -1,8 +1,7 @@
-package com.fourweekdays.fourweekdays.member.model.dto;
+package com.fourweekdays.fourweekdays.member.dto;
 
-import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
+import com.fourweekdays.fourweekdays.member.domain.MemberStatus;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -10,14 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberSignUpDto {
+
+    private String memberCode;
+
+    private String loginId;
 
     @NotBlank(message = "이메일 입력을 해주세요")
     @Pattern(regexp = "^[a-zA-Z0-9+-._]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식이 올바르지 않습니다.")
@@ -30,6 +30,8 @@ public class MemberSignUpDto {
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
 
+    private String department;
+
     @NotBlank(message = "핸드폰번호를 입력해 주세요")
     @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "핸드폰번호 형식이 올바르지 않습니다.")
     private String phoneNumber;
@@ -38,19 +40,9 @@ public class MemberSignUpDto {
     private MemberRole role;
 
     @NotNull(message = "상태를 선택해주세요")
-    private AuthStatus status;
+    private MemberStatus status;
 
-    //엔티티 변환
-    public Member toEntity(String encodedPassword) {
-        return Member.builder()
-                .email(email)
-                .password(encodedPassword)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .role(role)
-                .status(status)
-                .joinAt(LocalDateTime.now())
-                .build();
-    }
+    private Long vendorId;
 
+    private String note;
 }

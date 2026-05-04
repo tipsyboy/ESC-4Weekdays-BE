@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.auth.token.repository;
 
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.auth.token.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 

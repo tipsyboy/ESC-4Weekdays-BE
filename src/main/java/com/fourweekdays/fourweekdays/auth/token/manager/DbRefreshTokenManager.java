@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.auth.token.manager;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
 import com.fourweekdays.fourweekdays.auth.exception.JwtExceptionType;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.auth.token.entity.RefreshToken;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.auth.token.repository.RefreshTokenRepository;
@@ -25,26 +25,29 @@ public class DbRefreshTokenManager implements RefreshTokenManager {
     @Override
     @Transactional
     public void saveRefreshToken(Member member, String refreshToken) {
-        refreshTokenRepository.deleteByMember(member); // 중복 방지
-
         LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(REFRESH_TOKEN_EXPIRE_TIME / 1000);
-        RefreshToken token = RefreshToken.builder()
-                .member(member)
-                .token(refreshToken)
-                .expiredAt(expiryDate)
-                .build();
-
-        refreshTokenRepository.save(token);
+        refreshTokenRepository.findByMember(member)
+                .ifPresentOrElse(
+                        token -> token.updateToken(refreshToken, expiryDate),
+                        () -> refreshTokenRepository.save(
+                                RefreshToken.builder()
+                                        .member(member)
+                                        .token(refreshToken)
+                                        .expiredAt(expiryDate)
+                                        .build()
+                        )
+                );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean matches(String token, String email) {
+    public boolean matches(String token, String identifier) {
 
         return refreshTokenRepository.findByToken(token)
                 .map(rt -> {
                     boolean isNotExpired = !rt.isExpired(); // 만료 확인
-                    boolean isOwner = rt.getMember().getEmail().equals(email); // 소유자 확인
+                    boolean isOwner = identifier.equals(rt.getMember().getEmail())
+                            || identifier.equals(rt.getMember().getLoginId());
                     return isNotExpired && isOwner;
                 })
                 .orElse(false); // 토큰 없으면 false
@@ -58,8 +61,14 @@ public class DbRefreshTokenManager implements RefreshTokenManager {
 
     @Override
     @Transactional
-    public void updateRefreshToken(String email, String newRefreshToken) {
-        Member member = memberRepository.findByEmail(email)
+    public void revokeRefreshToken(Member member) {
+        refreshTokenRepository.deleteByMember(member);
+    }
+
+    @Override
+    @Transactional
+    public void updateRefreshToken(String identifier, String newRefreshToken) {
+        Member member = memberRepository.findByLoginIdOrEmail(identifier, identifier)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.MEMBER_NOT_FOUND));
 
         // TODO: RefreshTokenException 정의?

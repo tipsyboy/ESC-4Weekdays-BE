@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.outbound.model.dto.response;
 
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.model.entity.OutboundProductItem;

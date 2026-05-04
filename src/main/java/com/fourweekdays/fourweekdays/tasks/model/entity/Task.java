@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.tasks.model.entity;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

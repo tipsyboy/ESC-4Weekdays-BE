@@ -3,8 +3,8 @@ package com.fourweekdays.fourweekdays.auth.jwt;
 
 
 import com.fourweekdays.fourweekdays.auth.token.manager.RefreshTokenManager;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
+import com.fourweekdays.fourweekdays.member.domain.Member;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
 import com.fourweekdays.fourweekdays.auth.service.MemberDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -134,4 +134,3 @@ public class JwtTokenProvider {
     }
 
 }
-

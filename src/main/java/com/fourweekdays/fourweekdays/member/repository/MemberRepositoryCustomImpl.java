@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.member.repository;
 
-import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
+import com.fourweekdays.fourweekdays.member.domain.MemberStatus;
+import com.fourweekdays.fourweekdays.member.domain.Member;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
 import com.fourweekdays.fourweekdays.member.querydsl.condition.MemberPredicateBuilder;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,10 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
+import static com.fourweekdays.fourweekdays.member.domain.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -45,14 +44,17 @@ public class  MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     @Override
     public Page<Member> searchMembers(
             String name,
-            AuthStatus status,
+            String memberCode,
+            String department,
+            String loginId,
+            MemberStatus status,
             MemberRole role,
             LocalDate fromDate,
             LocalDate toDate,
             Pageable pageable
     ) {
         BooleanBuilder predicate = MemberPredicateBuilder.buildMemberPredicate(
-                name, status, role, fromDate, toDate
+                name, memberCode, department, loginId, status, role, fromDate, toDate
         );
 
         // ✅ 실제 데이터

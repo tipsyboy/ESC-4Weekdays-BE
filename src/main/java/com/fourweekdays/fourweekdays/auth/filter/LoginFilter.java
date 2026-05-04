@@ -1,11 +1,12 @@
 package com.fourweekdays.fourweekdays.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fourweekdays.fourweekdays.auth.dto.AuthMeResponse;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.auth.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.auth.jwt.JwtTokenProvider;
 import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
-import com.fourweekdays.fourweekdays.member.model.dto.MemberLoginDto;
+import com.fourweekdays.fourweekdays.member.dto.MemberLoginDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,7 +50,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             MemberLoginDto memberLoginDto = objectMapper.readValue(request.getInputStream(), MemberLoginDto.class);
             // Security 에서 검증을 위해 token 생성
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    memberLoginDto.getEmail(),
+                    memberLoginDto.getLoginId(),
                     memberLoginDto.getPassword(),
                     null
             );
@@ -95,10 +96,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
 
-        Map<String, Object> result = Map.of("role", loginMember.getMember().getRole().name());
-
-        // 구버전처럼 BaseResponse 포맷에 맞춰서 바디를 내려줍니다.
-        response.getWriter().write(objectMapper.writeValueAsString(BaseResponse.success(result)));
+        response.getWriter().write(objectMapper.writeValueAsString(
+                BaseResponse.success(AuthMeResponse.from(loginMember.getMember()))
+        ));
     }
 
     // 로그인 실패 -
@@ -106,6 +106,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"message\":\"로그인 실패: " + failed.getMessage() + "\"}");
+        response.getWriter().write(objectMapper.writeValueAsString(
+                BaseResponse.fail(org.springframework.http.HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다.")
+        ));
     }
 }
