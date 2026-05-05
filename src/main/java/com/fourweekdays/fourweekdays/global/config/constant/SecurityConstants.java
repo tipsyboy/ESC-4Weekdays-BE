@@ -13,12 +13,12 @@ public final class SecurityConstants {
     public static final String[] ADMIN_POST_LIST = {
             "/api/announcement", "/api/franchises", "/api/products",
             "/api/vendors", "/api/warehouses", "/api/category",
-            "/api/member/signup", "/api/purchase-orders"
+            "/api/members", "/api/purchase-orders"
     };
 
     public static final String[] ADMIN_PATCH_LIST = {
             "/api/announcement/**", "/api/franchises/**", "/api/products/**",
-            "/api/vendors/**", "/api/warehouses/**", "/api/member/**",
+            "/api/vendors/**", "/api/warehouses/**", "/api/members/**",
             "/api/inbounds/**", "/api/outbounds/**", "/api/purchase-orders/**"
     };
 
@@ -35,7 +35,7 @@ public final class SecurityConstants {
     public static final String[] MANAGER_GET_LIST = {
             "/api/announcement/**", "/api/franchises/**", "/api/products/**",
             "/api/vendors/**", "/api/warehouses/**", "/api/category/**",
-            "/api/member/**", "/api/purchase-orders/**", "/api/inbounds/**",
+            "/api/members/**", "/api/purchase-orders/**", "/api/inbounds/**",
             "/api/outbounds/**", "/api/inventories/**", "/api/locations/**"
     };
 

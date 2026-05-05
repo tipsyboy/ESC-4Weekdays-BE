@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({"/api/member", "/api/members"})
+@RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
 
     // 회원 등록
-    @PostMapping({"", "/signup"})
+    @PostMapping
     public ResponseEntity<BaseResponse<MemberResponseDto>> register(@Valid @RequestBody MemberSignUpDto dto) {
         return ResponseEntity.ok(BaseResponse.success(memberService.register(dto)));
     }
 
     //직원 페이징 처리 조회
-    @GetMapping({"", "/list"})
+    @GetMapping
     public ResponseEntity<BaseResponse<Page<MemberResponseDto>>> memberReads(@RequestParam(defaultValue = "0") Integer page,
                                                                              @RequestParam(defaultValue = "10") Integer size) {
         Page<MemberResponseDto> result = memberService.readAll(page, size);
