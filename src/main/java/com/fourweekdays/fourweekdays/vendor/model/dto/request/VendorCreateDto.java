@@ -13,6 +13,9 @@ public class VendorCreateDto {
     @NotNull(message = "업체명을 입력해주세요.")
     private String name;
 
+    @NotNull(message = "담당자명을 입력해주세요.")
+    private String managerName;
+
     private String phoneNumber;
     private String email;
     private String description;
@@ -22,11 +25,12 @@ public class VendorCreateDto {
         return Vendor.builder()
                 .name(this.name)
                 .vendorCode(vendorCode)
+                .managerName(this.managerName)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .description(this.description)
                 .address(this.address)
-                .status(VendorStatus.ACTIVE) // 기본값: ACTIVE
+                .status(VendorStatus.PENDING)
                 .build();
     }
 }

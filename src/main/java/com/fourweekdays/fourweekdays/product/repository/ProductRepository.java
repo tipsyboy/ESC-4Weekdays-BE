@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
     boolean existsByVendorAndName(Vendor vendor, String name);
@@ -16,4 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     // ✅ 특정 공급업체 + ACTIVE 상태 필터용
     Page<Product> findByVendorIdAndStatus(Long vendorId, ProductStatus status, Pageable pageable);
+
+    List<Product> findByVendorId(Long vendorId);
 }

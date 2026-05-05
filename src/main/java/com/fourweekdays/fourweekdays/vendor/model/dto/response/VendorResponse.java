@@ -11,15 +11,17 @@ import lombok.Getter;
 public class VendorResponse {
     private String vendorCode; // 공급업체 코드 (V-001, V-002 등)
     private String name;
+    private String managerName;
     private String phoneNumber;
     private String email;
-    private VendorStatus status; // ACTIVE, INACTIVE, SUSPEND
+    private VendorStatus status;
     private Address address;
 
     public static VendorResponse from(Vendor vendor) {
         return VendorResponse.builder()
                 .vendorCode(vendor.getVendorCode())
                 .name(vendor.getName())
+                .managerName(vendor.getManagerName())
                 .phoneNumber(vendor.getPhoneNumber())
                 .email(vendor.getEmail())
                 .status(vendor.getStatus())

@@ -15,6 +15,10 @@ public class VendorUpdateDto {
     @Size(max = 200)
     private String name;
 
+    @NotBlank(message = "담당자명은 필수입니다")
+    @Size(max = 100)
+    private String managerName;
+
     @Size(max = 20)
     private String phoneNumber;
 
@@ -26,4 +30,3 @@ public class VendorUpdateDto {
 
     private Address address;
 }
-

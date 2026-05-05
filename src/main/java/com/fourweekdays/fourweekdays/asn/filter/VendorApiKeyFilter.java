@@ -48,7 +48,7 @@ public class VendorApiKeyFilter extends OncePerRequestFilter {
         Vendor vendor = vendorRepository.findByApiKey(apiKey)
                 .orElse(null);
 
-        if (vendor == null || vendor.getStatus() != VendorStatus.ACTIVE) {
+        if (vendor == null || vendor.getStatus() != VendorStatus.TRADING) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

@@ -17,6 +17,7 @@ public class VendorReadDto {
     private Long id;
     private String vendorCode;
     private String name;
+    private String managerName;
     private String phoneNumber;
     private String email;
     private String description;
@@ -33,6 +34,7 @@ public class VendorReadDto {
                 .id(vendor.getId())
                 .vendorCode(vendor.getVendorCode())
                 .name(vendor.getName())
+                .managerName(vendor.getManagerName())
                 .phoneNumber(vendor.getPhoneNumber())
                 .email(vendor.getEmail())
                 .description(vendor.getDescription())
