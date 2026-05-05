@@ -10,7 +10,7 @@ import com.fourweekdays.fourweekdays.member.dto.MemberSearchDto;
 import com.fourweekdays.fourweekdays.member.dto.MemberSignUpDto;
 import com.fourweekdays.fourweekdays.member.dto.MemberUpdateDto;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

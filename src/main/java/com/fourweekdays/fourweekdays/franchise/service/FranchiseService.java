@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.franchise.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.franchise.exception.FranchiseException;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseCreateDto;
 import com.fourweekdays.fourweekdays.franchise.model.dto.request.FranchiseUpdateDto;
@@ -20,14 +21,12 @@ import static com.fourweekdays.fourweekdays.franchise.exception.FranchiseExcepti
 @RequiredArgsConstructor
 public class FranchiseService {
 
-    public static final String FRANCHISE_CODE_PREFIX = "FRA";
-
     private final FranchiseRepository franchiseRepository;
     private final CodeGenerator codeGenerator;
 
     @Transactional
     public Long create(FranchiseCreateDto dto) {
-        FranchiseStore result = franchiseRepository.save(dto.toEntity(codeGenerator.generate(FRANCHISE_CODE_PREFIX)));
+        FranchiseStore result = franchiseRepository.save(dto.toEntity(codeGenerator.generate(CodeType.FRANCHISE)));
         return result.getId();
     }
 

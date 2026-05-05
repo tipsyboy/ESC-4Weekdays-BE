@@ -1,6 +1,6 @@
-package com.fourweekdays.fourweekdays.vendor.model.dto.request;
+package com.fourweekdays.fourweekdays.vendor.dto;
 
-import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.fourweekdays.fourweekdays.vendor.domain.VendorStatus;
 
 public record VendorSearchCondition(
         Integer page,

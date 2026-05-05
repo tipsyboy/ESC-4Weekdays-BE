@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.asn.filter;
 
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
-import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.VendorStatus;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

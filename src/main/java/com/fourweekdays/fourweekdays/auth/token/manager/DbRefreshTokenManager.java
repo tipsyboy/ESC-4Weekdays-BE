@@ -77,4 +77,10 @@ public class DbRefreshTokenManager implements RefreshTokenManager {
 
         refreshToken.updateToken(newRefreshToken, LocalDateTime.now().plusSeconds(REFRESH_TOKEN_EXPIRE_TIME / 1000));
     }
+
+    @Override
+    @Transactional
+    public void deleteExpiredTokens() {
+        refreshTokenRepository.deleteByExpiredAtBefore(LocalDateTime.now());
+    }
 }

@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
-import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
+import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 @RequiredArgsConstructor
 public class PurchaseOrderRepositoryCustomImpl implements PurchaseOrderRepositoryCustom {

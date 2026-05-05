@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.vendor.model.entity;
+package com.fourweekdays.fourweekdays.vendor.domain;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.global.vo.Address;

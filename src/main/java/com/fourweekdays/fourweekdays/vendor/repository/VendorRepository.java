@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.vendor.repository;
 
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

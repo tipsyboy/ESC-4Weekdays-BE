@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.product.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductCreateDto;
 import com.fourweekdays.fourweekdays.product.model.dto.request.ProductSearchRequest;
@@ -9,7 +10,7 @@ import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,6 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @Transactional(readOnly = true)
 public class ProductService {
 
-    private static final String PRODUCT_CODE_PREFIX = "PRD";
-
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
     private final CodeGenerator codeGenerator;
@@ -46,7 +45,7 @@ public class ProductService {
             throw new ProductException(PRODUCT_DUPLICATION);
         }
 
-        Product product = requestDto.toEntity(codeGenerator.generate(PRODUCT_CODE_PREFIX));
+        Product product = requestDto.toEntity(codeGenerator.generate(CodeType.PRODUCT));
         product.mappingVendor(vendor); // 연관 관계 매핑 
         return productRepository.save(product).getId();
     }

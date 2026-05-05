@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.order.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderProductDto;
@@ -37,8 +38,6 @@ import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.SH
 @Service
 @RequiredArgsConstructor
 public class OrderFranchiseService {
-
-    private static final String ORDER_CODE_PREFIX = "ORD";
 
     private final OrderRepository orderRepository;
     private final OutboundRepository outboundRepository;
@@ -98,7 +97,7 @@ public class OrderFranchiseService {
     private Order createOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
         return Order.builder()
                 .franchiseStore(franchiseStore)
-                .orderCode(codeGenerator.generate(ORDER_CODE_PREFIX))
+                .orderCode(codeGenerator.generate(CodeType.ORDER))
                 .dueDate(dto.getDueDate())
                 .description(dto.getDescription())
                 .status(OrderStatus.REQUESTED)

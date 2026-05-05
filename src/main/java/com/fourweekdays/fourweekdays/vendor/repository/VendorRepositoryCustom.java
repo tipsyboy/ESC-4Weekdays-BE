@@ -1,18 +1,11 @@
 package com.fourweekdays.fourweekdays.vendor.repository;
 
-import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchCondition;
-import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorSearchCondition;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface VendorRepositoryCustom {
 
-    Page<Vendor> findAllWithPaging(Pageable pageable);
-
     Page<Vendor> search(Pageable pageable, VendorSearchCondition condition);
-
-    Page<VendorProductResponse> searchVendorByProduct(Pageable pageable, VendorSearchRequest request);
 }

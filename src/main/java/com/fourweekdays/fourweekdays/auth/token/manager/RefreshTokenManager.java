@@ -28,4 +28,9 @@ public interface RefreshTokenManager {
      * 토큰 재발급시 저장소 토큰을 새 토큰으로 변경
      */
     void updateRefreshToken(String email, String newRefreshToken);
+
+    /**
+     * 만료된 리프레시 토큰을 삭제
+     */
+    void deleteExpiredTokens();
 }

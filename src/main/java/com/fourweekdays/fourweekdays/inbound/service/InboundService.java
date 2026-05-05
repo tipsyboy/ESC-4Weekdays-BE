@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
 import com.fourweekdays.fourweekdays.inbound.model.dto.request.*;
@@ -41,8 +42,6 @@ import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrde
 @Transactional(readOnly = true)
 public class InboundService {
 
-    public static final String INBOUND_CODE_PREFIX = "IB";
-
     private final MemberRepository memberRepository;
     private final InboundRepository inboundRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
@@ -63,7 +62,7 @@ public class InboundService {
         Member manager = purchaseOrder.getManager(); // 발주 담당자 -> 입고 담당자
 
         Inbound inbound = Inbound.builder()
-                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
+                .inboundCode(codeGenerator.generate(CodeType.INBOUND))
                 .purchaseOrder(purchaseOrder)
                 .status(InboundStatus.SCHEDULED)
                 .manager(manager)
@@ -198,7 +197,7 @@ public class InboundService {
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         return Inbound.builder()
-                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
+                .inboundCode(codeGenerator.generate(CodeType.INBOUND))
                 .status(InboundStatus.SCHEDULED)
                 .manager(manager)
                 .scheduledDate(requestDto.getScheduledDate())

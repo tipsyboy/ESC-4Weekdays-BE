@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.purchaseorder.service;
 
 import com.fourweekdays.fourweekdays.global.email.EmailService;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
@@ -18,7 +19,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderPro
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,6 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @RequiredArgsConstructor
 @Service
 public class PurchaseOrderService {
-
-    private static final String PURCHASE_ORDER_CODE_PREFIX = "PO";
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final VendorRepository vendorRepository;
@@ -142,7 +141,7 @@ public class PurchaseOrderService {
         return PurchaseOrder.builder()
                 .vendor(vendor)
                 .manager(manager)
-                .orderCode(codeGenerator.generate(PURCHASE_ORDER_CODE_PREFIX))
+                .orderCode(codeGenerator.generate(CodeType.PURCHASE_ORDER))
                 .orderDate(LocalDateTime.now())
                 .expectedDate(dto.getExpectedDate())
                 .description(dto.getDescription())

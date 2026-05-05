@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
@@ -10,14 +11,12 @@ import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchCondition;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
-import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
-import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
-import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorCreateDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorSearchCondition;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorUpdateDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorReadDto;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.VendorStatus;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,8 +35,6 @@ import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType
 @RequiredArgsConstructor
 public class VendorService {
 
-    public static final String VENDOR_CODE_PREFIX = "V";
-
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
@@ -47,7 +44,7 @@ public class VendorService {
 
     @Transactional
     public VendorReadDto create(VendorCreateDto dto) {
-        Vendor result = vendorRepository.save(dto.toEntity(codeGenerator.generate(VENDOR_CODE_PREFIX)));
+        Vendor result = vendorRepository.save(dto.toEntity(codeGenerator.generate(CodeType.VENDOR)));
 
         return VendorReadDto.from(result);
     }
@@ -96,11 +93,6 @@ public class VendorService {
         Vendor vendor = vendorRepository.findById(id)
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
         vendor.changeStatus(VendorStatus.STOPPED);
-    }
-
-    public Page<VendorProductResponse> searchVendorsWithProducts(Integer page, Integer size, VendorSearchRequest request) {
-        Pageable pageable = PageRequest.of(page, size);
-        return vendorRepository.searchVendorByProduct(pageable, request);
     }
 
     public List<ProductReadDto> readProducts(Long id) {

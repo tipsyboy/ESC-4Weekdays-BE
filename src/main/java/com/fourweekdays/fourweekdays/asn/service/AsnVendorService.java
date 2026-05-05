@@ -8,11 +8,12 @@ import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
 import com.fourweekdays.fourweekdays.asn.model.entity.AsnStatus;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
-import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,6 @@ import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseO
 @RequiredArgsConstructor
 @Service
 public class AsnVendorService {
-
-    private static final String ASN_CODE_PREFIX = "ASN";
 
     private final AsnRepository asnRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
@@ -49,7 +48,7 @@ public class AsnVendorService {
         Asn asn = Asn.create(
                 vendor,
                 purchaseOrder,
-                codeGenerator.generate(ASN_CODE_PREFIX),
+                codeGenerator.generate(CodeType.ASN),
                 request.expectedDate(),
                 request.description(),
                 AsnStatus.ACCEPTED
@@ -80,7 +79,7 @@ public class AsnVendorService {
         Asn rejectedAsn = Asn.create(
                 vendor,
                 purchaseOrder,
-                codeGenerator.generate(ASN_CODE_PREFIX),
+                codeGenerator.generate(CodeType.ASN),
                 null,
                 request.description(),
                 AsnStatus.REJECTED

@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.vendor.model.dto.request;
+package com.fourweekdays.fourweekdays.vendor.dto;
 
 import com.fourweekdays.fourweekdays.global.vo.Address;
 import jakarta.validation.constraints.Email;

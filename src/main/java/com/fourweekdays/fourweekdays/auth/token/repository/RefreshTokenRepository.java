@@ -4,6 +4,7 @@ import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.auth.token.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
@@ -14,4 +15,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     Optional<RefreshToken> findByMember(Member member);
 
     Optional<RefreshToken> findByToken(String token);
+
+    void deleteByExpiredAtBefore(LocalDateTime expiredAt);
 }
