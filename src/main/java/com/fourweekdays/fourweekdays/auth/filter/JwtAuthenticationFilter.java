@@ -40,6 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             if (StringUtils.hasText(accessToken) && jwtTokenProvider.isValidAccessToken(accessToken)) {
                 setAuthentication(accessToken);
+            } else if (!StringUtils.hasText(accessToken) && StringUtils.hasText(cookieUtil.getCookieValue(request, CookieUtil.RT_COOKIE_NAME))) {
+                log.info("Access Token 없음. Refresh Token 기반 재발급 시도 중...");
+                handleReissue(request, response);
             }
         } catch (ExpiredJwtException e) {
             log.info("Access Token 만료됨. 재발급 시도 중...");
