@@ -5,6 +5,7 @@ import com.fourweekdays.fourweekdays.auth.dto.AuthMeResponse;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.auth.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.auth.jwt.JwtTokenProvider;
+import com.fourweekdays.fourweekdays.auth.jwt.TokenExpiration;
 import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.member.dto.MemberLoginDto;
 import jakarta.servlet.FilterChain;
@@ -83,12 +84,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         ResponseCookie accessTokenCookie = cookieUtil.createCookie(
                 CookieUtil.AT_COOKIE_NAME,
                 accessToken,
-                30 * 60
+                TokenExpiration.ACCESS_COOKIE_SECONDS
         );
         ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
                 CookieUtil.RT_COOKIE_NAME,
                 refreshToken,
-                7 * 24 * 60 * 60
+                TokenExpiration.REFRESH_COOKIE_SECONDS
         );
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());

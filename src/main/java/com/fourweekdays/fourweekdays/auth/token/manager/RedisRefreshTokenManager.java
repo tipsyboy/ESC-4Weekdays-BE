@@ -15,7 +15,7 @@
 //@Component
 //public class RedisRefreshTokenManager implements RefreshTokenManager {
 //
-//    private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60L;
+//    private static final long REFRESH_TOKEN_EXPIRE_TIME = TokenExpiration.REFRESH_COOKIE_SECONDS;
 //    private static final String REFRESH_TOKEN_PREFIX = "RT:";
 //
 //    private final RedissonClient redissonClient;

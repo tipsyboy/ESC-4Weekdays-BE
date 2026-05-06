@@ -30,9 +30,6 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L; // 30분
-    private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
-
     private final String accessSecretKey;
     private final String refreshSecretKey;
     private final MemberDetailsService memberDetailsService;
@@ -47,11 +44,11 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(String username, MemberRole role) {
-        return createToken(username, role, ACCESS_TOKEN_EXPIRE_TIME, accessSecretKey);
+        return createToken(username, role, TokenExpiration.ACCESS_TOKEN_MILLIS, accessSecretKey);
     }
 
     public String createRefreshToken(String username, MemberRole role) {
-        return createToken(username, role, REFRESH_TOKEN_EXPIRE_TIME, refreshSecretKey);
+        return createToken(username, role, TokenExpiration.REFRESH_TOKEN_MILLIS, refreshSecretKey);
     }
 
     public boolean isValidAccessToken(String token) {

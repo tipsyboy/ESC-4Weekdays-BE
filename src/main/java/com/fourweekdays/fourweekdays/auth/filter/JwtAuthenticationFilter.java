@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.auth.dto.TokenDto;
 import com.fourweekdays.fourweekdays.auth.jwt.CookieUtil;
 import com.fourweekdays.fourweekdays.auth.exception.JwtExceptionType;
 import com.fourweekdays.fourweekdays.auth.jwt.JwtTokenProvider;
+import com.fourweekdays.fourweekdays.auth.jwt.TokenExpiration;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -65,12 +66,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ResponseCookie accessTokenCookie = cookieUtil.createCookie(
                     CookieUtil.AT_COOKIE_NAME,
                     tokenDto.getAccessToken(),
-                    30 * 60
+                    TokenExpiration.ACCESS_COOKIE_SECONDS
             );
             ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
                     CookieUtil.RT_COOKIE_NAME,
                     tokenDto.getRefreshToken(),
-                    7 * 24 * 60 * 60
+                    TokenExpiration.REFRESH_COOKIE_SECONDS
             );
             response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
             response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

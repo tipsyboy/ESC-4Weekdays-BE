@@ -1,5 +1,6 @@
 package com.fourweekdays.fourweekdays.auth.token.manager;
 
+import com.fourweekdays.fourweekdays.auth.jwt.TokenExpiration;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
 import com.fourweekdays.fourweekdays.auth.exception.JwtExceptionType;
@@ -17,15 +18,13 @@ import java.time.LocalDateTime;
 @Component
 public class DbRefreshTokenManager implements RefreshTokenManager {
 
-    private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
 
     @Override
     @Transactional
     public void saveRefreshToken(Member member, String refreshToken) {
-        LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(REFRESH_TOKEN_EXPIRE_TIME / 1000);
+        LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(TokenExpiration.REFRESH_COOKIE_SECONDS);
         refreshTokenRepository.findByMember(member)
                 .ifPresentOrElse(
                         token -> token.updateToken(refreshToken, expiryDate),
@@ -75,7 +74,7 @@ public class DbRefreshTokenManager implements RefreshTokenManager {
         RefreshToken refreshToken = refreshTokenRepository.findByMember(member)
                 .orElseThrow(() -> new IllegalArgumentException(JwtExceptionType.NOT_FOUND_TOKEN.getMessage()));
 
-        refreshToken.updateToken(newRefreshToken, LocalDateTime.now().plusSeconds(REFRESH_TOKEN_EXPIRE_TIME / 1000));
+        refreshToken.updateToken(newRefreshToken, LocalDateTime.now().plusSeconds(TokenExpiration.REFRESH_COOKIE_SECONDS));
     }
 
     @Override

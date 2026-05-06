@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.auth.controller;
 import com.fourweekdays.fourweekdays.auth.dto.AuthMeResponse;
 import com.fourweekdays.fourweekdays.auth.dto.TokenDto;
 import com.fourweekdays.fourweekdays.auth.jwt.CookieUtil;
+import com.fourweekdays.fourweekdays.auth.jwt.TokenExpiration;
 import com.fourweekdays.fourweekdays.auth.service.AuthService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,8 +57,8 @@ public class AuthController {
         }
 
         TokenDto tokenDto = authService.reissue(refreshToken);
-        ResponseCookie atCookie = cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, tokenDto.getAccessToken(), 30 * 60);
-        ResponseCookie rtCookie = cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, tokenDto.getRefreshToken(), 7 * 24 * 60 * 60);
+        ResponseCookie atCookie = cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, tokenDto.getAccessToken(), TokenExpiration.ACCESS_COOKIE_SECONDS);
+        ResponseCookie rtCookie = cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, tokenDto.getRefreshToken(), TokenExpiration.REFRESH_COOKIE_SECONDS);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, atCookie.toString())
