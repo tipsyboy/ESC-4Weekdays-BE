@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleReissue(request, response);
         }
         catch (Exception e) {
+            SecurityContextHolder.clearContext();
             handleJwtException(request, e, accessToken, "AT");
         }
 
@@ -54,28 +55,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleReissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieUtil.getCookieValue(request, CookieUtil.RT_COOKIE_NAME);
 
-        if (StringUtils.hasText(refreshToken)) {
-            try {
-                TokenDto tokenDto = authService.reissue(refreshToken);
-                ResponseCookie accessTokenCookie = cookieUtil.createCookie(
-                        CookieUtil.AT_COOKIE_NAME,
-                        tokenDto.getAccessToken(),
-                        30 * 60
-                );
-                ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
-                        CookieUtil.RT_COOKIE_NAME,
-                        tokenDto.getRefreshToken(),
-                        7 * 24 * 60 * 60
-                );
-                response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-                response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-                setAuthentication(tokenDto.getAccessToken());
-            } catch (Exception e) {
-                log.error("RefreshToken 재발급 실패 - 쿠키 삭제 처리");
-                response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, "", 0).toString());
-                response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, "", 0).toString());
-                handleJwtException(request, e, refreshToken, "RT");
-            }
+        if (!StringUtils.hasText(refreshToken)) {
+            SecurityContextHolder.clearContext();
+            return;
+        }
+
+        try {
+            TokenDto tokenDto = authService.reissue(refreshToken);
+            ResponseCookie accessTokenCookie = cookieUtil.createCookie(
+                    CookieUtil.AT_COOKIE_NAME,
+                    tokenDto.getAccessToken(),
+                    30 * 60
+            );
+            ResponseCookie refreshTokenCookie = cookieUtil.createCookie(
+                    CookieUtil.RT_COOKIE_NAME,
+                    tokenDto.getRefreshToken(),
+                    7 * 24 * 60 * 60
+            );
+            response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+            response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+            setAuthentication(tokenDto.getAccessToken());
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            log.error("RefreshToken 재발급 실패 - 쿠키 삭제 처리");
+            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, "", 0).toString());
+            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, "", 0).toString());
+            handleJwtException(request, e, refreshToken, "RT");
         }
     }
 

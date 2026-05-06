@@ -3,7 +3,6 @@ package com.fourweekdays.fourweekdays.auth.controller;
 import com.fourweekdays.fourweekdays.auth.dto.AuthMeResponse;
 import com.fourweekdays.fourweekdays.auth.dto.TokenDto;
 import com.fourweekdays.fourweekdays.auth.jwt.CookieUtil;
-import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.auth.service.AuthService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,28 +33,6 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.success(authService.me(authentication)));
     }
 
-    @PostMapping("/reissue")
-    public ResponseEntity<BaseResponse<String>> reissue(@CookieValue(value = CookieUtil.RT_COOKIE_NAME, required = false) String refreshToken) {
-        // 1. 유효성 검사
-        if (refreshToken == null || refreshToken.isBlank()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(BaseResponse.fail(HttpStatus.UNAUTHORIZED, "다시 로그인해주세요."));
-        }
-
-        // 2. 서비스 호출 (핵심 로직 실행)
-        TokenDto tokenDto = authService.reissue(refreshToken);
-
-        // 3. 응답 쿠키 생성 TODO: 매직넘버 처리하기
-        ResponseCookie atCookie = cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, tokenDto.getAccessToken(), 30 * 60);
-        ResponseCookie rtCookie = cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, tokenDto.getRefreshToken(), 7 * 24 * 60 * 60);
-
-        // 4. 최종 응답
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, atCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, rtCookie.toString())
-                .body(BaseResponse.success("토큰 재발급 성공"));
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse<String>> logout(
             Authentication authentication,
@@ -67,5 +44,24 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.expireCookie(CookieUtil.AT_COOKIE_NAME).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.expireCookie(CookieUtil.RT_COOKIE_NAME).toString());
         return ResponseEntity.ok(BaseResponse.success("로그아웃 성공"));
+    }
+
+    // 현재 사용하지 않는 reissue API.
+    // Refresh token 재발급은 JwtAuthenticationFilter에서 access token 만료 요청을 처리할 때 수행한다.
+//    @PostMapping("/reissue")
+    public ResponseEntity<BaseResponse<String>> reissue(@CookieValue(value = CookieUtil.RT_COOKIE_NAME, required = false) String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.fail(HttpStatus.UNAUTHORIZED, "다시 로그인해주세요."));
+        }
+
+        TokenDto tokenDto = authService.reissue(refreshToken);
+        ResponseCookie atCookie = cookieUtil.createCookie(CookieUtil.AT_COOKIE_NAME, tokenDto.getAccessToken(), 30 * 60);
+        ResponseCookie rtCookie = cookieUtil.createCookie(CookieUtil.RT_COOKIE_NAME, tokenDto.getRefreshToken(), 7 * 24 * 60 * 60);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, atCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, rtCookie.toString())
+                .body(BaseResponse.success("토큰 재발급 성공"));
     }
 }
