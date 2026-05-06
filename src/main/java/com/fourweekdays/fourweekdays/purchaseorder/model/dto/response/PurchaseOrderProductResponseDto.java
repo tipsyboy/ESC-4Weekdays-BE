@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.model.dto.response;
 
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import lombok.Builder;
 

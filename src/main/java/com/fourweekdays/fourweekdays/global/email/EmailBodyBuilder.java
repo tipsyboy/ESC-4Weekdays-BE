@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.global.email;
 
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 
 public class EmailBodyBuilder {

@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.inventory.repository;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inbound;
 import static com.fourweekdays.fourweekdays.inventory.model.entity.QInventory.inventory;
 import static com.fourweekdays.fourweekdays.location.model.entity.QLocation.location;
-import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
+import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
 
 @Slf4j
 @RequiredArgsConstructor

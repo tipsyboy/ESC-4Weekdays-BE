@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.order.model.dto.request;
 
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import lombok.Getter;
 
 import java.util.List;

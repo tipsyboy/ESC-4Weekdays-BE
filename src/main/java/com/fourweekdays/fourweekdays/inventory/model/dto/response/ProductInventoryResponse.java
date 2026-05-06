@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.inventory.model.dto.response;
 
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.model.entity.InventoryDocument;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 
 import java.util.List;
 

@@ -79,7 +79,7 @@ public class InventoryDocument {
                 .vendorName(inventory.getProduct() != null && inventory.getProduct().getVendor() != null
                         ? inventory.getProduct().getVendor().getName() : null)
                 .unitPrice(inventory.getProduct() != null ? inventory.getProduct().getUnitPrice() : null)
-                .unit(inventory.getProduct() != null ? inventory.getProduct().getUnit() : null)
+                .unit(inventory.getProduct() != null ? inventory.getProduct().getCategory() : null)
                 .description(inventory.getProduct() != null ? inventory.getProduct().getDescription() : null)
                 .quantity(Long.valueOf(inventory.getQuantity()))
                 .lotNumber(inventory.getLotNumber())

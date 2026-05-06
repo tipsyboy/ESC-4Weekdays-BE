@@ -17,7 +17,7 @@ import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import com.fourweekdays.fourweekdays.tasks.model.entity.ShipmentTask;

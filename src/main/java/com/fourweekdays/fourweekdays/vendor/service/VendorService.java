@@ -6,7 +6,7 @@ import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
-import com.fourweekdays.fourweekdays.product.model.dto.response.ProductReadDto;
+import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
@@ -95,10 +95,10 @@ public class VendorService {
         vendor.changeStatus(VendorStatus.STOPPED);
     }
 
-    public List<ProductReadDto> readProducts(Long id) {
+    public List<ProductListResponse> readProducts(Long id) {
         validateExists(id);
         return productRepository.findByVendorId(id).stream()
-                .map(ProductReadDto::from)
+                .map(ProductListResponse::from)
                 .toList();
     }
 
