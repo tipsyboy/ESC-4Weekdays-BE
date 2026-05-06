@@ -1,171 +1,211 @@
 package com.fourweekdays.fourweekdays.purchaseorder.service;
 
-import com.fourweekdays.fourweekdays.global.email.EmailService;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
-import com.fourweekdays.fourweekdays.member.exception.MemberException;
-import com.fourweekdays.fourweekdays.member.domain.Member;
-import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
-import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderCreateItemRequest;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderCreateRequest;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderDetailResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderSearchCondition;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderProductRequestDto;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
 import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
-import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
+import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
-import jakarta.mail.MessagingException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_INVALID_STATUS_CHANGE;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_PRODUCT_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.vendor.exception.VendorExceptionType.VENDOR_NOT_FOUND;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
-    private final EmailService emailService;
-    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long create(PurchaseOrderCreateDto requestDto, Long managerId) {
-        Vendor vendor = vendorRepository.findById(requestDto.getVendorId())
+    public PurchaseOrderDetailResponse create(PurchaseOrderCreateRequest request) {
+        validateCreateStatus(request.status());
+
+        Vendor vendor = vendorRepository.findById(request.vendorId())
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
 
-        Member manager = memberRepository.findById(managerId)
-                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+        List<Long> productIds = request.items().stream()
+                .map(PurchaseOrderCreateItemRequest::productId)
+                .toList();
 
-        PurchaseOrder purchaseOrder = createPurchaseOrder(vendor, manager, requestDto);
-        createOrderProducts(requestDto.getItems(), purchaseOrder);
+        List<Product> products = productRepository.findAllById(productIds);
+
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        String purchaseOrderNumber = codeGenerator.generate(CodeType.PURCHASE_ORDER);
+        PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+                .orderCode(purchaseOrderNumber)
+                .purchaseOrderNumber(purchaseOrderNumber)
+                .vendor(vendor)
+                .requesterName(request.requesterName())
+                .requestedAt(LocalDateTime.now())
+                .orderDate(LocalDateTime.now())
+                .expectedInboundDate(request.expectedInboundDate())
+                .expectedDate(request.expectedInboundDate() != null ? request.expectedInboundDate().atStartOfDay() : null)
+                .status(request.status())
+                .requestMemo(request.requestMemo())
+                .description(request.requestMemo())
+                .build();
+
+        for (PurchaseOrderCreateItemRequest itemRequest : request.items()) {
+            Product product = productMap.get(itemRequest.productId());
+
+            if (product == null) {
+                throw new PurchaseOrderException(PURCHASE_ORDER_PRODUCT_NOT_FOUND);
+            }
+
+            if (!product.getVendor().getId().equals(vendor.getId())) {
+                throw new PurchaseOrderException(PURCHASE_ORDER_VENDOR_MISMATCH);
+            }
+
+            purchaseOrder.addItem(PurchaseOrderProduct.builder()
+                    .product(product)
+                    .orderedQuantity(itemRequest.quantity())
+                    .orderUnitPrice(itemRequest.unitPrice())
+                    .build());
+        }
+
         purchaseOrder.calculateTotalAmount();
-
-        return purchaseOrderRepository.save(purchaseOrder).getId();
+        return PurchaseOrderDetailResponse.from(purchaseOrderRepository.save(purchaseOrder));
     }
 
-    // 단건 조회
-    public PurchaseOrderReadDto findByPurchaseOrderId(Long id) {
-        PurchaseOrder purchaseOrder = findByIdOrThrow(id);
-        return PurchaseOrderReadDto.toDto(purchaseOrder);
+    public Page<PurchaseOrderListResponse> search(PurchaseOrderSearchCondition condition) {
+        Pageable pageable = PageRequest.of(
+                condition.pageOrDefault(),
+                condition.sizeOrDefault(),
+                Sort.by(
+                        Sort.Direction.fromString(condition.sortDirectionOrDefault()),
+                        resolveSortBy(condition.sortByOrDefault())
+                )
+        );
+
+        return purchaseOrderRepository.search(
+                        normalizeText(condition.vendorName()),
+                        normalizeText(condition.requesterName()),
+                        condition.status(),
+                        condition.expectedInboundDate(),
+                        normalizeText(condition.approverName()),
+                        normalizeText(condition.purchaseOrderNumber()),
+                        normalizeText(condition.memoKeyword()),
+                        pageable
+                )
+                .map(PurchaseOrderListResponse::from);
     }
 
-    // 목록 조회
-    public Page<PurchaseOrderReadDto> findPurchaseOrderListByPaging(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PurchaseOrder> list = purchaseOrderRepository.findAllWithPaging(pageable);
-        return list.map(PurchaseOrderReadDto::toDto);
+    public PurchaseOrderDetailResponse read(Long id) {
+        return PurchaseOrderDetailResponse.from(getPurchaseOrder(id));
     }
 
     @Transactional
-    public Long update(Long id, PurchaseOrderUpdateDto requestDto) {
-        PurchaseOrder order = findByIdOrThrow(id);
+    public PurchaseOrderDetailResponse updateStatus(Long id, PurchaseOrderStatusUpdateRequest request) {
+        PurchaseOrder purchaseOrder = getPurchaseOrder(id);
+        validateStatusTransition(purchaseOrder.getStatus(), request.status());
 
-        if (order.getStatus() != PurchaseOrderStatus.REQUESTED) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_UPDATE_AFTER_APPROVAL);
+        if (request.status() == PurchaseOrderStatus.APPROVED) {
+            String approverName = hasText(request.approverName()) ? request.approverName() : "운영관리자";
+            purchaseOrder.approve(approverName, request.approvalMemo(), LocalDateTime.now());
+            return PurchaseOrderDetailResponse.from(purchaseOrder);
         }
 
-        order.update(requestDto.expectedDate(), requestDto.description());
-        order.clearItems();
-        createOrderProducts(requestDto.items(), order);
-
-        return order.getId();
-    }
-
-    // 발주 취소
-    @Transactional
-    public void cancel(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        if (order.getStatus() != PurchaseOrderStatus.REQUESTED) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_CANNOT_CANCEL_AFTER_APPROVAL);
+        if (request.status() == PurchaseOrderStatus.REJECTED) {
+            purchaseOrder.reject(request.approvalMemo());
+            return PurchaseOrderDetailResponse.from(purchaseOrder);
         }
-        order.cancel();
-    }
 
-    // 발주 승인
-    @Transactional
-    public Long approve(Long id) throws MessagingException {
-        PurchaseOrder purchaseOrder = findByIdOrThrow(id);
-        purchaseOrder.approve(); // 상태 변경
-        emailService.sendPurchaseOrderMail(purchaseOrder); // 외부 업체 담당자에게 Email 전송
-
-        return id;
-    }
-
-    @Transactional
-    public void confirm(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        if (order.getStatus() != PurchaseOrderStatus.APPROVED) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        if (request.status() == PurchaseOrderStatus.ORDERED) {
+            purchaseOrder.markOrdered(LocalDateTime.now());
+            return PurchaseOrderDetailResponse.from(purchaseOrder);
         }
-        order.awaitDelivery();
-    }
 
-    // 입고 완료 처리
-    @Transactional
-    public void completeInbound(Long id) {
-        PurchaseOrder order = findByIdOrThrow(id);
-        if (order.getStatus() != PurchaseOrderStatus.AWAITING_DELIVERY) {
-            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        if (request.status() == PurchaseOrderStatus.CANCELED) {
+            purchaseOrder.cancelVibe();
+            return PurchaseOrderDetailResponse.from(purchaseOrder);
         }
-        order.completeDelivery();
+
+        purchaseOrder.changeStatus(request.status());
+        return PurchaseOrderDetailResponse.from(purchaseOrder);
     }
 
-
-    private PurchaseOrder findByIdOrThrow(Long id) {
+    private PurchaseOrder getPurchaseOrder(Long id) {
         return purchaseOrderRepository.findById(id)
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
     }
 
-    private PurchaseOrder createPurchaseOrder(Vendor vendor, Member manager, PurchaseOrderCreateDto dto) {
-        return PurchaseOrder.builder()
-                .vendor(vendor)
-                .manager(manager)
-                .orderCode(codeGenerator.generate(CodeType.PURCHASE_ORDER))
-                .orderDate(LocalDateTime.now())
-                .expectedDate(dto.getExpectedDate())
-                .description(dto.getDescription())
-                .status(PurchaseOrderStatus.REQUESTED)
-                .build();
+    private void validateCreateStatus(PurchaseOrderStatus status) {
+        if (status != PurchaseOrderStatus.DRAFT && status != PurchaseOrderStatus.APPROVAL_PENDING) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
     }
 
-    private List<PurchaseOrderProduct> createOrderProducts(List<PurchaseOrderProductRequestDto> items, PurchaseOrder order) {
-        return items.stream()
-                .map(item -> createOrderProduct(item, order))
-                .toList();
+    private void validateStatusTransition(PurchaseOrderStatus currentStatus, PurchaseOrderStatus nextStatus) {
+        boolean valid = switch (currentStatus) {
+            case DRAFT -> nextStatus == PurchaseOrderStatus.APPROVAL_PENDING || nextStatus == PurchaseOrderStatus.CANCELED;
+            case APPROVAL_PENDING -> nextStatus == PurchaseOrderStatus.APPROVED
+                    || nextStatus == PurchaseOrderStatus.REJECTED
+                    || nextStatus == PurchaseOrderStatus.CANCELED;
+            case APPROVED -> nextStatus == PurchaseOrderStatus.ORDERED || nextStatus == PurchaseOrderStatus.CANCELED;
+            case REJECTED, CANCELED, ORDERED -> false;
+            case REQUESTED, AWAITING_DELIVERY, COMPLETED, CANCELLED -> false;
+        };
+
+        if (!valid) {
+            throw new PurchaseOrderException(PURCHASE_ORDER_INVALID_STATUS_CHANGE);
+        }
     }
 
-    private PurchaseOrderProduct createOrderProduct(PurchaseOrderProductRequestDto dto, PurchaseOrder order) {
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
 
-        PurchaseOrderProduct orderProduct = PurchaseOrderProduct.builder()
-                .product(product)
-                .orderedQuantity(dto.getOrderedQuantity())
-                .description(dto.getDescription())
-                .build();
+    private String resolveSortBy(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "updatedAt";
+        }
 
-        order.addItem(orderProduct);
-        return orderProduct;
+        return switch (sortBy) {
+            case "purchaseOrderNumber", "vendorName", "requesterName", "approverName",
+                    "requestedAt", "approvedAt", "orderedAt", "expectedInboundDate",
+                    "status", "createdAt", "updatedAt" -> sortBy;
+            default -> "updatedAt";
+        };
+    }
+
+    private String normalizeText(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 }

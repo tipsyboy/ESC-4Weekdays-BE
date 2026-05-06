@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorSearchCondition;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorStatusUpdateDto;
@@ -50,7 +50,7 @@ public class VendorController {
     }
 
     @GetMapping("/{id}/purchase-orders")
-    public ResponseEntity<BaseResponse<List<PurchaseOrderReadDto>>> readVendorPurchaseOrders(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<List<PurchaseOrderListResponse>>> readVendorPurchaseOrders(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(vendorService.readPurchaseOrders(id)));
     }
 

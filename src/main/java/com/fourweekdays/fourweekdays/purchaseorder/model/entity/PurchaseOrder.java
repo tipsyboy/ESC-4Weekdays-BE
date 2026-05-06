@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +25,42 @@ public class PurchaseOrder extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String orderCode;
 
+    @Column(unique = true, length = 50)
+    private String purchaseOrderNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member manager; // 발주서 담당자
+    private Member manager; // 발주 담당자. old Inbound 연동 호환용이며 추후 requester/approver 구조로 정리한다.
 
     @Builder.Default
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrderProduct> products = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private PurchaseOrderStatus status;
+
+    @Column(length = 100)
+    private String requesterName; // 발주 요청자
+
+    @Column(length = 100)
+    private String approverName; // 발주 승인자
+
+    private LocalDateTime requestedAt;
+
+    private LocalDateTime approvedAt;
+    private LocalDateTime orderedAt;
+    private LocalDate expectedInboundDate;
+
+    @Column(length = 1000)
+    private String requestMemo;
+
+    @Column(length = 1000)
+    private String approvalMemo;
 
     @Column(length = 1000)
     private String description;
@@ -94,6 +116,27 @@ public class PurchaseOrder extends BaseEntity {
         this.status = PurchaseOrderStatus.APPROVED;
     }
 
+    public void approve(String approverName, String approvalMemo, LocalDateTime approvedAt) {
+        this.status = PurchaseOrderStatus.APPROVED;
+        this.approverName = approverName;
+        this.approvalMemo = approvalMemo;
+        this.approvedAt = approvedAt;
+    }
+
+    public void reject(String approvalMemo) {
+        this.status = PurchaseOrderStatus.REJECTED;
+        this.approvalMemo = approvalMemo;
+    }
+
+    public void markOrdered(LocalDateTime orderedAt) {
+        this.status = PurchaseOrderStatus.ORDERED;
+        this.orderedAt = orderedAt;
+    }
+
+    public void changeStatus(PurchaseOrderStatus status) {
+        this.status = status;
+    }
+
     // 발주 확정 (공급사 납품 준비 완료)
     public void awaitDelivery() {
         this.status = PurchaseOrderStatus.AWAITING_DELIVERY;
@@ -109,10 +152,44 @@ public class PurchaseOrder extends BaseEntity {
         this.status = PurchaseOrderStatus.CANCELLED;
     }
 
+    public void cancelVibe() {
+        this.status = PurchaseOrderStatus.CANCELED;
+    }
+
     // 상품 제거
     public void deleteItem(PurchaseOrderProduct item) {
         if (this.products.remove(item)) {
             recalculateTotalAmount();
         }
+    }
+
+    public String getPurchaseOrderNumber() {
+        return purchaseOrderNumber != null ? purchaseOrderNumber : orderCode;
+    }
+
+    public LocalDateTime getRequestedAt() {
+        return requestedAt != null ? requestedAt : orderDate;
+    }
+
+    public LocalDate getExpectedInboundDate() {
+        if (expectedInboundDate != null) {
+            return expectedInboundDate;
+        }
+        return expectedDate != null ? expectedDate.toLocalDate() : null;
+    }
+
+    public String getRequesterName() {
+        if (requesterName != null) {
+            return requesterName;
+        }
+        return manager != null ? manager.getName() : "운영관리자";
+    }
+
+    public String getRequestMemo() {
+        return requestMemo != null ? requestMemo : description;
+    }
+
+    public List<PurchaseOrderProduct> getItems() {
+        return products;
     }
 }
