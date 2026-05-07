@@ -16,7 +16,7 @@ import java.util.List;
 import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inbound;
 import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 @Repository

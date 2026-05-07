@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.dto;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

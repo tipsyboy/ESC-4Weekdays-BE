@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 @RequiredArgsConstructor

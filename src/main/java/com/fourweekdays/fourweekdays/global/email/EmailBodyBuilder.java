@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.global.email;
 
 import com.fourweekdays.fourweekdays.product.domain.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 
 public class EmailBodyBuilder {
     public static String buildPurchaseOrderBody(PurchaseOrder order) {

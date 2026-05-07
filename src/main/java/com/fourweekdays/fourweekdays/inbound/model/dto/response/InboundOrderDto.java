@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.model.dto.response;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import lombok.*;
 
 import java.time.LocalDateTime;

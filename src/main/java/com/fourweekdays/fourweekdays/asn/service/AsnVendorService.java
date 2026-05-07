@@ -11,7 +11,7 @@ import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.ASN_ALREADY_EXISTS;
 import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.VENDOR_MISMATCH;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.*;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus.APPROVED;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus.APPROVED;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

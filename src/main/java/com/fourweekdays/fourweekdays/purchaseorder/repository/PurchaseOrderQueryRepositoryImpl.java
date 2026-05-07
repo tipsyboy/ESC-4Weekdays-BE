@@ -1,12 +1,12 @@
 package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrderProduct.purchaseOrderProduct;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderProduct.purchaseOrderProduct;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;

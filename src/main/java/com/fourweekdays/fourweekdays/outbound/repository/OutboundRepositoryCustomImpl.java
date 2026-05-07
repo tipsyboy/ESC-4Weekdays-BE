@@ -15,7 +15,7 @@ import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inboun
 import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.outbound.model.entity.QOutboundProductItem.outboundProductItem;
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 @Repository
