@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.asn.domain;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +38,10 @@ public class Asn extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
     @Column(name = "expected_date", nullable = false)
     private LocalDateTime expectedArrivalAt;
@@ -76,6 +81,7 @@ public class Asn extends BaseEntity {
     ) {
         this.asnNumber = asnNumber;
         this.purchaseOrder = purchaseOrder;
+        this.vendor = purchaseOrder.getVendor();
         this.expectedArrivalAt = expectedArrivalAt;
         this.receivedAt = receivedAt;
         this.status = status;
