@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.vendor.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
@@ -13,7 +14,6 @@ import com.fourweekdays.fourweekdays.vendor.dto.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,9 +39,8 @@ public class VendorController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@ModelAttribute VendorSearchCondition condition) {
-        Page<VendorReadDto> result = vendorService.readAll(condition);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    public ResponseEntity<BaseResponse<PageResponse<VendorReadDto>>> readVendors(@ModelAttribute VendorSearchCondition condition) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readAll(condition))));
     }
 
     @GetMapping("/{id}/products")
@@ -50,22 +49,24 @@ public class VendorController {
     }
 
     @GetMapping("/{id}/purchase-orders")
-    public ResponseEntity<BaseResponse<List<PurchaseOrderListResponse>>> readVendorPurchaseOrders(@PathVariable Long id) {
-        return ResponseEntity.ok(BaseResponse.success(vendorService.readPurchaseOrders(id)));
+    public ResponseEntity<BaseResponse<PageResponse<PurchaseOrderListResponse>>> readVendorPurchaseOrders(@PathVariable Long id,
+                                                                                                          @RequestParam(defaultValue = "0") Integer page,
+                                                                                                          @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readPurchaseOrders(id, page, size))));
     }
 
     @GetMapping("/{id}/asns")
-    public ResponseEntity<BaseResponse<Page<AsnListResponse>>> readVendorAsns(@PathVariable Long id,
-                                                                               @RequestParam(defaultValue = "0") Integer page,
-                                                                               @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(BaseResponse.success(vendorService.readAsns(id, page, size)));
+    public ResponseEntity<BaseResponse<PageResponse<AsnListResponse>>> readVendorAsns(@PathVariable Long id,
+                                                                                      @RequestParam(defaultValue = "0") Integer page,
+                                                                                      @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readAsns(id, page, size))));
     }
 
     @GetMapping("/{id}/inbounds")
-    public ResponseEntity<BaseResponse<Page<InboundReadDto>>> readVendorInbounds(@PathVariable Long id,
-                                                                                 @RequestParam(defaultValue = "0") Integer page,
-                                                                                 @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(BaseResponse.success(vendorService.readInbounds(id, page, size)));
+    public ResponseEntity<BaseResponse<PageResponse<InboundReadDto>>> readVendorInbounds(@PathVariable Long id,
+                                                                                         @RequestParam(defaultValue = "0") Integer page,
+                                                                                         @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readInbounds(id, page, size))));
     }
 
     // 내용 수정

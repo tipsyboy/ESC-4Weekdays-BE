@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.purchaseorder.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderCreateRequest;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderDetailResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
@@ -9,7 +10,6 @@ import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderStatusUpdate
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,8 +28,8 @@ public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<PurchaseOrderListResponse>>> readAll(@ModelAttribute PurchaseOrderSearchCondition condition) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.search(condition)));
+    public ResponseEntity<BaseResponse<PageResponse<PurchaseOrderListResponse>>> readAll(@ModelAttribute PurchaseOrderSearchCondition condition) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(purchaseOrderService.search(condition))));
     }
 
     @GetMapping("/{id}")

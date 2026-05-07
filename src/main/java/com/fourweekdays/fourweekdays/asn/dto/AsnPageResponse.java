@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.asn.dto;
 
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import java.util.List;
-import org.springframework.data.domain.Page;
 
 public record AsnPageResponse(
         List<AsnListResponse> content,
@@ -13,13 +13,13 @@ public record AsnPageResponse(
         boolean hasPrevious,
         AsnSummaryResponse summary
 ) {
-    public static AsnPageResponse from(Page<AsnListResponse> page, AsnSummaryResponse summary) {
+    public static AsnPageResponse from(PageResponse<AsnListResponse> page, AsnSummaryResponse summary) {
         return new AsnPageResponse(
-                page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
+                page.content(),
+                page.page(),
+                page.size(),
+                page.totalElements(),
+                page.totalPages(),
                 page.hasNext(),
                 page.hasPrevious(),
                 summary

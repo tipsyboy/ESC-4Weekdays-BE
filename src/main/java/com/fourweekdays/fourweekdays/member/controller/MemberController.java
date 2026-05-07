@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.member.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.member.dto.MemberEmailCheckDto;
 import com.fourweekdays.fourweekdays.member.dto.MemberResponseDto;
 import com.fourweekdays.fourweekdays.member.dto.MemberSearchDto;
@@ -29,10 +30,10 @@ public class MemberController {
 
     //직원 페이징 처리 조회
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<MemberResponseDto>>> memberReads(@RequestParam(defaultValue = "0") Integer page,
-                                                                             @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<BaseResponse<PageResponse<MemberResponseDto>>> memberReads(@RequestParam(defaultValue = "0") Integer page,
+                                                                                     @RequestParam(defaultValue = "10") Integer size) {
         Page<MemberResponseDto> result = memberService.readAll(page, size);
-        return ResponseEntity.ok(BaseResponse.success(result));
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(result)));
     }
 
     //직원 상세 조회
@@ -66,11 +67,11 @@ public class MemberController {
 
     //검색 기능
     @GetMapping("/search")
-    public ResponseEntity<BaseResponse<Page<MemberResponseDto>>> searchMember(
+    public ResponseEntity<BaseResponse<PageResponse<MemberResponseDto>>> searchMember(
             MemberSearchDto dto,
             Pageable pageable
     ) {
         Page<MemberResponseDto> result = memberService.searchMembers(dto, pageable);
-        return ResponseEntity.ok(BaseResponse.success(result));
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(result)));
     }
 }

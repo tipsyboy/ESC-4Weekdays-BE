@@ -102,11 +102,10 @@ public class VendorService {
                 .toList();
     }
 
-    public List<PurchaseOrderListResponse> readPurchaseOrders(Long id) {
+    public Page<PurchaseOrderListResponse> readPurchaseOrders(Long id, Integer page, Integer size) {
         validateExists(id);
-        return purchaseOrderRepository.findByVendorId(id).stream()
-                .map(PurchaseOrderListResponse::from)
-                .toList();
+        return purchaseOrderRepository.findByVendorId(id, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
+                .map(PurchaseOrderListResponse::from);
     }
 
     public Page<AsnListResponse> readAsns(Long id, Integer page, Integer size) {

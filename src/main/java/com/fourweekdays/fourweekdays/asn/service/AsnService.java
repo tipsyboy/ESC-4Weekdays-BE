@@ -12,6 +12,7 @@ import com.fourweekdays.fourweekdays.asn.dto.AsnSummaryResponse;
 import com.fourweekdays.fourweekdays.asn.dto.AsnStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.asn.exception.AsnException;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
@@ -125,7 +126,7 @@ public class AsnService {
                 .map(AsnListResponse::from);
 
         return AsnPageResponse.from(
-                pageResponse,
+                PageResponse.from(pageResponse),
                 AsnSummaryResponse.from(allAsns)
         );
     }
