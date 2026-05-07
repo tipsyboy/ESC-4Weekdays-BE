@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.dto;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
 
 public record PurchaseOrderItemResponse(
         Long productId,

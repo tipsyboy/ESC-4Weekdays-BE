@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 import com.querydsl.core.types.Order;

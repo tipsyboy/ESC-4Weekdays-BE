@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.purchaseorder.model.entity;
+package com.fourweekdays.fourweekdays.purchaseorder.domain;
 
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.global.email;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 

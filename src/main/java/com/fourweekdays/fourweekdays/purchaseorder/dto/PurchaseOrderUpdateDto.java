@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.purchaseorder.model.dto.request;
+package com.fourweekdays.fourweekdays.purchaseorder.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;

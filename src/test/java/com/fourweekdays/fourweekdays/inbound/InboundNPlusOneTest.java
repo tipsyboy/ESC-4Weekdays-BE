@@ -12,9 +12,9 @@ import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
@@ -39,8 +39,8 @@ import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inboun
 import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrderProduct.purchaseOrderProduct;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderProduct.purchaseOrderProduct;
 import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @SpringBootTest(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=0")
