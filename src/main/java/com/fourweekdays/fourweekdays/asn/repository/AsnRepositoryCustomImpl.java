@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.asn.repository;
 
-import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.asn.model.entity.QAsn.asn;
+import static com.fourweekdays.fourweekdays.asn.domain.QAsn.asn;
 
 
 @RequiredArgsConstructor

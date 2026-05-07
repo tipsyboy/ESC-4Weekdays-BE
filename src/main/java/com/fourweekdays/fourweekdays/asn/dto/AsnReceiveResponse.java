@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.asn.model.dto.response;
+package com.fourweekdays.fourweekdays.asn.dto;
 
 import lombok.Builder;
 

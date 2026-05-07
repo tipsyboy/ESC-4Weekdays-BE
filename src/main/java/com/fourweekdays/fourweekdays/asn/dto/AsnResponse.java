@@ -1,6 +1,6 @@
-package com.fourweekdays.fourweekdays.asn.model.dto.response;
+package com.fourweekdays.fourweekdays.asn.dto;
 
-import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderProductResponseDto;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import lombok.Builder;

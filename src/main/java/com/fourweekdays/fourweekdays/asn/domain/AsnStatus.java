@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.asn.model.entity;
+package com.fourweekdays.fourweekdays.asn.domain;
 
 import lombok.Getter;
 

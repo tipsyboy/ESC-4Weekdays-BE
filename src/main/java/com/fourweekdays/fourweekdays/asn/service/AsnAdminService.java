@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
 import com.fourweekdays.fourweekdays.asn.exception.AsnException;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
-import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
+import com.fourweekdays.fourweekdays.asn.dto.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,11 +1,11 @@
 package com.fourweekdays.fourweekdays.asn.service;
 
 import com.fourweekdays.fourweekdays.asn.exception.AsnException;
-import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnReceiveResponse;
-import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
-import com.fourweekdays.fourweekdays.asn.model.entity.AsnStatus;
+import com.fourweekdays.fourweekdays.asn.dto.AsnReceiveRequest;
+import com.fourweekdays.fourweekdays.asn.dto.PurchaseOrderRejectRequest;
+import com.fourweekdays.fourweekdays.asn.dto.AsnReceiveResponse;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
+import com.fourweekdays.fourweekdays.asn.domain.AsnStatus;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;

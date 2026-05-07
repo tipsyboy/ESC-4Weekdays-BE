@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;

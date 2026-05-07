@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.asn.model.dto.request;
+package com.fourweekdays.fourweekdays.asn.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

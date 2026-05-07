@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.asn.controller;
 
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnResponse;
 import com.fourweekdays.fourweekdays.asn.service.AsnAdminService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.asn.model.entity;
+package com.fourweekdays.fourweekdays.asn.domain;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;

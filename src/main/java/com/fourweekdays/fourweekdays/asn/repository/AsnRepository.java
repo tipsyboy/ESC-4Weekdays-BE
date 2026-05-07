@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.asn.repository;
 
-import com.fourweekdays.fourweekdays.asn.model.entity.Asn;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

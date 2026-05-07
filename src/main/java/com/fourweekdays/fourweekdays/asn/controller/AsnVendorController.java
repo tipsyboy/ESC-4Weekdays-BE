@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.asn.controller;
 
 import com.fourweekdays.fourweekdays.asn.annotation.AuthenticatedVendor;
-import com.fourweekdays.fourweekdays.asn.model.dto.request.AsnReceiveRequest;
-import com.fourweekdays.fourweekdays.asn.model.dto.request.PurchaseOrderRejectRequest;
+import com.fourweekdays.fourweekdays.asn.dto.AsnReceiveRequest;
+import com.fourweekdays.fourweekdays.asn.dto.PurchaseOrderRejectRequest;
 import com.fourweekdays.fourweekdays.asn.service.AsnVendorService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
