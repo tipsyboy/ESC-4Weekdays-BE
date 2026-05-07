@@ -120,11 +120,7 @@ public class AsnService {
 
     public AsnPageResponse readAll(int page, int size) {
         Long vendorId = authAccessService.currentVendorIdForVendorManagerOrNull();
-        List<AsnListResponse> allAsns = (vendorId == null
-                ? asnRepository.findAllByOrderByIdDesc()
-                : asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(vendorId)).stream()
-                .map(AsnListResponse::from)
-                .toList();
+        AsnSummaryResponse summary = summarize(vendorId);
 
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<AsnListResponse> pageResponse = (vendorId == null
@@ -134,8 +130,12 @@ public class AsnService {
 
         return AsnPageResponse.from(
                 PageResponse.from(pageResponse),
-                AsnSummaryResponse.from(allAsns)
+                summary
         );
+    }
+
+    private AsnSummaryResponse summarize(Long vendorId) {
+        return asnRepository.summarize(vendorId);
     }
 
     public AsnDetailResponse read(Long id) {

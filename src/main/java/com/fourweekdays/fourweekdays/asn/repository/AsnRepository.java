@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AsnRepository extends JpaRepository<Asn, Long> {
+public interface AsnRepository extends JpaRepository<Asn, Long>, AsnSummaryRepository {
 
     List<Asn> findAllByOrderByIdDesc();
 
