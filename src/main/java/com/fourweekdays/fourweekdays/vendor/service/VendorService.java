@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
-import com.fourweekdays.fourweekdays.asn.dto.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
@@ -109,10 +109,10 @@ public class VendorService {
                 .toList();
     }
 
-    public Page<AsnResponse> readAsns(Long id, Integer page, Integer size) {
+    public Page<AsnListResponse> readAsns(Long id, Integer page, Integer size) {
         validateExists(id);
-        return asnRepository.findByVendorId(id, PageRequest.of(page, size))
-                .map(AsnResponse::toDto);
+        return asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(id, PageRequest.of(page, size))
+                .map(AsnListResponse::from);
     }
 
     public Page<InboundReadDto> readInbounds(Long id, Integer page, Integer size) {

@@ -1,7 +1,7 @@
 package com.fourweekdays.fourweekdays.vendor.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.asn.dto.AsnResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
@@ -55,9 +55,9 @@ public class VendorController {
     }
 
     @GetMapping("/{id}/asns")
-    public ResponseEntity<BaseResponse<Page<AsnResponse>>> readVendorAsns(@PathVariable Long id,
-                                                                          @RequestParam(defaultValue = "0") Integer page,
-                                                                          @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<BaseResponse<Page<AsnListResponse>>> readVendorAsns(@PathVariable Long id,
+                                                                               @RequestParam(defaultValue = "0") Integer page,
+                                                                               @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(BaseResponse.success(vendorService.readAsns(id, page, size)));
     }
 
