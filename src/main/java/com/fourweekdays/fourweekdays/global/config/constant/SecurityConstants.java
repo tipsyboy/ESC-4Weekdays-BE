@@ -42,6 +42,7 @@ public final class SecurityConstants {
     };
 
     public static final String[] VENDOR_PORTAL_READ_LIST = {
+            "/api/vendor-portal/**",
             "/api/vendors/*",
             "/api/vendors/*/purchase-orders",
             "/api/purchase-orders/*",
@@ -51,6 +52,7 @@ public final class SecurityConstants {
     };
 
     public static final String[] VENDOR_PORTAL_WRITE_LIST = {
+            "/api/vendor-portal/asns",
             "/api/asns"
     };
 
