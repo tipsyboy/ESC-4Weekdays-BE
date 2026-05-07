@@ -12,6 +12,7 @@ import com.fourweekdays.fourweekdays.asn.dto.AsnSummaryResponse;
 import com.fourweekdays.fourweekdays.asn.dto.AsnStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.asn.exception.AsnException;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
+import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
@@ -49,6 +50,7 @@ public class AsnService {
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
     private final InboundService inboundService;
+    private final AuthAccessService authAccessService;
 
     @Transactional
     public AsnDetailResponse create(AsnCreateRequest request) {
@@ -56,6 +58,7 @@ public class AsnService {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(request.purchaseOrderId())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+        authAccessService.assertVendorScope(purchaseOrder.getVendor().getId());
 
         if (purchaseOrder.getStatus() != PurchaseOrderStatus.ORDERED) {
             throw new AsnException(ASN_INVALID_REQUEST);
@@ -116,13 +119,17 @@ public class AsnService {
     }
 
     public AsnPageResponse readAll(int page, int size) {
-        List<AsnListResponse> allAsns = asnRepository.findAllByOrderByIdDesc().stream()
+        Long vendorId = authAccessService.currentVendorIdForVendorManagerOrNull();
+        List<AsnListResponse> allAsns = (vendorId == null
+                ? asnRepository.findAllByOrderByIdDesc()
+                : asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(vendorId)).stream()
                 .map(AsnListResponse::from)
                 .toList();
 
-        Page<AsnListResponse> pageResponse = asnRepository.findAll(
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
-                )
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<AsnListResponse> pageResponse = (vendorId == null
+                ? asnRepository.findAll(pageable)
+                : asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(vendorId, pageable))
                 .map(AsnListResponse::from);
 
         return AsnPageResponse.from(
@@ -132,10 +139,16 @@ public class AsnService {
     }
 
     public AsnDetailResponse read(Long id) {
-        return AsnDetailResponse.from(getAsn(id));
+        Asn asn = getAsn(id);
+        authAccessService.assertVendorScope(asn.getPurchaseOrder().getVendor().getId());
+        return AsnDetailResponse.from(asn);
     }
 
     public AsnDetailResponse readByPurchaseOrderId(Long purchaseOrderId) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+        authAccessService.assertVendorScope(purchaseOrder.getVendor().getId());
+
         return asnRepository.findByPurchaseOrderId(purchaseOrderId)
                 .map(AsnDetailResponse::from)
                 .orElseThrow(() -> new AsnException(ASN_NOT_FOUND));
@@ -144,6 +157,7 @@ public class AsnService {
     @Transactional
     public AsnDetailResponse updateStatus(Long id, AsnStatusUpdateRequest request) {
         Asn asn = getAsn(id);
+        authAccessService.assertVendorScope(asn.getPurchaseOrder().getVendor().getId());
         validateStatusTransition(asn.getStatus(), request.status());
 
         if (request.status() == AsnStatus.RECEIVED) {

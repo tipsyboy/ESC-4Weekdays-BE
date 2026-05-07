@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
+import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
@@ -41,6 +42,7 @@ public class VendorService {
     private final AsnRepository asnRepository;
     private final InboundRepository inboundRepository;
     private final CodeGenerator codeGenerator;
+    private final AuthAccessService authAccessService;
 
     @Transactional
     public VendorReadDto create(VendorCreateDto dto) {
@@ -50,6 +52,7 @@ public class VendorService {
     }
 
     public VendorReadDto read(Long id) {
+        authAccessService.assertVendorScope(id);
         Vendor entity = vendorRepository.findById(id)
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
         return VendorReadDto.from(entity);
@@ -96,6 +99,7 @@ public class VendorService {
     }
 
     public List<ProductListResponse> readProducts(Long id) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return productRepository.findByVendorId(id).stream()
                 .map(ProductListResponse::from)
@@ -103,18 +107,21 @@ public class VendorService {
     }
 
     public Page<PurchaseOrderListResponse> readPurchaseOrders(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return purchaseOrderRepository.findByVendorId(id, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
                 .map(PurchaseOrderListResponse::from);
     }
 
     public Page<AsnListResponse> readAsns(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(id, PageRequest.of(page, size))
                 .map(AsnListResponse::from);
     }
 
     public Page<InboundReadDto> readInbounds(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return inboundRepository.findByPurchaseOrderVendorId(id, PageRequest.of(page, size))
                 .map(InboundReadDto::from);

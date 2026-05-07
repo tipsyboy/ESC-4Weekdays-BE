@@ -42,6 +42,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, SecurityConstants.LOGIN_URL).permitAll()
                 .requestMatchers(SecurityConstants.API_WHITE_LIST).permitAll()
 
+                // 공급업체 포털
+                .requestMatchers(HttpMethod.GET, SecurityConstants.VENDOR_PORTAL_READ_LIST)
+                .hasAnyRole("ADMIN", "MANAGER", "VENDOR_MANAGER")
+                .requestMatchers(HttpMethod.POST, SecurityConstants.VENDOR_PORTAL_WRITE_LIST)
+                .hasRole("VENDOR_MANAGER")
+
                 // 관리자 전용 (생성 / 수정 / 삭제)
                 .requestMatchers(HttpMethod.POST, SecurityConstants.ADMIN_POST_LIST).hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, SecurityConstants.ADMIN_PATCH_LIST).hasRole("ADMIN")
