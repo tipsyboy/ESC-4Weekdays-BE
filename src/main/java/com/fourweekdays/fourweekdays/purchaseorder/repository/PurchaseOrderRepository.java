@@ -1,6 +1,8 @@
 package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,6 +14,8 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     @EntityGraph(attributePaths = {"vendor", "products", "products.product"})
     List<PurchaseOrder> findByVendorId(Long vendorId);
+
+    Page<PurchaseOrder> findByVendorId(Long vendorId, Pageable pageable);
 
     @Override
     @EntityGraph(attributePaths = {"vendor", "products", "products.product"})

@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.purchaseorder.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
+import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderCreateItemRequest;
@@ -47,6 +48,7 @@ public class PurchaseOrderService {
     private final VendorRepository vendorRepository;
     private final ProductRepository productRepository;
     private final CodeGenerator codeGenerator;
+    private final AuthAccessService authAccessService;
 
     @Transactional
     public PurchaseOrderDetailResponse create(PurchaseOrderCreateRequest request) {
@@ -125,7 +127,9 @@ public class PurchaseOrderService {
     }
 
     public PurchaseOrderDetailResponse read(Long id) {
-        return PurchaseOrderDetailResponse.from(getPurchaseOrder(id));
+        PurchaseOrder purchaseOrder = getPurchaseOrder(id);
+        authAccessService.assertVendorScope(purchaseOrder.getVendor().getId());
+        return PurchaseOrderDetailResponse.from(purchaseOrder);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.product.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.product.dto.ProductCreateRequest;
 import com.fourweekdays.fourweekdays.product.dto.ProductDetailResponse;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
@@ -10,7 +11,6 @@ import com.fourweekdays.fourweekdays.product.dto.ProductUpdateRequest;
 import com.fourweekdays.fourweekdays.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,8 +29,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<ProductListResponse>>> readAll(@ModelAttribute ProductSearchCondition condition) {
-        return ResponseEntity.ok(BaseResponse.success(productService.search(condition)));
+    public ResponseEntity<BaseResponse<PageResponse<ProductListResponse>>> readAll(@ModelAttribute ProductSearchCondition condition) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(productService.search(condition))));
     }
 
     @GetMapping("/{id}")

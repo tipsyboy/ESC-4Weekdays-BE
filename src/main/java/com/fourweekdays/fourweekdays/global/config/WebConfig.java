@@ -1,6 +1,5 @@
 package com.fourweekdays.fourweekdays.global.config;
 
-import com.fourweekdays.fourweekdays.asn.resolver.VendorArgumentResolver;
 import com.fourweekdays.fourweekdays.order.resolver.FranchiseArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +16,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final VendorArgumentResolver vendorArgumentResolver;
     private final FranchiseArgumentResolver franchiseArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(vendorArgumentResolver);
         resolvers.add(franchiseArgumentResolver);
     }
 

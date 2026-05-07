@@ -2,7 +2,8 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
-import com.fourweekdays.fourweekdays.asn.model.dto.response.AsnResponse;
+import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
+import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
 import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
@@ -41,6 +42,7 @@ public class VendorService {
     private final AsnRepository asnRepository;
     private final InboundRepository inboundRepository;
     private final CodeGenerator codeGenerator;
+    private final AuthAccessService authAccessService;
 
     @Transactional
     public VendorReadDto create(VendorCreateDto dto) {
@@ -50,6 +52,7 @@ public class VendorService {
     }
 
     public VendorReadDto read(Long id) {
+        authAccessService.assertVendorScope(id);
         Vendor entity = vendorRepository.findById(id)
                 .orElseThrow(() -> new VendorException(VENDOR_NOT_FOUND));
         return VendorReadDto.from(entity);
@@ -96,26 +99,29 @@ public class VendorService {
     }
 
     public List<ProductListResponse> readProducts(Long id) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return productRepository.findByVendorId(id).stream()
                 .map(ProductListResponse::from)
                 .toList();
     }
 
-    public List<PurchaseOrderListResponse> readPurchaseOrders(Long id) {
+    public Page<PurchaseOrderListResponse> readPurchaseOrders(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
-        return purchaseOrderRepository.findByVendorId(id).stream()
-                .map(PurchaseOrderListResponse::from)
-                .toList();
+        return purchaseOrderRepository.findByVendorId(id, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
+                .map(PurchaseOrderListResponse::from);
     }
 
-    public Page<AsnResponse> readAsns(Long id, Integer page, Integer size) {
+    public Page<AsnListResponse> readAsns(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
-        return asnRepository.findByVendorId(id, PageRequest.of(page, size))
-                .map(AsnResponse::toDto);
+        return asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(id, PageRequest.of(page, size))
+                .map(AsnListResponse::from);
     }
 
     public Page<InboundReadDto> readInbounds(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
         validateExists(id);
         return inboundRepository.findByPurchaseOrderVendorId(id, PageRequest.of(page, size))
                 .map(InboundReadDto::from);

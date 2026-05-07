@@ -3,6 +3,7 @@ package com.fourweekdays.fourweekdays.global.exception;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(httpStatus)
                 .body(BaseResponse.fail(httpStatus, errorMessage));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse<Void>> accessDeniedExceptionHandler(AccessDeniedException e) {
+        log.warn("[AccessDeniedException] >> {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(BaseResponse.fail(HttpStatus.FORBIDDEN, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
