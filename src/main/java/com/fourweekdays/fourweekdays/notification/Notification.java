@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.notification;
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.member.domain.Member;

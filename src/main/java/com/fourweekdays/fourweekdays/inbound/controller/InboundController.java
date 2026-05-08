@@ -1,11 +1,11 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundCreateRequestDto;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundInspectionUpdateRequest;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundSearchRequest;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundInspectionUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundSearchRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundStatusUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.inventory.service;
 
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;

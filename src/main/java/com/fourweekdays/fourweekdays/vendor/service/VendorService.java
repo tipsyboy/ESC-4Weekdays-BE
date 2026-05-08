@@ -5,7 +5,7 @@ import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;

@@ -1,7 +1,7 @@
 //package com.fourweekdays.fourweekdays.inbound.querydsl.condition;
 //
-//import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
-//import com.fourweekdays.fourweekdays.inbound.model.entity.QInbound;
+//import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
+//import com.fourweekdays.fourweekdays.inbound.domain.QInbound;
 //import com.querydsl.core.BooleanBuilder;
 //import org.springframework.util.StringUtils;
 //

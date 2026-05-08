@@ -1,9 +1,9 @@
 package com.fourweekdays.fourweekdays.inbound;
 
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
@@ -36,8 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inbound;
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInbound.inbound;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
 import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;

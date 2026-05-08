@@ -1,7 +1,7 @@
-package com.fourweekdays.fourweekdays.inbound.model.dto.response;
+package com.fourweekdays.fourweekdays.inbound.dto;
 
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

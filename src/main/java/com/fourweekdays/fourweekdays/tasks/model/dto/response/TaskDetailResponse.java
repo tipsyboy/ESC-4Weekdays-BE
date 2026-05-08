@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.tasks.model.dto.response;
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.tasks.model.entity.*;
 
