@@ -51,7 +51,7 @@ public class VendorPortalController {
 
     @GetMapping("/purchase-orders/{purchaseOrderId}/asn")
     public BaseResponse<AsnDetailResponse> readAsnByPurchaseOrderId(@PathVariable Long purchaseOrderId) {
-        return BaseResponse.success(asnService.readByPurchaseOrderId(purchaseOrderId));
+        return BaseResponse.success(asnService.readOptionalByPurchaseOrderId(purchaseOrderId));
     }
 
     @GetMapping("/asns")
