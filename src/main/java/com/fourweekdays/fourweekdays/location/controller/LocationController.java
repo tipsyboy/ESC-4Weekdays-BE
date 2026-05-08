@@ -17,6 +17,11 @@ public class LocationController {
 
     private final LocationService locationService;
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<LocationResponse>>> readAll() {
+        return ResponseEntity.ok(BaseResponse.success(locationService.readAll()));
+    }
+
     @GetMapping("/available")
     public ResponseEntity<BaseResponse<List<LocationResponse>>> getAvailableLocations() {
         return ResponseEntity.ok(BaseResponse.success(locationService.getAvailableLocationsByVendor()));

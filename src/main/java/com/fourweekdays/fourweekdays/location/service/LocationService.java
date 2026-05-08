@@ -23,6 +23,12 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
 
+    public List<LocationResponse> readAll() {
+        return locationRepository.findAll().stream()
+                .map(LocationResponse::from)
+                .toList();
+    }
+
     public List<LocationResponse> getAvailableLocationsByVendor() {
         List<Location> locations = locationRepository.findAvailableLocationsByVendor();
         return locations.stream()

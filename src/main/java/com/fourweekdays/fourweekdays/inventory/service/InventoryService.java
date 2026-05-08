@@ -6,6 +6,7 @@ import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
+import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryMapLocationResponse;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
@@ -24,6 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
@@ -38,6 +43,27 @@ public class InventoryService {
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
     private final InboundRepository inboundRepository;
+
+    @Transactional
+    public void reflectInbound(Inbound inbound, LocalDateTime receivedAt) {
+        for (InboundProduct inboundProduct : inbound.getProducts()) {
+            if (inboundProduct.getReceivedQuantity() == null || inboundProduct.getReceivedQuantity() <= 0) {
+                continue;
+            }
+
+            if (inboundProduct.getLocation() == null) {
+                throw new LocationException(LOCATION_NOT_FOUND);
+            }
+
+            createOrIncreaseInventory(
+                    inboundProduct.getProduct().getId(),
+                    inboundProduct.getLocation().getId(),
+                    inboundProduct.getLotNumber(),
+                    inboundProduct.getReceivedQuantity(),
+                    inbound.getId()
+            );
+        }
+    }
 
     @Transactional
     public void createInventoryFromInbound(Long inboundId, String locationCode) {
@@ -103,6 +129,17 @@ public class InventoryService {
                 .stream()
                 .mapToInt(Inventory::getQuantity)
                 .sum();
+    }
+
+    public List<InventoryMapLocationResponse> readMap() {
+        return inventoryRepository.findAll().stream()
+                .filter(inventory -> inventory.getQuantity() > 0)
+                .collect(Collectors.groupingBy(inventory -> inventory.getLocation().getLocationCode()))
+                .values()
+                .stream()
+                .map(InventoryMapLocationResponse::from)
+                .sorted(Comparator.comparing(InventoryMapLocationResponse::locationCode))
+                .toList();
     }
 
     private void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,

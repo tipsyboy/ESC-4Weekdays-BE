@@ -13,7 +13,12 @@ public record LocationResponse(
         Integer currentUsage,
         Integer remainingCapacity,
         LocationStatus status,
-        String description
+        String description,
+        String zoneCode,
+        String rackCode,
+        String levelCode,
+        String zoneType,
+        Boolean usable
 ) {
     public static LocationResponse from(Location location) {
         return new LocationResponse(
@@ -26,7 +31,12 @@ public record LocationResponse(
                 location.getUsedCapacity(),
                 location.freeCapacity(),
                 location.getStatus(),
-                location.getDescription()
+                location.getDescription(),
+                location.getZone(),
+                location.getSection(),
+                "01",
+                "STORAGE",
+                location.isAvailable()
         );
     }
 }

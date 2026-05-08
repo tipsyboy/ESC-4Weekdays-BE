@@ -1,8 +1,10 @@
 package com.fourweekdays.fourweekdays.inbound.domain;
 
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,7 @@ public class Inbound extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 50)
     private String inboundCode;
 
     @Enumerated(EnumType.STRING)
@@ -42,6 +44,26 @@ public class Inbound extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asn_id")
+    private Asn asn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    private LocalDateTime expectedInboundAt;
+    private LocalDateTime receivedAt;
+
+    @Column(length = 100)
+    private String dock;
+
+    @Column(length = 1000)
+    private String inboundMemo;
+
+    @Column(length = 1000)
+    private String inspectionMemo;
 
     @Builder.Default
     @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -88,6 +110,47 @@ public class Inbound extends BaseEntity {
     }
 
     public Long getVendorId() {
-        return this.purchaseOrder.getId();
+        if (vendor != null) {
+            return vendor.getId();
+        }
+        return this.purchaseOrder.getVendor().getId();
+    }
+
+    public String getInboundNumber() {
+        return inboundCode;
+    }
+
+    public Vendor getVendor() {
+        return vendor != null ? vendor : purchaseOrder.getVendor();
+    }
+
+    public LocalDateTime getExpectedInboundAt() {
+        if (expectedInboundAt != null) {
+            return expectedInboundAt;
+        }
+        if (scheduledDate != null) {
+            return scheduledDate;
+        }
+        return purchaseOrder != null && purchaseOrder.getExpectedInboundDate() != null
+                ? purchaseOrder.getExpectedInboundDate().atTime(9, 0)
+                : null;
+    }
+
+    public String getInboundMemo() {
+        return inboundMemo != null ? inboundMemo : description;
+    }
+
+    public List<InboundProduct> getItems() {
+        return products;
+    }
+
+    public void addItem(InboundProduct item) {
+        item.assignInbound(this);
+    }
+
+    public void updateProcessing(LocalDateTime receivedAt, InboundStatus status, String inspectionMemo) {
+        this.receivedAt = receivedAt;
+        this.status = status;
+        this.inspectionMemo = inspectionMemo;
     }
 }

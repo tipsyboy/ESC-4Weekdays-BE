@@ -1,15 +1,20 @@
 package com.fourweekdays.fourweekdays.inbound.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.inbound.dto.InboundCreateRequestDto;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundCreateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundDetailResponse;
 import com.fourweekdays.fourweekdays.inbound.dto.InboundInspectionUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundPageResponse;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReceiptUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.dto.InboundSearchRequest;
 import com.fourweekdays.fourweekdays.inbound.dto.InboundStatusUpdateRequest;
-import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
+import jakarta.validation.Valid;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,16 +36,37 @@ public class InboundController {
     // TODO: 작업자는 위치에 맞게 적치하고 완료 트리거를 통해 재고가 된다.
     // 어제 얘기한 플로우 대로 한 번 적어봄
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<InboundPageResponse>> readAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.readAll(page, size)));
+    }
+
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> createInbound(@RequestBody InboundCreateRequestDto dto) {
-        Long result = inboundService.create(dto);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<BaseResponse<InboundDetailResponse>> createInbound(@Valid @RequestBody InboundCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.success(inboundService.create(request)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<InboundReadDto>> detailInbound(@PathVariable Long id) {
-        InboundReadDto result = inboundService.findById(id);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    public ResponseEntity<BaseResponse<InboundDetailResponse>> detailInbound(@PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.read(id)));
+    }
+
+    @GetMapping("/asn/{asnId}")
+    public ResponseEntity<BaseResponse<InboundDetailResponse>> readByAsnId(@PathVariable Long asnId) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.readByAsnId(asnId)));
+    }
+
+    @PatchMapping("/{id}/receipt")
+    public ResponseEntity<BaseResponse<InboundDetailResponse>> updateReceipt(
+            @PathVariable Long id,
+            @Valid @RequestBody InboundReceiptUpdateRequest request
+    ) {
+        return ResponseEntity.ok(BaseResponse.success(inboundService.updateReceipt(id, request)));
     }
 
     @PostMapping("/search")
