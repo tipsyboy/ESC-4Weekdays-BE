@@ -1,7 +1,8 @@
-package com.fourweekdays.fourweekdays.location.model.dto.response;
+package com.fourweekdays.fourweekdays.location.dto;
 
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
-import com.fourweekdays.fourweekdays.location.model.entity.LocationStatus;
+import com.fourweekdays.fourweekdays.location.domain.Location;
+import com.fourweekdays.fourweekdays.location.domain.LocationStatus;
+import com.fourweekdays.fourweekdays.location.domain.LocationZoneType;
 
 public record LocationResponse(
         Long id,
@@ -14,10 +15,12 @@ public record LocationResponse(
         Integer remainingCapacity,
         LocationStatus status,
         String description,
+        String warehouseCode,
         String zoneCode,
         String rackCode,
         String levelCode,
-        String zoneType,
+        String displayName,
+        LocationZoneType zoneType,
         Boolean usable
 ) {
     public static LocationResponse from(Location location) {
@@ -32,11 +35,13 @@ public record LocationResponse(
                 location.freeCapacity(),
                 location.getStatus(),
                 location.getDescription(),
-                location.getZone(),
-                location.getSection(),
-                "01",
-                "STORAGE",
-                location.isAvailable()
+                location.getWarehouseCode(),
+                location.getZoneCode(),
+                location.getRackCode(),
+                location.getLevelCode(),
+                location.getDisplayName(),
+                location.getZoneType(),
+                location.isUsable()
         );
     }
 }

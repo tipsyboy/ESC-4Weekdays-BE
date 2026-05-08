@@ -12,7 +12,7 @@ import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInvento
 import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;

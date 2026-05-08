@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.inbound.domain;
 
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
 import jakarta.persistence.*;

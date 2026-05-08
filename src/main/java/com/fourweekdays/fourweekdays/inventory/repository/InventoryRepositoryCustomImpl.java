@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.fourweekdays.fourweekdays.inbound.domain.QInbound.inbound;
 import static com.fourweekdays.fourweekdays.inventory.model.entity.QInventory.inventory;
-import static com.fourweekdays.fourweekdays.location.model.entity.QLocation.location;
+import static com.fourweekdays.fourweekdays.location.domain.QLocation.location;
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
 
 @Slf4j

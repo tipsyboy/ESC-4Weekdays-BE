@@ -1,5 +1,4 @@
-package com.fourweekdays.fourweekdays.location.model.entity;
-
+package com.fourweekdays.fourweekdays.location.domain;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
@@ -29,6 +28,27 @@ public class Location extends BaseEntity {
     @Column(nullable = false, unique = true, length = 20)
     private String locationCode; // 01-A, 01-B, 02-A...
 
+    @Column(length = 50)
+    private String warehouseCode;
+
+    @Column(length = 50)
+    private String zoneCode;
+
+    @Column(length = 50)
+    private String rackCode;
+
+    @Column(length = 50)
+    private String levelCode;
+
+    @Column(length = 100)
+    private String displayName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private LocationZoneType zoneType;
+
+    private Boolean usable;
+
     private Long vendorId;
 
     @Column(nullable = false)
@@ -45,11 +65,32 @@ public class Location extends BaseEntity {
     private String description; // 비고
 
     @Builder
-    public Location(String zone, String section, Long vendorId, Integer capacity,
-                    LocationStatus status, String description) {
-        this.zone = zone;
-        this.section = section;
-        this.locationCode = zone + "-" + section;
+    public Location(
+            String zone,
+            String section,
+            String warehouseCode,
+            String zoneCode,
+            String rackCode,
+            String levelCode,
+            String locationCode,
+            String displayName,
+            LocationZoneType zoneType,
+            Boolean usable,
+            Long vendorId,
+            Integer capacity,
+            LocationStatus status,
+            String description
+    ) {
+        this.zoneCode = zoneCode != null ? zoneCode : zone;
+        this.rackCode = rackCode != null ? rackCode : section;
+        this.levelCode = levelCode != null ? levelCode : "01";
+        this.zone = zone != null ? zone : this.zoneCode;
+        this.section = section != null ? section : this.rackCode;
+        this.locationCode = locationCode != null ? locationCode : this.zone + "-" + this.section;
+        this.warehouseCode = warehouseCode != null ? warehouseCode : "MAIN";
+        this.displayName = displayName != null ? displayName : this.locationCode;
+        this.zoneType = zoneType != null ? zoneType : LocationZoneType.STORAGE;
+        this.usable = usable != null ? usable : status == null || status == LocationStatus.AVAILABLE;
         this.vendorId = vendorId;
         this.capacity = capacity != null ? capacity : 15000;
         this.usedCapacity = 0;
@@ -78,6 +119,34 @@ public class Location extends BaseEntity {
 
     public boolean isAvailable() {
         return this.status == LocationStatus.AVAILABLE;
+    }
+
+    public boolean isUsable() {
+        return Boolean.TRUE.equals(usable) && isAvailable();
+    }
+
+    public String getWarehouseCode() {
+        return warehouseCode != null ? warehouseCode : "MAIN";
+    }
+
+    public String getZoneCode() {
+        return zoneCode != null ? zoneCode : zone;
+    }
+
+    public String getRackCode() {
+        return rackCode != null ? rackCode : section;
+    }
+
+    public String getLevelCode() {
+        return levelCode != null ? levelCode : "01";
+    }
+
+    public String getDisplayName() {
+        return displayName != null ? displayName : locationCode;
+    }
+
+    public LocationZoneType getZoneType() {
+        return zoneType != null ? zoneType : LocationZoneType.STORAGE;
     }
 
     public int freeCapacity() {

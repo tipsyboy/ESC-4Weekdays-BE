@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.location.controller;
 
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.location.model.dto.response.LocationResponse;
+import com.fourweekdays.fourweekdays.location.dto.LocationResponse;
 import com.fourweekdays.fourweekdays.location.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

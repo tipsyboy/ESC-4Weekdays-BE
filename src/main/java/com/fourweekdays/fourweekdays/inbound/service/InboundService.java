@@ -17,7 +17,7 @@ import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.inventory.service.InventoryService;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
 import com.fourweekdays.fourweekdays.member.domain.Member;

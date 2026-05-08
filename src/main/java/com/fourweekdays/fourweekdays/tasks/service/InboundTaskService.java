@@ -11,7 +11,7 @@ import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.inventory.service.InventoryService;
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.exception.LocationExceptionType;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.location.service.LocationService;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
