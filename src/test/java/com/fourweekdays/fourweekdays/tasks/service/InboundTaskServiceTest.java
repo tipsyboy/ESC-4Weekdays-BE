@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.tasks.service;
 
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.InboundStatusUpdateRequest;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.inbound.service.InboundService;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;

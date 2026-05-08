@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.inbound.model.dto.response;
+package com.fourweekdays.fourweekdays.inbound.dto;
 
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import lombok.*;

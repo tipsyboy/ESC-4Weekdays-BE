@@ -1,7 +1,7 @@
-package com.fourweekdays.fourweekdays.inbound.model.dto.response;
+package com.fourweekdays.fourweekdays.inbound.dto;
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;

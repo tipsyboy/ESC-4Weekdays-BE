@@ -2,10 +2,10 @@ package com.fourweekdays.fourweekdays.location.service;
 
 
 import com.fourweekdays.fourweekdays.location.exception.LocationException;
-import com.fourweekdays.fourweekdays.location.model.dto.request.LocationCreateRequest;
-import com.fourweekdays.fourweekdays.location.model.dto.response.LocationResponse;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
-import com.fourweekdays.fourweekdays.location.model.entity.LocationStatus;
+import com.fourweekdays.fourweekdays.location.dto.LocationCreateRequest;
+import com.fourweekdays.fourweekdays.location.dto.LocationResponse;
+import com.fourweekdays.fourweekdays.location.domain.Location;
+import com.fourweekdays.fourweekdays.location.domain.LocationStatus;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,12 @@ import static com.fourweekdays.fourweekdays.location.exception.LocationException
 public class LocationService {
 
     private final LocationRepository locationRepository;
+
+    public List<LocationResponse> readAll() {
+        return locationRepository.findAllByOrderByLocationCodeAsc().stream()
+                .map(LocationResponse::from)
+                .toList();
+    }
 
     public List<LocationResponse> getAvailableLocationsByVendor() {
         List<Location> locations = locationRepository.findAvailableLocationsByVendor();

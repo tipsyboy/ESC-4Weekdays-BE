@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.location.model.entity;
+package com.fourweekdays.fourweekdays.location.domain;
 
 public enum LocationStatus {
 

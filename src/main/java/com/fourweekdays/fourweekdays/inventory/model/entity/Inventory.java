@@ -1,9 +1,9 @@
 package com.fourweekdays.fourweekdays.inventory.model.entity;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
-import com.fourweekdays.fourweekdays.location.model.entity.Location;
+import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

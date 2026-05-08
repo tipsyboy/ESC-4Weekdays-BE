@@ -111,7 +111,7 @@ public class AsnService {
         Asn savedAsn = asnRepository.save(asn);
 
         if (savedAsn.getStatus() == AsnStatus.RECEIVED) {
-            inboundService.createByPurchaseOrder(savedAsn.getPurchaseOrder());
+            inboundService.createExpectedFromAsn(savedAsn);
             savedAsn.markScheduled();
         }
 
@@ -162,7 +162,7 @@ public class AsnService {
 
         if (request.status() == AsnStatus.RECEIVED) {
             asn.markReceived(LocalDateTime.now());
-            inboundService.createByPurchaseOrder(asn.getPurchaseOrder());
+            inboundService.createExpectedFromAsn(asn);
             asn.markScheduled();
             return AsnDetailResponse.from(asn);
         }

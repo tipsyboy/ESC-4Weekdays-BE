@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.inbound.repository;
 
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inbound;
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInbound.inbound;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
 import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;

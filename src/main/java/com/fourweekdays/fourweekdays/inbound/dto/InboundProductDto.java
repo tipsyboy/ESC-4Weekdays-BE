@@ -1,4 +1,4 @@
-package com.fourweekdays.fourweekdays.inbound.model.dto.request;
+package com.fourweekdays.fourweekdays.inbound.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

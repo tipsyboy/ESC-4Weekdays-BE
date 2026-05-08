@@ -2,8 +2,10 @@ package com.fourweekdays.fourweekdays.inventory.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
+import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryMapLocationResponse;
 import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
 import com.fourweekdays.fourweekdays.inventory.service.InventoryService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,11 @@ public class InventoryController {
                                                                                              @RequestParam(defaultValue = "10") int size,
                                                                                              @RequestBody InventorySearchRequest request) {
         return ResponseEntity.ok(BaseResponse.success(inventoryService.searchInventoryByProduct(request, page, size)));
+    }
+
+    @GetMapping("/map")
+    public ResponseEntity<BaseResponse<List<InventoryMapLocationResponse>>> readMap() {
+        return ResponseEntity.ok(BaseResponse.success(inventoryService.readMap()));
     }
 
     // 재고 상세 조회
