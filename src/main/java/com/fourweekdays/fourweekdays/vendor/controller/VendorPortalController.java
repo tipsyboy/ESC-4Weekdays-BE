@@ -2,9 +2,11 @@ package com.fourweekdays.fourweekdays.vendor.controller;
 
 import com.fourweekdays.fourweekdays.asn.dto.AsnCreateRequest;
 import com.fourweekdays.fourweekdays.asn.dto.AsnDetailResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.service.AsnService;
 import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderDetailResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorPurchaseOrderPageResponse;
@@ -50,6 +52,16 @@ public class VendorPortalController {
     @GetMapping("/purchase-orders/{purchaseOrderId}/asn")
     public BaseResponse<AsnDetailResponse> readAsnByPurchaseOrderId(@PathVariable Long purchaseOrderId) {
         return BaseResponse.success(asnService.readByPurchaseOrderId(purchaseOrderId));
+    }
+
+    @GetMapping("/asns")
+    public BaseResponse<PageResponse<AsnListResponse>> readAsns(
+            @RequestParam(required = false) Long vendorId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Long targetVendorId = resolveVendorId(vendorId);
+        return BaseResponse.success(PageResponse.from(vendorService.readAsns(targetVendorId, page, size)));
     }
 
     @PostMapping("/asns")
