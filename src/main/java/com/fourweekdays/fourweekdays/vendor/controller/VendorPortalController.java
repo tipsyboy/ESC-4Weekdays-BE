@@ -5,10 +5,9 @@ import com.fourweekdays.fourweekdays.asn.dto.AsnDetailResponse;
 import com.fourweekdays.fourweekdays.asn.service.AsnService;
 import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderDetailResponse;
-import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorPurchaseOrderPageResponse;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +33,13 @@ public class VendorPortalController {
     private final AuthAccessService authAccessService;
 
     @GetMapping("/purchase-orders")
-    public BaseResponse<PageResponse<PurchaseOrderListResponse>> readPurchaseOrders(
+    public BaseResponse<VendorPurchaseOrderPageResponse> readPurchaseOrders(
             @RequestParam(required = false) Long vendorId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
         Long targetVendorId = resolveVendorId(vendorId);
-        return BaseResponse.success(PageResponse.from(vendorService.readPurchaseOrders(targetVendorId, page, size)));
+        return BaseResponse.success(vendorService.readVendorPortalPurchaseOrders(targetVendorId, page, size));
     }
 
     @GetMapping("/purchase-orders/{id}")

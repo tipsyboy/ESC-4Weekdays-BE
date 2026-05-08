@@ -2,6 +2,8 @@ package com.fourweekdays.fourweekdays.vendor.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
 import com.fourweekdays.fourweekdays.auth.service.AuthAccessService;
 import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
 import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
@@ -9,6 +11,7 @@ import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.exception.VendorException;
@@ -16,11 +19,18 @@ import com.fourweekdays.fourweekdays.vendor.dto.VendorCreateDto;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorSearchCondition;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorUpdateDto;
 import com.fourweekdays.fourweekdays.vendor.dto.VendorReadDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorPurchaseOrderListResponse;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorPurchaseOrderPageResponse;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorPurchaseOrderSummaryResponse;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
 import com.fourweekdays.fourweekdays.vendor.domain.VendorStatus;
 import com.fourweekdays.fourweekdays.vendor.repository.VendorRepository;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -111,6 +121,37 @@ public class VendorService {
         validateExists(id);
         return purchaseOrderRepository.findByVendorId(id, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
                 .map(PurchaseOrderListResponse::from);
+    }
+
+    public VendorPurchaseOrderPageResponse readVendorPortalPurchaseOrders(Long id, Integer page, Integer size) {
+        authAccessService.assertVendorScope(id);
+        validateExists(id);
+
+        List<Asn> asns = asnRepository.findAllByPurchaseOrderVendorIdOrderByIdDesc(id);
+        Map<Long, Asn> asnMap = asns.stream()
+                .collect(Collectors.toMap(asn -> asn.getPurchaseOrder().getId(), Function.identity(), (left, right) -> left));
+
+        List<VendorPurchaseOrderListResponse> responses = purchaseOrderRepository.findByVendorId(id).stream()
+                .filter(purchaseOrder -> purchaseOrder.getStatus() == PurchaseOrderStatus.ORDERED)
+                .sorted((left, right) -> right.getId().compareTo(left.getId()))
+                .map(purchaseOrder -> VendorPurchaseOrderListResponse.from(purchaseOrder, asnMap.get(purchaseOrder.getId())))
+                .toList();
+
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), responses.size());
+        List<VendorPurchaseOrderListResponse> content = start >= responses.size()
+                ? List.of()
+                : responses.subList(start, end);
+
+        PageResponse<VendorPurchaseOrderListResponse> pageResponse = PageResponse.from(
+                new PageImpl<>(content, pageable, responses.size())
+        );
+
+        return VendorPurchaseOrderPageResponse.from(
+                pageResponse,
+                VendorPurchaseOrderSummaryResponse.from(responses)
+        );
     }
 
     public Page<AsnListResponse> readAsns(Long id, Integer page, Integer size) {
