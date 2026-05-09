@@ -145,7 +145,7 @@ CREATE TABLE `inbound` (
                            `inbound_code` varchar(255) NOT NULL,
                            `manager_name` varchar(255) DEFAULT NULL,
                            `scheduled_date` datetime(6) DEFAULT NULL,
-                           `status` enum('ARRIVED','CANCELLED','COMPLETED','CREATED','INSPECTING','PUTAWAY','SCHEDULED') DEFAULT NULL,
+                           `status` varchar(30) DEFAULT NULL,
                            `worker_name` varchar(255) DEFAULT NULL,
                            `purchase_order_id` bigint(20) DEFAULT NULL,
                            PRIMARY KEY (`id`),

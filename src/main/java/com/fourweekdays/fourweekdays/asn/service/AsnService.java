@@ -154,6 +154,16 @@ public class AsnService {
                 .orElseThrow(() -> new AsnException(ASN_NOT_FOUND));
     }
 
+    public AsnDetailResponse readOptionalByPurchaseOrderId(Long purchaseOrderId) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
+        authAccessService.assertVendorScope(purchaseOrder.getVendor().getId());
+
+        return asnRepository.findByPurchaseOrderId(purchaseOrderId)
+                .map(AsnDetailResponse::from)
+                .orElse(null);
+    }
+
     @Transactional
     public AsnDetailResponse updateStatus(Long id, AsnStatusUpdateRequest request) {
         Asn asn = getAsn(id);
