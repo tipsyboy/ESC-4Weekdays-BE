@@ -30,6 +30,7 @@ public class Inbound extends BaseEntity {
     private String inboundCode;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 30, columnDefinition = "varchar(30)")
     private InboundStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
