@@ -13,7 +13,7 @@ import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderSearchCondit
 import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.domain.Vendor;
@@ -92,7 +92,7 @@ public class PurchaseOrderService {
                 throw new PurchaseOrderException(PURCHASE_ORDER_VENDOR_MISMATCH);
             }
 
-            purchaseOrder.addItem(PurchaseOrderProduct.builder()
+            purchaseOrder.addItem(PurchaseOrderItem.builder()
                     .product(product)
                     .orderedQuantity(itemRequest.quantity())
                     .orderUnitPrice(itemRequest.unitPrice())

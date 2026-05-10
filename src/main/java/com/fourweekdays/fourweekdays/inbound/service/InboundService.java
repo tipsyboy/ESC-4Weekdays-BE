@@ -213,14 +213,14 @@ public class InboundService {
                 .scheduledDate(purchaseOrder.getExpectedDate())
                 .build();
 
-        purchaseOrder.getProducts().forEach(purchaseOrderProduct -> {
-            log.info("purchaseOrderProduct.getOrderedQuantity()={}", purchaseOrderProduct.getOrderedQuantity());
+        purchaseOrder.getItems().forEach(purchaseOrderItem -> {
+            log.info("purchaseOrderItem.getOrderedQuantity()={}", purchaseOrderItem.getOrderedQuantity());
             InboundProduct.builder()
                     .inbound(inbound)
-                    .product(purchaseOrderProduct.getProduct())
-                    .purchaseOrderProduct(purchaseOrderProduct)
-                    .receivedQuantity(purchaseOrderProduct.getOrderedQuantity())
-                    .description(purchaseOrderProduct.getDescription())
+                    .product(purchaseOrderItem.getProduct())
+                    .purchaseOrderItem(purchaseOrderItem)
+                    .receivedQuantity(purchaseOrderItem.getOrderedQuantity())
+                    .description(purchaseOrderItem.getDescription())
                     .build();
         });
 
@@ -351,10 +351,10 @@ public class InboundService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(requestDto.getPurchaseOrderId())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
 
-        purchaseOrder.getProducts().forEach(poItem -> {
+        purchaseOrder.getItems().forEach(poItem -> {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(poItem.getProduct())
-                    .purchaseOrderProduct(poItem)
+                    .purchaseOrderItem(poItem)
                     .receivedQuantity(0)
                     .description(poItem.getDescription())
                     .build();
@@ -375,7 +375,7 @@ public class InboundService {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(product)
                     .inbound(inbound)
-                    .purchaseOrderProduct(null)
+                    .purchaseOrderItem(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();

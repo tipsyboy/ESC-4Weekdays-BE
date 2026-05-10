@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
 import static com.fourweekdays.fourweekdays.product.domain.QProduct.product;
 import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
-import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderProduct.purchaseOrderProduct;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderItem.purchaseOrderItem;
 import static com.fourweekdays.fourweekdays.vendor.domain.QVendor.vendor;
 
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
@@ -61,8 +61,8 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
                 .selectFrom(purchaseOrder)
                 .distinct()
                 .join(purchaseOrder.vendor, vendor).fetchJoin()
-                .leftJoin(purchaseOrder.products, purchaseOrderProduct).fetchJoin()
-                .leftJoin(purchaseOrderProduct.product, product).fetchJoin()
+                .leftJoin(purchaseOrder.items, purchaseOrderItem).fetchJoin()
+                .leftJoin(purchaseOrderItem.product, product).fetchJoin()
                 .where(purchaseOrder.id.in(ids))
                 .fetch();
 

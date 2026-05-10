@@ -1,11 +1,11 @@
 package com.fourweekdays.fourweekdays.purchaseorder.dto;
 
 import com.fourweekdays.fourweekdays.product.domain.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import lombok.Builder;
 
 @Builder
-public record PurchaseOrderProductResponseDto(
+public record PurchaseOrderLineResponseDto(
         Long id,
         String productCode,
         Long productId,
@@ -15,9 +15,9 @@ public record PurchaseOrderProductResponseDto(
         Integer orderedQuantity,
         String description
 ) {
-    public static PurchaseOrderProductResponseDto toDto(PurchaseOrderProduct item) {
+    public static PurchaseOrderLineResponseDto toDto(PurchaseOrderItem item) {
         Product product = item.getProduct();
-        return PurchaseOrderProductResponseDto.builder()
+        return PurchaseOrderLineResponseDto.builder()
                 .id(item.getId())
                 .productId(product.getId())
                 .productCode(product.getProductCode())

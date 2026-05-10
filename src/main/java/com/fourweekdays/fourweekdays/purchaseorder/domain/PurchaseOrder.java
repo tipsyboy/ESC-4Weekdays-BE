@@ -38,7 +38,7 @@ public class PurchaseOrder extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseOrderProduct> products = new ArrayList<>();
+    private List<PurchaseOrderItem> items = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
@@ -73,8 +73,8 @@ public class PurchaseOrder extends BaseEntity {
 
 
     // ===== 연관관계 편의 메서드 ===== //
-    public void addItem(PurchaseOrderProduct purchaseOrderProduct) {
-        purchaseOrderProduct.mappingPurchaseOrder(this);
+    public void addItem(PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItem.mappingPurchaseOrder(this);
     }
 
     // ===== 비즈니스 로직 ===== //
@@ -90,8 +90,8 @@ public class PurchaseOrder extends BaseEntity {
     }
 
     public Long calculateTotalAmount() {
-        Long totalAmount = products.stream()
-                .mapToLong(PurchaseOrderProduct::calculateAmount)
+        Long totalAmount = items.stream()
+                .mapToLong(PurchaseOrderItem::calculateAmount)
                 .sum();
         this.totalAmount = totalAmount;
         return totalAmount;
@@ -101,13 +101,13 @@ public class PurchaseOrder extends BaseEntity {
         this.totalAmount = calculateTotalAmount();
     }
 
-    public void removeItem(PurchaseOrderProduct item) {
-        this.products.remove(item);
+    public void removeItem(PurchaseOrderItem item) {
+        this.items.remove(item);
         recalculateTotalAmount();
     }
 
     public void clearItems() {
-        this.products.clear();
+        this.items.clear();
         this.totalAmount = 0L;
     }
 
@@ -157,8 +157,8 @@ public class PurchaseOrder extends BaseEntity {
     }
 
     // 상품 제거
-    public void deleteItem(PurchaseOrderProduct item) {
-        if (this.products.remove(item)) {
+    public void deleteItem(PurchaseOrderItem item) {
+        if (this.items.remove(item)) {
             recalculateTotalAmount();
         }
     }
@@ -189,7 +189,7 @@ public class PurchaseOrder extends BaseEntity {
         return requestMemo != null ? requestMemo : description;
     }
 
-    public List<PurchaseOrderProduct> getItems() {
-        return products;
+    public List<PurchaseOrderItem> getItems() {
+        return items;
     }
 }

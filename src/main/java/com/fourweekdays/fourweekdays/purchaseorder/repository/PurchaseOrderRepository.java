@@ -12,12 +12,12 @@ import java.util.Optional;
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long>, PurchaseOrderRepositoryCustom, PurchaseOrderQueryRepository {
     Optional<PurchaseOrder> findByOrderCode(String orderCode);
 
-    @EntityGraph(attributePaths = {"vendor", "products", "products.product"})
+    @EntityGraph(attributePaths = {"vendor", "items", "items.product"})
     List<PurchaseOrder> findByVendorId(Long vendorId);
 
     Page<PurchaseOrder> findByVendorId(Long vendorId, Pageable pageable);
 
     @Override
-    @EntityGraph(attributePaths = {"vendor", "products", "products.product"})
+    @EntityGraph(attributePaths = {"vendor", "items", "items.product"})
     Optional<PurchaseOrder> findById(Long id);
 }

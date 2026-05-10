@@ -15,7 +15,7 @@ public record PurchaseOrderUpdateDto(
         String description,
 
         @Valid
-        List<PurchaseOrderProductRequestDto> items
+        List<PurchaseOrderItemRequestDto> items
 ) {
 
 }

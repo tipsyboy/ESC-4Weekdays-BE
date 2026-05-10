@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.purchaseorder.dto;
 
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 
 public record PurchaseOrderItemResponse(
         Long productId,
@@ -10,7 +10,7 @@ public record PurchaseOrderItemResponse(
         Long orderUnitPrice,
         Long lineAmount
 ) {
-    public static PurchaseOrderItemResponse from(PurchaseOrderProduct item) {
+    public static PurchaseOrderItemResponse from(PurchaseOrderItem item) {
         long lineAmount = (long) item.getOrderQuantity() * item.getOrderUnitPrice();
 
         return new PurchaseOrderItemResponse(
