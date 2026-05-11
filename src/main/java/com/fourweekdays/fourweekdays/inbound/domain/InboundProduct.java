@@ -92,12 +92,6 @@ public class InboundProduct extends BaseEntity {
         }
     }
 
-    // ===== 비즈니스 로직 ===== //
-    // ... 입고 수량 검증 메서드 ...
-    public void updateInspectionResult(int receivedQuantity) {
-        this.receivedQuantity = receivedQuantity;
-    }
-
     public Integer getExpectedQuantity() {
         if (expectedQuantity != null) {
             return expectedQuantity;
