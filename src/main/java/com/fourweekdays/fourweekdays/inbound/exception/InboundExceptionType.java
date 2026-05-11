@@ -9,7 +9,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public enum InboundExceptionType implements ExceptionType {
 
     INBOUND_STATUS_TRANSITION_NOT_ALLOWED(BAD_REQUEST, "입고 상태를 변경할 수 없습니다."),
-    INBOUND_INVALID_STATUS_FOR_INSPECTION(BAD_REQUEST, "검수 작업을 할 수 없는 상태입니다."),
     INBOUND_CANNOT_CANCEL(BAD_REQUEST, "입고를 취소할 수 없습니다." ),
     INBOUND_INVALID_REQUEST(BAD_REQUEST, "입고 요청이 올바르지 않습니다."),
 

@@ -7,7 +7,7 @@ public class EmailBodyBuilder {
     public static String buildPurchaseOrderBody(PurchaseOrder order) {
         StringBuilder itemsTable = new StringBuilder();
 
-        order.getProducts().forEach(item -> {
+        order.getItems().forEach(item -> {
             Product product = item.getProduct();
             itemsTable.append(String.format("""
             <tr>

@@ -13,7 +13,7 @@ import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -119,7 +119,7 @@ class InboundBatchFetchTest {
                         .vendor(sharedVendor)
                         .build());
 
-                po.addItem(PurchaseOrderProduct.builder()
+                po.addItem(PurchaseOrderItem.builder()
                         .product(productEntity)
                         .orderedQuantity(20 + j)
                         .description("배치 발주 상품")
@@ -137,11 +137,11 @@ class InboundBatchFetchTest {
                     .description("배치 입고 테스트 데이터")
                     .build();
 
-            for (PurchaseOrderProduct poProduct : po.getProducts()) {
+            for (PurchaseOrderItem poProduct : po.getItems()) {
                 InboundProduct.builder()
                         .inbound(inboundEntity)
                         .product(poProduct.getProduct())
-                        .purchaseOrderProduct(poProduct)
+                        .purchaseOrderItem(poProduct)
                         .receivedQuantity(poProduct.getOrderedQuantity())
                         .lotNumber("BATCH-LOT-" + i + "-" + poProduct.getId())
                         .description("배치 입고 품목")

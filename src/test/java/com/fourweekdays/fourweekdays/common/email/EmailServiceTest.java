@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.global.vo.Address;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
@@ -79,19 +79,19 @@ class EmailServiceTest {
 
         productRepository.saveAll(List.of(cleanser, toner, cream));
 
-        // --- 3️⃣ PurchaseOrderProduct (발주 품목) 생성 ---
-        List<PurchaseOrderProduct> orderProducts = List.of(
-                PurchaseOrderProduct.builder()
+        // --- 3️⃣ PurchaseOrderItem (발주 품목) 생성 ---
+        List<PurchaseOrderItem> orderProducts = List.of(
+                PurchaseOrderItem.builder()
                         .product(cleanser)
                         .orderedQuantity(30)
                         .description("기초 세안 라인")
                         .build(),
-                PurchaseOrderProduct.builder()
+                PurchaseOrderItem.builder()
                         .product(toner)
                         .orderedQuantity(25)
                         .description("보습 라인 구성")
                         .build(),
-                PurchaseOrderProduct.builder()
+                PurchaseOrderItem.builder()
                         .product(cream)
                         .orderedQuantity(20)
                         .description("베스트셀러 크림")
@@ -100,7 +100,7 @@ class EmailServiceTest {
 
         // --- 4️⃣ 총 금액 계산 ---
         Long totalAmount = orderProducts.stream()
-                .mapToLong(PurchaseOrderProduct::calculateAmount)
+                .mapToLong(PurchaseOrderItem::calculateAmount)
                 .sum();
 
         // --- 5️⃣ PurchaseOrder 생성 (품목 포함) ---

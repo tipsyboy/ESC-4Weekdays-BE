@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PurchaseOrderProduct extends BaseEntity {
+public class PurchaseOrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class PurchaseOrderProduct extends BaseEntity {
     private String description; // 비고
 
     @Builder
-    public PurchaseOrderProduct(Product product, Integer orderedQuantity, Long orderUnitPrice, String description) {
+    public PurchaseOrderItem(Product product, Integer orderedQuantity, Long orderUnitPrice, String description) {
         this.product = product;
         this.orderedQuantity = orderedQuantity;
         this.orderUnitPrice = orderUnitPrice;
@@ -42,7 +42,7 @@ public class PurchaseOrderProduct extends BaseEntity {
     // ===== 연관관계 편의 메서드 ===== //
     public void mappingPurchaseOrder(PurchaseOrder purchaseOrder) {
         this.purchaseOrder = purchaseOrder;
-        purchaseOrder.getProducts().add(this);
+        purchaseOrder.getItems().add(this);
     }
 
     // ===== 비즈니스 로직 ===== //

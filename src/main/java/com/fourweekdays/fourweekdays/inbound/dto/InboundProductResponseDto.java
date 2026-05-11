@@ -24,7 +24,7 @@ public class InboundProductResponseDto {
     private String description;
 
     // 발주 정보 (발주 기반 입고인 경우)
-    private Long purchaseOrderProductItemId;  // 발주 항목 ID
+    private Long purchaseOrderItemId;  // 발주 항목 ID
     private Integer orderedQuantity;  // 발주 수량 (비교용)
     private Boolean isFromPurchaseOrder;  // 발주 품목인지 추가 품목인지
 
@@ -39,13 +39,13 @@ public class InboundProductResponseDto {
                 .receivedQuantity(item.getReceivedQuantity())
                 .description(item.getDescription())
 
-                .purchaseOrderProductItemId(
-                        item.getPurchaseOrderProduct() != null ?
-                                item.getPurchaseOrderProduct().getId() : null)
+                .purchaseOrderItemId(
+                        item.getPurchaseOrderItem() != null ?
+                                item.getPurchaseOrderItem().getId() : null)
                 .orderedQuantity(
-                        item.getPurchaseOrderProduct() != null ?
-                                item.getPurchaseOrderProduct().getOrderedQuantity() : null)
-                .isFromPurchaseOrder(item.getPurchaseOrderProduct() != null)
+                        item.getPurchaseOrderItem() != null ?
+                                item.getPurchaseOrderItem().getOrderedQuantity() : null)
+                .isFromPurchaseOrder(item.getPurchaseOrderItem() != null)
                 .build();
     }
 }

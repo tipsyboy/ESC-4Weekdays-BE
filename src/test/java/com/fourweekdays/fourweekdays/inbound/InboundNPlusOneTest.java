@@ -13,7 +13,7 @@ import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
@@ -40,7 +40,7 @@ import static com.fourweekdays.fourweekdays.inbound.domain.QInboundProduct.inbou
 import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
 import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
-import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderProduct.purchaseOrderProduct;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrderItem.purchaseOrderItem;
 import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @SpringBootTest(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=0")
@@ -119,7 +119,7 @@ class InboundNPlusOneTest {
                         .vendor(sharedVendor)
                         .build());
 
-                po.addItem(PurchaseOrderProduct.builder()
+                po.addItem(PurchaseOrderItem.builder()
                         .product(productEntity)
                         .orderedQuantity(10 + j)
                         .description("발주 상품")
@@ -137,11 +137,11 @@ class InboundNPlusOneTest {
                     .description("입고 테스트 데이터")
                     .build();
 
-            for (PurchaseOrderProduct poProduct : po.getProducts()) {
+            for (PurchaseOrderItem poProduct : po.getItems()) {
                 InboundProduct.builder()
                         .inbound(inboundEntity)
                         .product(poProduct.getProduct())
-                        .purchaseOrderProduct(poProduct)
+                        .purchaseOrderItem(poProduct)
                         .receivedQuantity(poProduct.getOrderedQuantity())
                         .lotNumber("LOT-" + i + "-" + poProduct.getId())
                         .description("입고 품목")
@@ -207,7 +207,7 @@ class InboundNPlusOneTest {
                 .leftJoin(purchaseOrder.vendor, vendor).fetchJoin()
                 .leftJoin(inbound.products, inboundProduct).fetchJoin()
                 .leftJoin(inboundProduct.product, product).fetchJoin()
-                .leftJoin(inboundProduct.purchaseOrderProduct, purchaseOrderProduct).fetchJoin()
+                .leftJoin(inboundProduct.purchaseOrderItem, purchaseOrderItem).fetchJoin()
                 .where(inbound.id.in(inboundIds))
                 .orderBy(inbound.id.desc())
                 .fetch();

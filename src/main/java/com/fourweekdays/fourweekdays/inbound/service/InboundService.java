@@ -28,7 +28,6 @@ import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
 import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
-import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +43,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.ASN_NOT_FOUND;
-import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_INVALID_STATUS_FOR_INSPECTION;
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_INVALID_REQUEST;
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
@@ -66,7 +64,6 @@ public class InboundService {
     private final LocationRepository locationRepository;
     private final InventoryService inventoryService;
     private final CodeGenerator codeGenerator;
-    private final InboundTaskFactory inboundTaskFactory;
 
     @Transactional
     public InboundDetailResponse create(InboundCreateRequest request) {
@@ -207,20 +204,20 @@ public class InboundService {
         Inbound inbound = Inbound.builder()
                 .inboundCode(codeGenerator.generate(CodeType.INBOUND))
                 .purchaseOrder(purchaseOrder)
-                .status(InboundStatus.SCHEDULED)
+                .status(InboundStatus.PLANNED)
                 .manager(manager)
                 .description(purchaseOrder.getDescription())
                 .scheduledDate(purchaseOrder.getExpectedDate())
                 .build();
 
-        purchaseOrder.getProducts().forEach(purchaseOrderProduct -> {
-            log.info("purchaseOrderProduct.getOrderedQuantity()={}", purchaseOrderProduct.getOrderedQuantity());
+        purchaseOrder.getItems().forEach(purchaseOrderItem -> {
+            log.info("purchaseOrderItem.getOrderedQuantity()={}", purchaseOrderItem.getOrderedQuantity());
             InboundProduct.builder()
                     .inbound(inbound)
-                    .product(purchaseOrderProduct.getProduct())
-                    .purchaseOrderProduct(purchaseOrderProduct)
-                    .receivedQuantity(purchaseOrderProduct.getOrderedQuantity())
-                    .description(purchaseOrderProduct.getDescription())
+                    .product(purchaseOrderItem.getProduct())
+                    .purchaseOrderItem(purchaseOrderItem)
+                    .receivedQuantity(purchaseOrderItem.getOrderedQuantity())
+                    .description(purchaseOrderItem.getDescription())
                     .build();
         });
 
@@ -254,45 +251,14 @@ public class InboundService {
     }
 
     @Transactional
-    public void updateInspection(Long inboundId, List<InboundInspectionUpdateRequest> requestList) {
-        Inbound inbound = inboundRepository.findById(inboundId)
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-
-        if (inbound.getStatus() != InboundStatus.INSPECTING) {
-            throw new InboundException(INBOUND_INVALID_STATUS_FOR_INSPECTION);
-        }
-
-        for (InboundInspectionUpdateRequest request : requestList) {
-            InboundProduct product = inbound.findProductById(request.inboundProductId())
-                    .orElseThrow(() -> new InboundException(InboundExceptionType.INBOUND_PRODUCT_NOT_FOUND));
-            product.updateInspectionResult(request.receivedQuantity());
-        }
-
-        // 검수 완료 시 적치 작업으로 변경
-        inbound.updateStatus(InboundStatus.PUTAWAY);
-    }
-
-    @Transactional
     public void cancel(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
 
-        if (inbound.getStatus() != InboundStatus.CREATED && inbound.getStatus() != InboundStatus.SCHEDULED) {
+        if (inbound.getStatus() == InboundStatus.COMPLETED || inbound.getStatus() == InboundStatus.CANCELLED) {
             throw new InboundException(InboundExceptionType.INBOUND_CANNOT_CANCEL);
         }
         inbound.cancelInbound();
-    }
-
-    @Transactional
-    public void arriveDelivery(Long inboundId) {
-        Inbound inbound = inboundRepository.findById(inboundId)
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-        inbound.updateStatus(InboundStatus.ARRIVED);
-
-        PurchaseOrder purchaseOrder = inbound.getPurchaseOrder();
-        purchaseOrder.completeDelivery();
-
-        inboundTaskFactory.createInspectionTask(inboundId);
     }
 
     // TODO: 삭제? 발주서가 없는 입고는 어떻게 처리할까
@@ -340,7 +306,7 @@ public class InboundService {
 
         return Inbound.builder()
                 .inboundCode(codeGenerator.generate(CodeType.INBOUND))
-                .status(InboundStatus.SCHEDULED)
+                .status(InboundStatus.PLANNED)
                 .manager(manager)
                 .scheduledDate(requestDto.getScheduledDate())
                 .description(requestDto.getDescription())
@@ -351,10 +317,10 @@ public class InboundService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(requestDto.getPurchaseOrderId())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
 
-        purchaseOrder.getProducts().forEach(poItem -> {
+        purchaseOrder.getItems().forEach(poItem -> {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(poItem.getProduct())
-                    .purchaseOrderProduct(poItem)
+                    .purchaseOrderItem(poItem)
                     .receivedQuantity(0)
                     .description(poItem.getDescription())
                     .build();
@@ -375,7 +341,7 @@ public class InboundService {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(product)
                     .inbound(inbound)
-                    .purchaseOrderProduct(null)
+                    .purchaseOrderItem(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();
@@ -436,7 +402,7 @@ public class InboundService {
             case PARTIAL -> nextStatus == InboundStatus.RECEIVING
                     || nextStatus == InboundStatus.COMPLETED;
             case COMPLETED -> false;
-            default -> currentStatus.canTransitionTo(nextStatus);
+            default -> false;
         };
 
         if (!valid) {

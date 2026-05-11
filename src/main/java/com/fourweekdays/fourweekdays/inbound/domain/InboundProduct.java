@@ -4,7 +4,7 @@ package com.fourweekdays.fourweekdays.inbound.domain;
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.location.domain.Location;
 import com.fourweekdays.fourweekdays.product.domain.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderProduct;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +27,8 @@ public class InboundProduct extends BaseEntity {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_order_product_item_id")
-    private PurchaseOrderProduct purchaseOrderProduct;
+    @JoinColumn(name = "purchase_order_item_id")
+    private PurchaseOrderItem purchaseOrderItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
@@ -57,7 +57,7 @@ public class InboundProduct extends BaseEntity {
 
     @Builder
     public InboundProduct(Inbound inbound, Product product,
-                          PurchaseOrderProduct purchaseOrderProduct,
+                          PurchaseOrderItem purchaseOrderItem,
                           Location location,
                           Integer expectedQuantity,
                           Integer receivedQuantity,
@@ -70,7 +70,7 @@ public class InboundProduct extends BaseEntity {
             assignInbound(inbound);
         }
         this.product = product;
-        this.purchaseOrderProduct = purchaseOrderProduct;
+        this.purchaseOrderItem = purchaseOrderItem;
         this.location = location;
         this.expectedQuantity = expectedQuantity;
         this.receivedQuantity = receivedQuantity != null ? receivedQuantity : 0;
@@ -92,17 +92,11 @@ public class InboundProduct extends BaseEntity {
         }
     }
 
-    // ===== 비즈니스 로직 ===== //
-    // ... 입고 수량 검증 메서드 ...
-    public void updateInspectionResult(int receivedQuantity) {
-        this.receivedQuantity = receivedQuantity;
-    }
-
     public Integer getExpectedQuantity() {
         if (expectedQuantity != null) {
             return expectedQuantity;
         }
-        return purchaseOrderProduct != null ? purchaseOrderProduct.getOrderedQuantity() : receivedQuantity;
+        return purchaseOrderItem != null ? purchaseOrderItem.getOrderedQuantity() : receivedQuantity;
     }
 
     public String getMemo() {
