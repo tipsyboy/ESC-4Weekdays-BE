@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.notification;
 
 import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
-import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
+import com.fourweekdays.fourweekdays.inventory.domain.Inventory;
 import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import jakarta.persistence.*;

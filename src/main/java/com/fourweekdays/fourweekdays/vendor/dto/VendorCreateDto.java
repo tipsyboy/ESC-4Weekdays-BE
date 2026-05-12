@@ -16,16 +16,18 @@ public class VendorCreateDto {
     @NotNull(message = "담당자명을 입력해주세요.")
     private String managerName;
 
+    private Long managerId;
     private String phoneNumber;
     private String email;
     private String description;
     private Address address;
 
-    public Vendor toEntity(String vendorCode) {
+    public Vendor toEntity(String vendorCode, com.fourweekdays.fourweekdays.member.domain.Member manager) {
         return Vendor.builder()
                 .name(this.name)
                 .vendorCode(vendorCode)
                 .managerName(this.managerName)
+                .manager(manager)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .description(this.description)

@@ -19,6 +19,8 @@ public class VendorUpdateDto {
     @Size(max = 100)
     private String managerName;
 
+    private Long managerId;
+
     @Size(max = 20)
     private String phoneNumber;
 

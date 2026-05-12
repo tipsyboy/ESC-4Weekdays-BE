@@ -15,4 +15,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     @EntityGraph(attributePaths = {"vendor"})
     List<Product> findByVendorId(Long vendorId);
+
+    long countByVendorId(Long vendorId);
 }

@@ -12,6 +12,8 @@ public class VendorResponse {
     private String vendorCode; // 공급업체 코드 (V-001, V-002 등)
     private String name;
     private String managerName;
+    private Long managerId;
+    private String managerMemberName;
     private String phoneNumber;
     private String email;
     private VendorStatus status;
@@ -22,6 +24,8 @@ public class VendorResponse {
                 .vendorCode(vendor.getVendorCode())
                 .name(vendor.getName())
                 .managerName(vendor.getManagerName())
+                .managerId(vendor.getManager() != null ? vendor.getManager().getId() : null)
+                .managerMemberName(vendor.getManager() != null ? vendor.getManager().getName() : null)
                 .phoneNumber(vendor.getPhoneNumber())
                 .email(vendor.getEmail())
                 .status(vendor.getStatus())

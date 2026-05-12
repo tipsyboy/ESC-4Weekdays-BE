@@ -3,7 +3,7 @@ package com.fourweekdays.fourweekdays.outbound.service;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
 import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
-import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
+import com.fourweekdays.fourweekdays.inventory.domain.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;

@@ -1,120 +1,133 @@
 package com.fourweekdays.fourweekdays.inventory.service;
 
-
 import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
 import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
+import com.fourweekdays.fourweekdays.inventory.domain.Inventory;
+import com.fourweekdays.fourweekdays.inventory.domain.InventoryStatus;
+import com.fourweekdays.fourweekdays.inventory.dto.InventoryDetailResponse;
+import com.fourweekdays.fourweekdays.inventory.dto.InventoryListResponse;
+import com.fourweekdays.fourweekdays.inventory.dto.InventoryMapLocationResponse;
+import com.fourweekdays.fourweekdays.inventory.dto.InventorySearchCondition;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
-import com.fourweekdays.fourweekdays.inventory.model.dto.request.InventorySearchRequest;
-import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryMapLocationResponse;
-import com.fourweekdays.fourweekdays.inventory.model.dto.response.InventoryReadDto;
-import com.fourweekdays.fourweekdays.inventory.model.dto.response.ProductInventoryResponse;
-import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
-import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.domain.Location;
+import com.fourweekdays.fourweekdays.location.exception.LocationException;
 import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.product.domain.Product;
+import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.fourweekdays.fourweekdays.inventory.exception.InventoryExceptionType.INVENTORY_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 
-@Slf4j
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class InventoryService {
+
+    private static final String DEFAULT_LOT_NUMBER = "DEFAULT";
 
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
     private final InboundRepository inboundRepository;
 
-    @Transactional
-    public void reflectInbound(Inbound inbound, LocalDateTime receivedAt) {
-        for (InboundProduct inboundProduct : inbound.getProducts()) {
-            if (inboundProduct.getReceivedQuantity() == null || inboundProduct.getReceivedQuantity() <= 0) {
-                continue;
-            }
+    public List<InventoryListResponse> readAll(InventorySearchCondition condition) {
+        return inventoryRepository.findAllByOrderByIdDesc()
+                .stream()
+                .filter(inventory -> matchesInventoryCondition(inventory, condition))
+                .collect(Collectors.groupingBy(Inventory::getProduct))
+                .entrySet()
+                .stream()
+                .map(entry -> InventoryListResponse.from(entry.getKey(), entry.getValue()))
+                .filter(response -> matchesStatusCondition(response.status(), condition == null ? null : condition.status()))
+                .sorted(Comparator.comparing(InventoryListResponse::productId).reversed())
+                .toList();
+    }
 
-            if (inboundProduct.getLocation() == null) {
-                throw new LocationException(LOCATION_NOT_FOUND);
-            }
+    public List<InventoryMapLocationResponse> readMap() {
+        return inventoryRepository.findAllByOrderByIdDesc()
+                .stream()
+                .filter(inventory -> inventory.getQuantity() != null && inventory.getQuantity() > 0)
+                .collect(Collectors.groupingBy(inventory -> inventory.getLocation().getLocationCode()))
+                .values()
+                .stream()
+                .map(InventoryMapLocationResponse::from)
+                .sorted(Comparator.comparing(InventoryMapLocationResponse::locationCode))
+                .toList();
+    }
 
-            createOrIncreaseInventory(
-                    inboundProduct.getProduct().getId(),
-                    inboundProduct.getLocation().getId(),
-                    inboundProduct.getLotNumber(),
-                    inboundProduct.getReceivedQuantity(),
-                    inbound.getId()
-            );
+    public InventoryDetailResponse read(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
+
+        List<Inventory> inventories = inventoryRepository.findAllByProductIdOrderByIdDesc(productId);
+
+        if (inventories.isEmpty()) {
+            throw new InventoryException(INVENTORY_NOT_FOUND);
         }
+
+        return InventoryDetailResponse.from(product, inventories);
     }
 
     @Transactional
-    public void createInventoryFromInbound(Long inboundId, String locationCode) {
-        // Inbound 조회
-        Inbound inbound = inboundRepository.findById(inboundId)
-                .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
-
-        // Location 조회
-        Location location = locationRepository.findByLocationCodeWithLock(locationCode)
-                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
-
-        // 모든 InboundProduct를 순회하며 재고 생성
-        for (InboundProduct inboundProduct : inbound.getProducts()) {
-            createOrIncreaseInventory(
-                    inboundProduct.getProduct().getId(),
-                    location.getId(),
-                    inboundProduct.getLotNumber(),
-                    inboundProduct.getReceivedQuantity(),
-                    inbound.getId()
-            );
+    public void reflectInbound(Inbound inbound, LocalDateTime inboundAt) {
+        for (InboundProduct item : inbound.getProducts()) {
+            if (item.getReceivedQuantity() == null || item.getReceivedQuantity() <= 0) {
+                continue;
+            }
+            reflectInboundProduct(inbound, item, inboundAt);
         }
     }
 
     @Transactional
     public void decreaseInventory(Long productId, Long locationId, String lotNumber, Integer quantity) {
-        Inventory inventory = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber)
+        Inventory inventory = inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, normalizeLotNumber(lotNumber))
                 .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
 
         inventory.decreaseQuantity(quantity);
 
-        // 재고가 0이 되면 삭제 (선택적)
         if (inventory.getQuantity() == 0) {
             inventoryRepository.delete(inventory);
         }
     }
 
-    public Page<InventoryReadDto> searchInventory(InventorySearchRequest request, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Inventory> inventories = inventoryRepository.searchInventory(pageable, request);
-
-        return inventories.map(InventoryReadDto::from);
-    }
-
-    public Page<ProductInventoryResponse> searchInventoryByProduct(InventorySearchRequest request, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return inventoryRepository.searchInventoryByProduct(pageable, request);
-    }
-
-    public ProductInventoryResponse productInventoryDetail(String productCode) {
-        return inventoryRepository.findDetailByProductCode(productCode)
+    @Transactional
+    public void createInventoryFromInbound(Long inboundId, String locationCode) {
+        Inbound inbound = inboundRepository.findById(inboundId)
                 .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
+
+        Location location = locationRepository.findByLocationCodeWithLock(locationCode)
+                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
+
+        for (InboundProduct item : inbound.getProducts()) {
+            if (item.getReceivedQuantity() == null || item.getReceivedQuantity() <= 0) {
+                continue;
+            }
+
+            String lotNumber = normalizeLotNumber(item.getLotNumber());
+            Inventory inventory = inventoryRepository.findByProductAndLocationAndLotNumber(item.getProduct(), location, lotNumber)
+                    .orElseGet(() -> Inventory.builder()
+                            .product(item.getProduct())
+                            .location(location)
+                            .lotNumber(lotNumber)
+                            .quantity(0)
+                            .availableQuantity(0)
+                            .holdQuantity(0)
+                            .build());
+
+            inventory.increase(item.getReceivedQuantity(), item.getDefectQuantity(), inbound, LocalDateTime.now());
+            inventoryRepository.save(inventory);
+        }
     }
 
     public int getTotalQuantityByProduct(Long productId) {
@@ -131,46 +144,55 @@ public class InventoryService {
                 .sum();
     }
 
-    public List<InventoryMapLocationResponse> readMap() {
-        return inventoryRepository.findAll().stream()
-                .filter(inventory -> inventory.getQuantity() > 0)
-                .collect(Collectors.groupingBy(inventory -> inventory.getLocation().getLocationCode()))
-                .values()
-                .stream()
-                .map(InventoryMapLocationResponse::from)
-                .sorted(Comparator.comparing(InventoryMapLocationResponse::locationCode))
-                .toList();
+    private void reflectInboundProduct(Inbound inbound, InboundProduct item, LocalDateTime inboundAt) {
+        Product product = item.getProduct();
+        Location location = item.getLocation();
+
+        if (location == null) {
+            throw new LocationException(LOCATION_NOT_FOUND);
+        }
+
+        String lotNumber = normalizeLotNumber(item.getLotNumber());
+        Inventory inventory = inventoryRepository.findByProductAndLocationAndLotNumber(product, location, lotNumber)
+                .orElseGet(() -> Inventory.builder()
+                        .product(product)
+                        .location(location)
+                        .lotNumber(lotNumber)
+                        .quantity(0)
+                        .availableQuantity(0)
+                        .holdQuantity(0)
+                        .build());
+
+        inventory.increase(item.getReceivedQuantity(), item.getDefectQuantity(), inbound, inboundAt);
+        inventoryRepository.save(inventory);
     }
 
-    private void createOrIncreaseInventory(Long productId, Long locationId, String lotNumber,
-                                           Integer quantity, Long inboundId) {
-        // 1. 재고 조회 (락 없이 조회하여 동시성 이슈 유도)
-        // 주의: Repository의 메서드가 비관적 락(@Lock)을 사용 중이라면 이슈가 발생하지 않을 수 있음
-        Optional<Inventory> existingInventory =
-                inventoryRepository.findByProductAndLocationAndLotWithLock(productId, locationId, lotNumber);
-
-        if (existingInventory.isPresent()) {
-            // 기존 재고가 있으면 수량 증가 (동시에 여러 스레드가 들어오면 갱신 손실 발생 지점)
-            Inventory inventory = existingInventory.get();
-            inventory.increaseQuantity(quantity);
-        } else {
-            // 없으면 새로운 재고 생성
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
-
-            Location location = locationRepository.findById(locationId)
-                    .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
-
-            location.increaseUsedCapacity(quantity);
-
-            Inventory newInventory = Inventory.builder()
-                    .product(product)
-                    .location(location)
-                    .lotNumber(lotNumber)
-                    .quantity(quantity)
-                    .build();
-
-            inventoryRepository.save(newInventory);
+    private boolean matchesInventoryCondition(Inventory inventory, InventorySearchCondition condition) {
+        if (condition == null) {
+            return true;
         }
+
+        Product product = inventory.getProduct();
+        boolean productCodeMatched = contains(product.getProductCode(), condition.productCode());
+        boolean productNameMatched = contains(product.getName(), condition.productName());
+        boolean locationMatched = contains(inventory.getLocation().getLocationCode(), condition.locationCode());
+        boolean zoneMatched = contains(inventory.getLocation().getZoneCode(), condition.zoneCode());
+
+        return productCodeMatched && productNameMatched && locationMatched && zoneMatched;
+    }
+
+    private boolean matchesStatusCondition(InventoryStatus actual, InventoryStatus expected) {
+        return expected == null || actual == expected;
+    }
+
+    private boolean contains(String source, String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return true;
+        }
+        return String.valueOf(source).toLowerCase().contains(keyword.trim().toLowerCase());
+    }
+
+    private String normalizeLotNumber(String lotNumber) {
+        return lotNumber == null || lotNumber.isBlank() ? DEFAULT_LOT_NUMBER : lotNumber;
     }
 }

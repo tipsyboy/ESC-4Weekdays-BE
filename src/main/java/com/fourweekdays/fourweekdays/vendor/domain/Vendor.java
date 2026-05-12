@@ -2,6 +2,7 @@ package com.fourweekdays.fourweekdays.vendor.domain;
 
 import com.fourweekdays.fourweekdays.global.response.BaseEntity;
 import com.fourweekdays.fourweekdays.global.vo.Address;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -33,6 +34,10 @@ public class Vendor extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String managerName;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private Member manager;
+
     @Column(length = 20)
     private String phoneNumber;
 
@@ -55,10 +60,11 @@ public class Vendor extends BaseEntity {
     private List<Product> productList;
 
     @Builder
-    public Vendor(String vendorCode, String name, String managerName, String phoneNumber, String email, String apiKey, String description, VendorStatus status, Address address) {
+    public Vendor(String vendorCode, String name, String managerName, Member manager, String phoneNumber, String email, String apiKey, String description, VendorStatus status, Address address) {
         this.vendorCode = vendorCode;
         this.name = name;
         this.managerName = managerName;
+        this.manager = manager;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.description = description;
@@ -69,10 +75,11 @@ public class Vendor extends BaseEntity {
     }
 
     // ===== 비즈니스 로직 ===== //
-    public void update(String name, String managerName, String phoneNumber, String email,
+    public void update(String name, String managerName, Member manager, String phoneNumber, String email,
                        String description, Address address) {
         if (name != null) this.name = name;
         if (managerName != null) this.managerName = managerName;
+        this.manager = manager;
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (email != null) this.email = email;
         if (description != null) this.description = description;
