@@ -1,14 +1,14 @@
 package com.fourweekdays.fourweekdays.outbound.controller;
 
-import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.global.response.BaseResponseStatus;
 import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
+import com.fourweekdays.fourweekdays.outbound.exception.OutboundException;
+import com.fourweekdays.fourweekdays.outbound.exception.OutboundExceptionType;
 import com.fourweekdays.fourweekdays.outbound.model.dto.request.OutboundCreateDto;
 import com.fourweekdays.fourweekdays.outbound.model.dto.response.OutboundReadDto;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +41,7 @@ public class OutboundController {
     public ResponseEntity<BaseResponse<OutboundReadDto>> getOutboundDetails(@PathVariable Long id) {
         OutboundReadDto outboundDto = outboundService.getOutboundDetails(id);
         if (outboundDto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(BaseResponse.error(BaseResponseStatus.OUTBOUND_NOT_FOUND));
+            throw new OutboundException(OutboundExceptionType.OUTBOUND_NOT_FOUND);
         }
         return ResponseEntity.ok(BaseResponse.success(outboundDto));
     }

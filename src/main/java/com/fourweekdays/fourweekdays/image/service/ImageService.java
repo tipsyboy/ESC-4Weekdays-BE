@@ -4,7 +4,7 @@ import com.fourweekdays.fourweekdays.image.entity.Image;
 import com.fourweekdays.fourweekdays.image.repository.ImageRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
 import com.fourweekdays.fourweekdays.product.exception.ProductExceptionType;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

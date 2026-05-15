@@ -1,9 +1,14 @@
 package com.fourweekdays.fourweekdays.auth.service;
 
+import com.fourweekdays.fourweekdays.auth.dto.AuthMeResponse;
 import com.fourweekdays.fourweekdays.auth.dto.TokenDto;
 import com.fourweekdays.fourweekdays.auth.jwt.JwtTokenProvider;
+import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.auth.token.manager.RefreshTokenManager;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
+import com.fourweekdays.fourweekdays.member.exception.MemberException;
+import com.fourweekdays.fourweekdays.member.exception.MemberExceptionType;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
+import org.springframework.security.core.Authentication;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +19,14 @@ public class AuthService {
 
     private final JwtTokenProvider tokenProvider;
     private final RefreshTokenManager refreshTokenManager;
+
+    public AuthMeResponse me(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof LoginMember loginMember)) {
+            throw new MemberException(MemberExceptionType.MEMBER_NOT_FOUND);
+        }
+
+        return AuthMeResponse.from(loginMember.getMember());
+    }
 
     @Transactional
     public TokenDto reissue(String refreshToken) {
@@ -36,5 +49,17 @@ public class AuthService {
         refreshTokenManager.updateRefreshToken(email, newRefreshToken);
 
         return new TokenDto(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void logout(Authentication authentication, String refreshToken) {
+        if (authentication != null && authentication.getPrincipal() instanceof LoginMember loginMember) {
+            refreshTokenManager.revokeRefreshToken(loginMember.getMember());
+            return;
+        }
+
+        if (refreshToken != null && !refreshToken.isBlank()) {
+            refreshTokenManager.revokeRefreshToken(refreshToken);
+        }
     }
 }

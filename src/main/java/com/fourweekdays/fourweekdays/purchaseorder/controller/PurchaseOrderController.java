@@ -1,57 +1,52 @@
 package com.fourweekdays.fourweekdays.purchaseorder.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderCreateDto;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.request.PurchaseOrderUpdateDto;
-import com.fourweekdays.fourweekdays.purchaseorder.model.dto.response.PurchaseOrderReadDto;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderCreateRequest;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderDetailResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderSearchCondition;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderStatusUpdateRequest;
 import com.fourweekdays.fourweekdays.purchaseorder.service.PurchaseOrderService;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @RequestMapping("/api/purchase-orders")
 @RequiredArgsConstructor
-@RestController
 public class PurchaseOrderController {
 
     private final PurchaseOrderService purchaseOrderService;
 
-    @PostMapping
-    public ResponseEntity<BaseResponse<Long>> purchaseRequest(@Valid @RequestBody PurchaseOrderCreateDto requestDto,
-                                                              @AuthenticationPrincipal LoginMember manager) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(requestDto, manager.getMember().getId())));
+    @GetMapping
+    public ResponseEntity<BaseResponse<PageResponse<PurchaseOrderListResponse>>> readAll(@ModelAttribute PurchaseOrderSearchCondition condition) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(purchaseOrderService.search(condition))));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<PurchaseOrderReadDto>> purchaseOrderDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.findByPurchaseOrderId(id)));
+    public ResponseEntity<BaseResponse<PurchaseOrderDetailResponse>> read(@PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.read(id)));
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<Page<PurchaseOrderReadDto>>> purchaseOrderList(@RequestParam(defaultValue = "0") int page,
-                                                                                      @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.findPurchaseOrderListByPaging(page, size)));
+    @PostMapping
+    public ResponseEntity<BaseResponse<PurchaseOrderDetailResponse>> create(@Valid @RequestBody PurchaseOrderCreateRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.create(request)));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<Long>> updatePurchaseOrder(@PathVariable Long id,
-                                                                  @Valid @RequestBody PurchaseOrderUpdateDto requestDto) {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.update(id, requestDto)));
-    }
-
-    @PostMapping("/{id}/approve")
-    public ResponseEntity<BaseResponse<Long>> approvePurchaseOrder(@PathVariable Long id) throws MessagingException {
-        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.approve(id)));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<String>> cancelOrder(@PathVariable Long id) {
-        purchaseOrderService.cancel(id);
-        return ResponseEntity.ok((BaseResponse.success("발주 취소")));
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<BaseResponse<PurchaseOrderDetailResponse>> updateStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody PurchaseOrderStatusUpdateRequest request
+    ) {
+        return ResponseEntity.ok(BaseResponse.success(purchaseOrderService.updateStatus(id, request)));
     }
 }

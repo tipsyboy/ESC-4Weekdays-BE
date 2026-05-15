@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fourweekdays.fourweekdays.auth.exception.JwtExceptionResponseDto;
 import com.fourweekdays.fourweekdays.auth.exception.JwtExceptionType;
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +15,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,23 +35,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         JwtExceptionType exceptionType = JwtExceptionType.valueOf(exception);
         log.error("entry point >> {}", exceptionType.getMessage());
-        setResponse(response, exceptionType, request.getRequestURI());
+        setResponse(response, exceptionType);
     }
 
-    private void setResponse(HttpServletResponse response, JwtExceptionType exceptionCode, String path) throws IOException {
+    private void setResponse(HttpServletResponse response, JwtExceptionType exceptionCode) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
 
-        JwtExceptionResponseDto jwtExceptionResponseDto = JwtExceptionResponseDto.builder()
-                .path(path)
-                .timestamp(LocalDateTime.now())
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .exceptionCode(exceptionCode.getCode())
-                .message(exceptionCode.getMessage())
-                .build();
-
-        String jsonResponse = objectMapper.writeValueAsString(jwtExceptionResponseDto);
+        BaseResponse<Void> responseBody = BaseResponse.fail(HttpStatus.UNAUTHORIZED, exceptionCode.getMessage());
+        String jsonResponse = objectMapper.writeValueAsString(responseBody);
         response.getWriter().write(jsonResponse);
     }
 }

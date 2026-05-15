@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
+import static com.fourweekdays.fourweekdays.member.domain.QMember.member;
 import static com.fourweekdays.fourweekdays.tasks.model.entity.QTask.task;
 
 @Repository

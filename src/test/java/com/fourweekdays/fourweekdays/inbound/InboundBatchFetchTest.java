@@ -1,9 +1,9 @@
 package com.fourweekdays.fourweekdays.inbound;
 
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
 import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
 import com.fourweekdays.fourweekdays.member.model.entity.Member;
@@ -12,9 +12,9 @@ import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.model.entity.Product;
 import com.fourweekdays.fourweekdays.product.model.entity.ProductStatus;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderProduct;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrderStatus;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderItem;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrderStatus;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
 import com.fourweekdays.fourweekdays.vendor.model.entity.Vendor;
 import com.fourweekdays.fourweekdays.vendor.model.entity.VendorStatus;
@@ -36,11 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInbound.inbound;
-import static com.fourweekdays.fourweekdays.inbound.model.entity.QInboundProduct.inboundProduct;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInbound.inbound;
+import static com.fourweekdays.fourweekdays.inbound.domain.QInboundProduct.inboundProduct;
 import static com.fourweekdays.fourweekdays.member.model.entity.QMember.member;
 import static com.fourweekdays.fourweekdays.product.model.entity.QProduct.product;
-import static com.fourweekdays.fourweekdays.purchaseorder.model.entity.QPurchaseOrder.purchaseOrder;
+import static com.fourweekdays.fourweekdays.purchaseorder.domain.QPurchaseOrder.purchaseOrder;
 import static com.fourweekdays.fourweekdays.vendor.model.entity.QVendor.vendor;
 
 @SpringBootTest(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=100")
@@ -119,7 +119,7 @@ class InboundBatchFetchTest {
                         .vendor(sharedVendor)
                         .build());
 
-                po.addItem(PurchaseOrderProduct.builder()
+                po.addItem(PurchaseOrderItem.builder()
                         .product(productEntity)
                         .orderedQuantity(20 + j)
                         .description("배치 발주 상품")
@@ -137,11 +137,11 @@ class InboundBatchFetchTest {
                     .description("배치 입고 테스트 데이터")
                     .build();
 
-            for (PurchaseOrderProduct poProduct : po.getProducts()) {
+            for (PurchaseOrderItem poProduct : po.getItems()) {
                 InboundProduct.builder()
                         .inbound(inboundEntity)
                         .product(poProduct.getProduct())
-                        .purchaseOrderProduct(poProduct)
+                        .purchaseOrderItem(poProduct)
                         .receivedQuantity(poProduct.getOrderedQuantity())
                         .lotNumber("BATCH-LOT-" + i + "-" + poProduct.getId())
                         .description("배치 입고 품목")

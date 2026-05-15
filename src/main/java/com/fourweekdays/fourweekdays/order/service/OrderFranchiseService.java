@@ -1,6 +1,7 @@
 package com.fourweekdays.fourweekdays.order.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.franchise.model.entity.FranchiseStore;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.dto.request.OrderProductDto;
@@ -16,7 +17,7 @@ import com.fourweekdays.fourweekdays.outbound.model.entity.Outbound;
 import com.fourweekdays.fourweekdays.outbound.repository.OutboundRepository;
 import com.fourweekdays.fourweekdays.outbound.service.OutboundService;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.tasks.exception.TaskException;
 import com.fourweekdays.fourweekdays.tasks.model.entity.ShipmentTask;
@@ -37,8 +38,6 @@ import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.SH
 @Service
 @RequiredArgsConstructor
 public class OrderFranchiseService {
-
-    private static final String ORDER_CODE_PREFIX = "ORD";
 
     private final OrderRepository orderRepository;
     private final OutboundRepository outboundRepository;
@@ -98,7 +97,7 @@ public class OrderFranchiseService {
     private Order createOrder(FranchiseStore franchiseStore, OrderReceiveOrderDto dto) {
         return Order.builder()
                 .franchiseStore(franchiseStore)
-                .orderCode(codeGenerator.generate(ORDER_CODE_PREFIX))
+                .orderCode(codeGenerator.generate(CodeType.ORDER))
                 .dueDate(dto.getDueDate())
                 .description(dto.getDescription())
                 .status(OrderStatus.REQUESTED)

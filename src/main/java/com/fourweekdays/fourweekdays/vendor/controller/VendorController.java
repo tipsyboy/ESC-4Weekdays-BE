@@ -1,18 +1,23 @@
 package com.fourweekdays.fourweekdays.vendor.controller;
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorCreateDto;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorSearchRequest;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorStatusUpdateDto;
-import com.fourweekdays.fourweekdays.vendor.model.dto.request.VendorUpdateDto;
-import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorProductResponse;
-import com.fourweekdays.fourweekdays.vendor.model.dto.response.VendorReadDto;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
+import com.fourweekdays.fourweekdays.asn.dto.AsnListResponse;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
+import com.fourweekdays.fourweekdays.product.dto.ProductListResponse;
+import com.fourweekdays.fourweekdays.purchaseorder.dto.PurchaseOrderListResponse;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorCreateDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorSearchCondition;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorStatusUpdateDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorUpdateDto;
+import com.fourweekdays.fourweekdays.vendor.dto.VendorReadDto;
 import com.fourweekdays.fourweekdays.vendor.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vendors")
@@ -22,8 +27,8 @@ public class VendorController {
     private final VendorService vendorService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Long>> createVendor(@Valid @RequestBody VendorCreateDto dto) {
-        Long result = vendorService.create(dto);
+    public ResponseEntity<BaseResponse<VendorReadDto>> createVendor(@Valid @RequestBody VendorCreateDto dto) {
+        VendorReadDto result = vendorService.create(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -34,39 +39,49 @@ public class VendorController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Page<VendorReadDto>>> readVendors(@RequestParam(defaultValue = "0") Integer page,
-                                                                         @RequestParam(defaultValue = "10") Integer size) {
-        Page<VendorReadDto> result = vendorService.readAll(page, size);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    public ResponseEntity<BaseResponse<PageResponse<VendorReadDto>>> readVendors(@ModelAttribute VendorSearchCondition condition) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readAll(condition))));
     }
 
-    @PostMapping ("/search")
-    public ResponseEntity<BaseResponse<Page<VendorProductResponse>>> searchVendors(@RequestBody VendorSearchRequest request,
-                                                                                   @RequestParam(defaultValue = "0") Integer page,
-                                                                                   @RequestParam(defaultValue = "10") Integer size) {
-        Page<VendorProductResponse> result = vendorService.searchVendorsWithProducts(page, size, request);
-        return ResponseEntity.ok(BaseResponse.success(result));
+    @GetMapping("/{id}/products")
+    public ResponseEntity<BaseResponse<List<ProductListResponse>>> readVendorProducts(@PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.success(vendorService.readProducts(id)));
+    }
+
+    @GetMapping("/{id}/purchase-orders")
+    public ResponseEntity<BaseResponse<PageResponse<PurchaseOrderListResponse>>> readVendorPurchaseOrders(@PathVariable Long id,
+                                                                                                          @RequestParam(defaultValue = "0") Integer page,
+                                                                                                          @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readPurchaseOrders(id, page, size))));
+    }
+
+    @GetMapping("/{id}/asns")
+    public ResponseEntity<BaseResponse<PageResponse<AsnListResponse>>> readVendorAsns(@PathVariable Long id,
+                                                                                      @RequestParam(defaultValue = "0") Integer page,
+                                                                                      @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readAsns(id, page, size))));
+    }
+
+    @GetMapping("/{id}/inbounds")
+    public ResponseEntity<BaseResponse<PageResponse<InboundReadDto>>> readVendorInbounds(@PathVariable Long id,
+                                                                                         @RequestParam(defaultValue = "0") Integer page,
+                                                                                         @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(BaseResponse.success(PageResponse.from(vendorService.readInbounds(id, page, size))));
     }
 
     // 내용 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<Long>> updateVendor(@PathVariable Long id,
-                                                           @Valid @RequestBody VendorUpdateDto dto) {
-        vendorService.update(id, dto);
-        return ResponseEntity.ok(BaseResponse.success(id));
+    public ResponseEntity<BaseResponse<VendorReadDto>> updateVendor(@PathVariable Long id,
+                                                                    @Valid @RequestBody VendorUpdateDto dto) {
+        VendorReadDto result = vendorService.update(id, dto);
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     // 상태 변경
     @PatchMapping("/{id}/status")
-    public ResponseEntity<BaseResponse<Long>> updateVendorStatus(@PathVariable Long id,
-                                                                 @Valid @RequestBody VendorStatusUpdateDto dto) {
-        vendorService.updateStatus(id, dto.getStatus());
-        return ResponseEntity.ok(BaseResponse.success(id));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<String>> suspendVendor(@PathVariable Long id) {
-        vendorService.suspend(id);
-        return ResponseEntity.ok(BaseResponse.success("거래 중단"));
+    public ResponseEntity<BaseResponse<VendorReadDto>> updateVendorStatus(@PathVariable Long id,
+                                                                          @Valid @RequestBody VendorStatusUpdateDto dto) {
+        VendorReadDto result = vendorService.updateStatus(id, dto.getStatus());
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 }

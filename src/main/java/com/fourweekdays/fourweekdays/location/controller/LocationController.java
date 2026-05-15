@@ -2,7 +2,7 @@ package com.fourweekdays.fourweekdays.location.controller;
 
 
 import com.fourweekdays.fourweekdays.global.response.BaseResponse;
-import com.fourweekdays.fourweekdays.location.model.dto.response.LocationResponse;
+import com.fourweekdays.fourweekdays.location.dto.LocationResponse;
 import com.fourweekdays.fourweekdays.location.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,11 @@ import java.util.List;
 public class LocationController {
 
     private final LocationService locationService;
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<LocationResponse>>> readAll() {
+        return ResponseEntity.ok(BaseResponse.success(locationService.readAll()));
+    }
 
     @GetMapping("/available")
     public ResponseEntity<BaseResponse<List<LocationResponse>>> getAvailableLocations() {

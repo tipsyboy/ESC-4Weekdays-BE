@@ -1,6 +1,6 @@
 package com.fourweekdays.fourweekdays.auth.token.entity;
 
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

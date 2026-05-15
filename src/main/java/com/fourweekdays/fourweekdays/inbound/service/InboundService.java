@@ -1,36 +1,51 @@
 package com.fourweekdays.fourweekdays.inbound.service;
 
+import com.fourweekdays.fourweekdays.asn.domain.Asn;
+import com.fourweekdays.fourweekdays.asn.domain.AsnStatus;
+import com.fourweekdays.fourweekdays.asn.exception.AsnException;
+import com.fourweekdays.fourweekdays.asn.repository.AsnRepository;
+import com.fourweekdays.fourweekdays.global.response.PageResponse;
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundException;
 import com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType;
-import com.fourweekdays.fourweekdays.inbound.model.dto.request.*;
-import com.fourweekdays.fourweekdays.inbound.model.dto.response.InboundReadDto;
-import com.fourweekdays.fourweekdays.inbound.model.entity.Inbound;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundProduct;
-import com.fourweekdays.fourweekdays.inbound.model.entity.InboundStatus;
+import com.fourweekdays.fourweekdays.inbound.dto.*;
+import com.fourweekdays.fourweekdays.inbound.dto.InboundReadDto;
+import com.fourweekdays.fourweekdays.inbound.domain.Inbound;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundProduct;
+import com.fourweekdays.fourweekdays.inbound.domain.InboundStatus;
 import com.fourweekdays.fourweekdays.inbound.repository.InboundRepository;
+import com.fourweekdays.fourweekdays.inventory.service.InventoryService;
+import com.fourweekdays.fourweekdays.location.exception.LocationException;
+import com.fourweekdays.fourweekdays.location.domain.Location;
+import com.fourweekdays.fourweekdays.location.repository.LocationRepository;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.product.exception.ProductException;
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
+import com.fourweekdays.fourweekdays.product.domain.Product;
 import com.fourweekdays.fourweekdays.product.repository.ProductRepository;
 import com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderException;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 import com.fourweekdays.fourweekdays.purchaseorder.repository.PurchaseOrderRepository;
-import com.fourweekdays.fourweekdays.tasks.factory.InboundTaskFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_INVALID_STATUS_FOR_INSPECTION;
+import static com.fourweekdays.fourweekdays.asn.exception.AsnExceptionType.ASN_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_INVALID_REQUEST;
 import static com.fourweekdays.fourweekdays.inbound.exception.InboundExceptionType.INBOUND_NOT_FOUND;
+import static com.fourweekdays.fourweekdays.location.exception.LocationExceptionType.LOCATION_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.member.exception.MemberExceptionType.MEMBER_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.product.exception.ProductExceptionType.PRODUCT_NOT_FOUND;
 import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrderExceptionType.PURCHASE_ORDER_NOT_FOUND;
@@ -41,14 +56,138 @@ import static com.fourweekdays.fourweekdays.purchaseorder.exception.PurchaseOrde
 @Transactional(readOnly = true)
 public class InboundService {
 
-    public static final String INBOUND_CODE_PREFIX = "IB";
-
     private final MemberRepository memberRepository;
     private final InboundRepository inboundRepository;
+    private final AsnRepository asnRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final ProductRepository productRepository;
+    private final LocationRepository locationRepository;
+    private final InventoryService inventoryService;
     private final CodeGenerator codeGenerator;
-    private final InboundTaskFactory inboundTaskFactory;
+
+    @Transactional
+    public InboundDetailResponse create(InboundCreateRequest request) {
+        Asn asn = asnRepository.findById(request.asnId())
+                .orElseThrow(() -> new AsnException(ASN_NOT_FOUND));
+
+        Inbound inbound = createExpectedFromAsn(asn, request.dock(), request.inboundMemo());
+
+        if (asn.getStatus() == AsnStatus.RECEIVED) {
+            asn.markScheduled();
+        }
+
+        return InboundDetailResponse.from(inbound);
+    }
+
+    @Transactional
+    public Inbound createExpectedFromAsn(Asn asn) {
+        return createExpectedFromAsn(asn, null, asn.getNote());
+    }
+
+    @Transactional
+    public Inbound createExpectedFromAsn(Asn asn, String dock, String inboundMemo) {
+        if (inboundRepository.existsByAsnId(asn.getId())) {
+            return inboundRepository.findByAsnId(asn.getId())
+                    .orElseThrow(() -> new InboundException(INBOUND_INVALID_REQUEST));
+        }
+
+        if (asn.getStatus() != AsnStatus.RECEIVED && asn.getStatus() != AsnStatus.SCHEDULED) {
+            throw new InboundException(INBOUND_INVALID_REQUEST);
+        }
+
+        Inbound inbound = Inbound.builder()
+                .inboundCode(codeGenerator.generate(CodeType.INBOUND))
+                .purchaseOrder(asn.getPurchaseOrder())
+                .asn(asn)
+                .vendor(asn.getVendor())
+                .expectedInboundAt(asn.getExpectedArrivalAt())
+                .scheduledDate(asn.getExpectedArrivalAt())
+                .status(InboundStatus.PLANNED)
+                .manager(asn.getPurchaseOrder().getManager())
+                .dock(dock)
+                .inboundMemo(inboundMemo)
+                .description(inboundMemo)
+                .build();
+
+        asn.getItems().forEach(asnItem -> inbound.addItem(InboundProduct.builder()
+                .product(asnItem.getProduct())
+                .expectedQuantity(asnItem.getAnnouncedQuantity())
+                .receivedQuantity(0)
+                .defectQuantity(0)
+                .description("")
+                .memo("")
+                .build()));
+
+        return inboundRepository.save(inbound);
+    }
+
+    public InboundPageResponse readAll(int page, int size) {
+        List<InboundListResponse> allInbounds = inboundRepository.findAllByOrderByIdDesc().stream()
+                .map(InboundListResponse::from)
+                .toList();
+
+        PageResponse<InboundListResponse> pageResponse = PageResponse.from(
+                inboundRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
+                        .map(InboundListResponse::from)
+        );
+
+        return InboundPageResponse.from(pageResponse, InboundSummaryResponse.from(allInbounds));
+    }
+
+    public InboundDetailResponse read(Long id) {
+        return InboundDetailResponse.from(getInbound(id));
+    }
+
+    public InboundDetailResponse readByAsnId(Long asnId) {
+        return inboundRepository.findByAsnId(asnId)
+                .map(InboundDetailResponse::from)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+    }
+
+    @Transactional
+    public InboundDetailResponse updateReceipt(Long id, InboundReceiptUpdateRequest request) {
+        Inbound inbound = getInbound(id);
+        validateReceiptStatusTransition(inbound.getStatus(), request.status());
+
+        Map<Long, InboundProduct> inboundProductMap = inbound.getItems().stream()
+                .collect(java.util.stream.Collectors.toMap(item -> item.getProduct().getId(), Function.identity()));
+
+        for (InboundReceiptItemRequest itemRequest : request.items()) {
+            InboundProduct inboundProduct = inboundProductMap.get(itemRequest.productId());
+
+            if (inboundProduct == null) {
+                throw new InboundException(InboundExceptionType.INBOUND_PRODUCT_NOT_FOUND);
+            }
+
+            validateReceiptQuantity(
+                    inboundProduct.getProduct(),
+                    inboundProduct.getExpectedQuantity(),
+                    itemRequest.receivedQuantity(),
+                    itemRequest.defectQuantity()
+            );
+
+            Location location = resolveInboundItemLocation(request.status(), itemRequest.locationId());
+            inboundProduct.updateReceipt(
+                    location,
+                    itemRequest.receivedQuantity(),
+                    itemRequest.defectQuantity(),
+                    itemRequest.memo()
+            );
+        }
+
+        LocalDateTime receivedAt = request.receivedAt() != null ? request.receivedAt() : LocalDateTime.now();
+        inbound.updateProcessing(receivedAt, request.status(), request.inspectionMemo());
+
+        if (request.status() == InboundStatus.COMPLETED) {
+            inventoryService.reflectInbound(inbound, receivedAt);
+            PurchaseOrder purchaseOrder = inbound.getPurchaseOrder();
+            if (purchaseOrder != null) {
+                purchaseOrder.completeDelivery();
+            }
+        }
+
+        return InboundDetailResponse.from(inbound);
+    }
 
     public Long createByPurchaseOrder(PurchaseOrder purchaseOrder) {
 
@@ -63,22 +202,22 @@ public class InboundService {
         Member manager = purchaseOrder.getManager(); // 발주 담당자 -> 입고 담당자
 
         Inbound inbound = Inbound.builder()
-                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
+                .inboundCode(codeGenerator.generate(CodeType.INBOUND))
                 .purchaseOrder(purchaseOrder)
-                .status(InboundStatus.SCHEDULED)
+                .status(InboundStatus.PLANNED)
                 .manager(manager)
                 .description(purchaseOrder.getDescription())
                 .scheduledDate(purchaseOrder.getExpectedDate())
                 .build();
 
-        purchaseOrder.getProducts().forEach(purchaseOrderProduct -> {
-            log.info("purchaseOrderProduct.getOrderedQuantity()={}", purchaseOrderProduct.getOrderedQuantity());
+        purchaseOrder.getItems().forEach(purchaseOrderItem -> {
+            log.info("purchaseOrderItem.getOrderedQuantity()={}", purchaseOrderItem.getOrderedQuantity());
             InboundProduct.builder()
                     .inbound(inbound)
-                    .product(purchaseOrderProduct.getProduct())
-                    .purchaseOrderProduct(purchaseOrderProduct)
-                    .receivedQuantity(purchaseOrderProduct.getOrderedQuantity())
-                    .description(purchaseOrderProduct.getDescription())
+                    .product(purchaseOrderItem.getProduct())
+                    .purchaseOrderItem(purchaseOrderItem)
+                    .receivedQuantity(purchaseOrderItem.getOrderedQuantity())
+                    .description(purchaseOrderItem.getDescription())
                     .build();
         });
 
@@ -99,8 +238,7 @@ public class InboundService {
     }
 
     public InboundReadDto findById(Long id) {
-        Inbound inbound = inboundRepository.findById(id)
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+        Inbound inbound = getInbound(id);
         return InboundReadDto.from(inbound);
     }
 
@@ -113,45 +251,14 @@ public class InboundService {
     }
 
     @Transactional
-    public void updateInspection(Long inboundId, List<InboundInspectionUpdateRequest> requestList) {
-        Inbound inbound = inboundRepository.findById(inboundId)
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-
-        if (inbound.getStatus() != InboundStatus.INSPECTING) {
-            throw new InboundException(INBOUND_INVALID_STATUS_FOR_INSPECTION);
-        }
-
-        for (InboundInspectionUpdateRequest request : requestList) {
-            InboundProduct product = inbound.findProductById(request.inboundProductId())
-                    .orElseThrow(() -> new InboundException(InboundExceptionType.INBOUND_PRODUCT_NOT_FOUND));
-            product.updateInspectionResult(request.receivedQuantity());
-        }
-
-        // 검수 완료 시 적치 작업으로 변경
-        inbound.updateStatus(InboundStatus.PUTAWAY);
-    }
-
-    @Transactional
     public void cancel(Long id) {
         Inbound inbound = inboundRepository.findById(id)
                 .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
 
-        if (inbound.getStatus() != InboundStatus.CREATED && inbound.getStatus() != InboundStatus.SCHEDULED) {
+        if (inbound.getStatus() == InboundStatus.COMPLETED || inbound.getStatus() == InboundStatus.CANCELLED) {
             throw new InboundException(InboundExceptionType.INBOUND_CANNOT_CANCEL);
         }
         inbound.cancelInbound();
-    }
-
-    @Transactional
-    public void arriveDelivery(Long inboundId) {
-        Inbound inbound = inboundRepository.findById(inboundId)
-                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
-        inbound.updateStatus(InboundStatus.ARRIVED);
-
-        PurchaseOrder purchaseOrder = inbound.getPurchaseOrder();
-        purchaseOrder.completeDelivery();
-
-        inboundTaskFactory.createInspectionTask(inboundId);
     }
 
     // TODO: 삭제? 발주서가 없는 입고는 어떻게 처리할까
@@ -198,8 +305,8 @@ public class InboundService {
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
         return Inbound.builder()
-                .inboundCode(codeGenerator.generate(INBOUND_CODE_PREFIX))
-                .status(InboundStatus.SCHEDULED)
+                .inboundCode(codeGenerator.generate(CodeType.INBOUND))
+                .status(InboundStatus.PLANNED)
                 .manager(manager)
                 .scheduledDate(requestDto.getScheduledDate())
                 .description(requestDto.getDescription())
@@ -210,10 +317,10 @@ public class InboundService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(requestDto.getPurchaseOrderId())
                 .orElseThrow(() -> new PurchaseOrderException(PURCHASE_ORDER_NOT_FOUND));
 
-        purchaseOrder.getProducts().forEach(poItem -> {
+        purchaseOrder.getItems().forEach(poItem -> {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(poItem.getProduct())
-                    .purchaseOrderProduct(poItem)
+                    .purchaseOrderItem(poItem)
                     .receivedQuantity(0)
                     .description(poItem.getDescription())
                     .build();
@@ -234,7 +341,7 @@ public class InboundService {
             InboundProduct inboundItem = InboundProduct.builder()
                     .product(product)
                     .inbound(inbound)
-                    .purchaseOrderProduct(null)
+                    .purchaseOrderItem(null)
                     .receivedQuantity(itemDto.getQuantity())
                     .description(itemDto.getDescription())
                     .build();
@@ -251,5 +358,55 @@ public class InboundService {
                 .receivedQuantity(dto.getQuantity())
                 .description(dto.getDescription())
                 .build();
+    }
+
+    private Inbound getInbound(Long id) {
+        return inboundRepository.findById(id)
+                .orElseThrow(() -> new InboundException(INBOUND_NOT_FOUND));
+    }
+
+    private void validateReceiptQuantity(Product product, Integer expectedQuantity, Integer receivedQuantity, Integer defectQuantity) {
+        int received = receivedQuantity != null ? receivedQuantity : 0;
+        int defect = defectQuantity != null ? defectQuantity : 0;
+
+        if (received + defect > expectedQuantity) {
+            throw new InboundException(INBOUND_INVALID_REQUEST);
+        }
+    }
+
+    private Location resolveInboundItemLocation(InboundStatus status, Long locationId) {
+        if (locationId == null) {
+            if (status == InboundStatus.COMPLETED) {
+                throw new InboundException(INBOUND_INVALID_REQUEST);
+            }
+            return null;
+        }
+
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new LocationException(LOCATION_NOT_FOUND));
+
+        if (!location.isAvailable()) {
+            throw new InboundException(INBOUND_INVALID_REQUEST);
+        }
+
+        return location;
+    }
+
+    private void validateReceiptStatusTransition(InboundStatus currentStatus, InboundStatus nextStatus) {
+        boolean valid = switch (currentStatus) {
+            case PLANNED -> nextStatus == InboundStatus.RECEIVING
+                    || nextStatus == InboundStatus.PARTIAL
+                    || nextStatus == InboundStatus.COMPLETED;
+            case RECEIVING -> nextStatus == InboundStatus.PARTIAL
+                    || nextStatus == InboundStatus.COMPLETED;
+            case PARTIAL -> nextStatus == InboundStatus.RECEIVING
+                    || nextStatus == InboundStatus.COMPLETED;
+            case COMPLETED -> false;
+            default -> false;
+        };
+
+        if (!valid) {
+            throw new InboundException(InboundExceptionType.INBOUND_STATUS_TRANSITION_NOT_ALLOWED);
+        }
     }
 }

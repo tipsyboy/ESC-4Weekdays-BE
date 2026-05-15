@@ -1,7 +1,6 @@
 package com.fourweekdays.fourweekdays.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fourweekdays.fourweekdays.asn.filter.VendorApiKeyFilter;
 import com.fourweekdays.fourweekdays.auth.handler.JwtAccessDeniedHandler;
 import com.fourweekdays.fourweekdays.auth.handler.JwtAuthenticationEntryPoint;
 import com.fourweekdays.fourweekdays.global.config.constant.SecurityConstants;
@@ -37,11 +36,17 @@ public class SecurityConfig {
     private final AuthService authService;
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, VendorApiKeyFilter vendorApiKeyFilter) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 // 로그인 및 화이트리스트
                 .requestMatchers(HttpMethod.POST, SecurityConstants.LOGIN_URL).permitAll()
                 .requestMatchers(SecurityConstants.API_WHITE_LIST).permitAll()
+
+                // 공급업체 포털
+                .requestMatchers(HttpMethod.GET, SecurityConstants.VENDOR_PORTAL_READ_LIST)
+                .hasAnyRole("ADMIN", "MANAGER", "VENDOR_MANAGER")
+                .requestMatchers(HttpMethod.POST, SecurityConstants.VENDOR_PORTAL_WRITE_LIST)
+                .hasRole("VENDOR_MANAGER")
 
                 // 관리자 전용 (생성 / 수정 / 삭제)
                 .requestMatchers(HttpMethod.POST, SecurityConstants.ADMIN_POST_LIST).hasRole("ADMIN")
@@ -79,7 +84,6 @@ public class SecurityConfig {
                 .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper))
         );
 
-        http.addFilterBefore(vendorApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, cookieUtil, authService), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(
                 new LoginFilter(configuration.getAuthenticationManager(), objectMapper, jwtTokenProvider, cookieUtil),

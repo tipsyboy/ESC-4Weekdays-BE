@@ -1,13 +1,13 @@
 package com.fourweekdays.fourweekdays.global.email;
 
-import com.fourweekdays.fourweekdays.product.model.entity.Product;
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.product.domain.Product;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
 
 public class EmailBodyBuilder {
     public static String buildPurchaseOrderBody(PurchaseOrder order) {
         StringBuilder itemsTable = new StringBuilder();
 
-        order.getProducts().forEach(item -> {
+        order.getItems().forEach(item -> {
             Product product = item.getProduct();
             itemsTable.append(String.format("""
             <tr>

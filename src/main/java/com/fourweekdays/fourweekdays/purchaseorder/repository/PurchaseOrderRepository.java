@@ -1,10 +1,23 @@
 package com.fourweekdays.fourweekdays.purchaseorder.repository;
 
-import com.fourweekdays.fourweekdays.purchaseorder.model.entity.PurchaseOrder;
+import com.fourweekdays.fourweekdays.purchaseorder.domain.PurchaseOrder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long>, PurchaseOrderRepositoryCustom {
+public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long>, PurchaseOrderRepositoryCustom, PurchaseOrderQueryRepository {
     Optional<PurchaseOrder> findByOrderCode(String orderCode);
+
+    @EntityGraph(attributePaths = {"vendor", "items", "items.product"})
+    List<PurchaseOrder> findByVendorId(Long vendorId);
+
+    Page<PurchaseOrder> findByVendorId(Long vendorId, Pageable pageable);
+
+    @Override
+    @EntityGraph(attributePaths = {"vendor", "items", "items.product"})
+    Optional<PurchaseOrder> findById(Long id);
 }

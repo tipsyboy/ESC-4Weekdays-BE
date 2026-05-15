@@ -1,21 +1,22 @@
 package com.fourweekdays.fourweekdays.member.querydsl.condition;
 
-import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
-import com.fourweekdays.fourweekdays.member.model.entity.QMember;
+import com.fourweekdays.fourweekdays.member.domain.MemberStatus;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
+import com.fourweekdays.fourweekdays.member.domain.QMember;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 public class MemberPredicateBuilder {
 
     private static final QMember member = QMember.member;
 
     public static BooleanBuilder buildMemberPredicate(
             String name,
-            AuthStatus status,
+            String memberCode,
+            String department,
+            String loginId,
+            MemberStatus status,
             MemberRole role,
             LocalDate fromDate,
             LocalDate toDate
@@ -24,6 +25,15 @@ public class MemberPredicateBuilder {
 
         if (StringUtils.hasText(name))
             builder.and(member.name.containsIgnoreCase(name));
+
+        if (StringUtils.hasText(memberCode))
+            builder.and(member.memberCode.containsIgnoreCase(memberCode));
+
+        if (StringUtils.hasText(department))
+            builder.and(member.department.containsIgnoreCase(department));
+
+        if (StringUtils.hasText(loginId))
+            builder.and(member.loginId.containsIgnoreCase(loginId));
 
         if (status != null)
             builder.and(member.status.eq(status));

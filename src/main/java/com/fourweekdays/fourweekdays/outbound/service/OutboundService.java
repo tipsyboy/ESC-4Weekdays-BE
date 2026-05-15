@@ -1,12 +1,13 @@
 package com.fourweekdays.fourweekdays.outbound.service;
 
 import com.fourweekdays.fourweekdays.global.util.CodeGenerator;
+import com.fourweekdays.fourweekdays.global.util.CodeType;
 import com.fourweekdays.fourweekdays.inventory.exception.InventoryException;
-import com.fourweekdays.fourweekdays.inventory.model.entity.Inventory;
+import com.fourweekdays.fourweekdays.inventory.domain.Inventory;
 import com.fourweekdays.fourweekdays.inventory.repository.InventoryRepository;
 import com.fourweekdays.fourweekdays.auth.principal.LoginMember;
 import com.fourweekdays.fourweekdays.member.exception.MemberException;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
+import com.fourweekdays.fourweekdays.member.domain.Member;
 import com.fourweekdays.fourweekdays.member.repository.MemberRepository;
 import com.fourweekdays.fourweekdays.order.exception.OrderException;
 import com.fourweekdays.fourweekdays.order.model.entity.Order;
@@ -45,8 +46,6 @@ import static com.fourweekdays.fourweekdays.tasks.exception.TaskExceptionType.TA
 @RequiredArgsConstructor
 @Transactional
 public class OutboundService {
-
-    private static final String OUTBOUND_CODE_PREFIX = "OB";
 
     private final MemberRepository memberRepository;
     private final OutboundRepository outboundRepository;
@@ -276,7 +275,7 @@ public class OutboundService {
     }
 
     private Outbound createBaseOutbound(OutboundCreateDto dto, Member manager, Order order) {
-        String OutboundCode = codeGenerator.generate(OUTBOUND_CODE_PREFIX);
+        String OutboundCode = codeGenerator.generate(CodeType.OUTBOUND);
         OutboundStatus status = OutboundStatus.REQUESTED;
 
         return dto.toEntity(OutboundCode, status, manager, order);

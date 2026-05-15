@@ -20,11 +20,7 @@ public class BaseResponse<T> {
     }
 
     public static <T> BaseResponse<T> success(T results) {
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS.isSuccess(), BaseResponseStatus.SUCCESS.getCode(), BaseResponseStatus.SUCCESS.getMessage(), results);
-    }
-
-    public static <T> BaseResponse<T> error(BaseResponseStatus status) {
-        return new BaseResponse<>(status.isSuccess(), status.getCode(), status.getMessage(), null);
+        return new BaseResponse<>(true, HttpStatus.OK.value(), "요청에 성공하였습니다.", results);
     }
 
     public static <T> BaseResponse<T> fail(HttpStatus httpStatus, String message) {

@@ -1,8 +1,8 @@
 package com.fourweekdays.fourweekdays.tasks.repository;
 
-import com.fourweekdays.fourweekdays.member.model.entity.AuthStatus;
-import com.fourweekdays.fourweekdays.member.model.entity.Member;
-import com.fourweekdays.fourweekdays.member.model.entity.MemberRole;
+import com.fourweekdays.fourweekdays.member.domain.MemberStatus;
+import com.fourweekdays.fourweekdays.member.domain.Member;
+import com.fourweekdays.fourweekdays.member.domain.MemberRole;
 import com.fourweekdays.fourweekdays.tasks.model.entity.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

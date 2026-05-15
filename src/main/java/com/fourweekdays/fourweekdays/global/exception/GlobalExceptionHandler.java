@@ -1,8 +1,12 @@
 package com.fourweekdays.fourweekdays.global.exception;
 
+import com.fourweekdays.fourweekdays.global.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,27 +14,44 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponse<Void>> validationExceptionHandler(MethodArgumentNotValidException e) {
+        FieldError fieldError = e.getBindingResult().getFieldErrors().stream().findFirst().orElse(null);
+        String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : "잘못된 요청입니다.";
+
+        log.warn("[ValidationException] >> {}", errorMessage);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.fail(HttpStatus.BAD_REQUEST, errorMessage));
+    }
+
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ErrorResponse> baseExceptionHandler(BaseException e) {
+    public ResponseEntity<BaseResponse<Void>> baseExceptionHandler(BaseException e) {
         String errorClassName = e.getClass().getSimpleName();
-        int httpStatusCode = e.getExceptionType().statusCode().value();
+        HttpStatus httpStatus = e.getExceptionType().statusCode();
         String errorMessage = e.getExceptionType().message();
 
         log.error("[{}] >> {}", errorClassName, errorMessage);
 
-        // 원인(cause) 로그 추가 — 내부 어디서 터졌는지 확인 가능
         if (e.getCause() != null) {
             log.error("[{} Cause] {}", errorClassName, e.getCause().getMessage(), e.getCause());
         }
 
-        return ResponseEntity.ok(ErrorResponse.of(httpStatusCode, errorMessage));
+        return ResponseEntity.status(httpStatus)
+                .body(BaseResponse.fail(httpStatus, errorMessage));
     }
 
-    // 이외의 모든 예외를 처리
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse<Void>> accessDeniedExceptionHandler(AccessDeniedException e) {
+        log.warn("[AccessDeniedException] >> {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(BaseResponse.fail(HttpStatus.FORBIDDEN, e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> globalExceptionHandler(Exception e) {
+    public ResponseEntity<BaseResponse<Void>> globalExceptionHandler(Exception e) {
         log.error("[Exception] 예기치 못한 예외가 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 내부 오류가 발생했습니다"));
+                .body(BaseResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다"));
     }
 }
